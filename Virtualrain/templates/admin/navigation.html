@@ -1,0 +1,51 @@
+<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<!-- Brand and toggle get grouped for better mobile display -->
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle" data-toggle="collapse"
+			data-target=".navbar-ex1-collapse">
+			<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#">
+			<img class="brand-logo" src="{$brandLogo}">
+			{$brand}
+			{if isset($branch)}<div class="header-branch-name">{$branch.name}</div>{/if}
+		</a>
+	</div>
+
+	<!-- Collect the nav links, forms, and other content for toggling -->
+	<div class="collapse navbar-collapse navbar-ex1-collapse">
+		{if isset( $distributer )}
+		<ul class="nav navbar-nav">
+			<li {if $currentPage == 'orders'}class="active"{/if}><a href="/admin/orders">Orders</a></li>
+			<li {if $currentPage == 'reports'}class="active"{/if}><a href="/admin/reports">Reports</a></li>
+			{if !isset($branch)}
+			<li {if $currentPage == 'data'}class="active"{/if}><a href="/admin/data">Products</a></li>
+			{/if}
+			<li {if $currentPage == 'users'}class="active"{/if}><a href="/admin/users">Users</a></li>
+			<li {if $currentPage == 'notifications'}class="active"{/if}><a href="/admin/notifications">Messages</a></li>
+			{if !isset($branch)}
+			<li {if $currentPage == 'branches'}class="active"{/if}><a href="/admin/branches">Branches</a></li>
+			<li {if $currentPage == 'locations'}class="active"{/if}><a href="/admin/locations">Locations</a></li>
+			{/if}
+		</ul>
+		{else}
+		<ul class="nav navbar-nav">
+			<li {if $currentPage == 'distributers'}class="active"{/if}><a href="/admin/distributers">Distributors</a></li>
+			<li {if $currentPage == 'admin_users'}class="active"{/if}><a href="/admin/adminusers">Admin Users</a></li>
+		</ul>
+		{/if}
+		<ul class="nav navbar-nav navbar-right">
+			{if isset($distributer) && !isset($branch)}
+			<li {if $currentPage == 'distprefs'}class="active"{/if}><a href="/admin/distprefs"><img class="settings-icon" src="/templates/img/settings-icon-24.png"></a></li>
+			{/if}
+			<li>
+			    <form class="navbar-form navbar-left" method="post" action="/admin/login">
+			      <button type="submit" class="btn btn-default" name="action" value="log_out" id="logoutBtn">Log out</button>
+			    </form>
+			</li>
+		</ul>
+	</div>
+	<!-- /.navbar-collapse -->
+</nav>

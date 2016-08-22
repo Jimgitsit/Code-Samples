@@ -1,0 +1,50 @@
+//**********
+//  Fonts
+//**********
+
+// Proxima Nova
+@include typeface(proxima, proximanova-light-webfont, 400, normal);
+@include typeface(proxima, proximanova-regular-webfont, 500, normal);
+@include typeface(proxima, proximanova-semibold-webfont, 600, normal);
+
+// Icon Font
+@include typeface(iconfont, iconfont, 400, normal);
+
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'iconfont';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-logo:before {
+    content: "\e607";
+}
+.icon-game:before {
+    content: "\e600";
+}
+.icon-movie:before {
+    content: "\e601";
+}
+.icon-music:before {
+    content: "\e602";
+}
+.icon-oval-filled:before {
+    content: "\e603";
+}
+.icon-arrow-right:before {
+    content: "\e604";
+}
+.icon-triangle-left:before {
+    content: "\e605";
+}
+.icon-triangle-right:before {
+    content: "\e606";
+}

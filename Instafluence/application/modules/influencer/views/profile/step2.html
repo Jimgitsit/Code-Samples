@@ -1,0 +1,104 @@
+<div id="profile_page2" style="display: none">
+
+	<div class="row">
+		<div class="col-md-12 title">
+			<h3>The Essentials</h3>
+			<p>We will need to contact you about campaigns, get you paid, and also ship products to your address. Please provide this information here.</p>
+		</div>
+	</div>
+
+	<div class="form-wrapper">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4">
+				<div class="form-group date-group">
+					<span class="group-label">Date of Birth</span>
+					<input type="text" name="dob[month]" id="dob-m" placeholder="MM" class="form-control input-sm small" value="{if isset($profile.dob)}{$profile.dob|substr:11|date_format:'%m'}{/if}" /> /
+					<input type="text" name="dob[day]" id="dob-d" placeholder="DD" class="form-control input-sm small" value="{if isset($profile.dob)}{$profile.dob|substr:11|date_format:'%d'}{/if}" /> /
+					<input type="text" name="dob[year]" id="dob-y" placeholder="YYYY" class="form-control input-sm medium" value="{if isset($profile.dob)}{$profile.dob|substr:11|date_format:'%Y'}{/if}" />
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">Gender</span>
+
+					<div class="radio">
+						<label>
+							<input type="radio" name="gender" id="gender-m" value="1" {if isset($profile.gender) && $profile.gender == 1}checked{/if} />Male
+						</label>
+					</div>
+
+					<div class="radio">
+						<label>
+							<input type="radio" name="gender" id="gender-f" value="0" {if isset($profile.gender) && $profile.gender == 0}checked{/if} />Female
+						</label>
+					</div>
+
+					<div class="radio">
+						<label>
+							<input type="radio" name="gender" id="gender-o" value="2" {if isset($profile.gender) && $profile.gender == 2}checked{/if} />Other
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group shipping-group">
+					<span class="group-label">Shipping Address</span>
+
+					<input type="text" class="form-control input-sm" name="address" id="addr-street" placeholder="Street Address" value="{if isset($profile.address)}{$profile.address}{/if}" />
+					<input type="text" class="form-control input-sm" name="address2" id="addr-street2" placeholder="Address Line 2" value="{if isset($profile.address2)}{$profile.address2}{/if}" />
+					<input type="text" class="form-control input-sm" name="city" id="addr-city" placeholder="City" value="{if isset($profile.city)}{$profile.city}{/if}" />
+					<input type="text" class="form-control input-sm" name="state" id="addr-state" placeholder="State / Provence / Region" value="{if isset($profile.state)}{$profile.state}{/if}" />
+					<input type="text" class="form-control input-sm" name="zip" id="addr-zip" placeholder="Zip Code" value="{if isset($profile.zip)}{$profile.zip}{/if}" />
+
+					<select class="form-control input-sm" name="country" id="addr-country">
+						<option value="" disabled selected>Select Country</option>
+						{foreach $countries as $value => $display}
+						<option value="{$value}" {if $value == '-'}disabled{/if} {if isset($profile.country) && $profile.country == $value}selected{/if}>{$display}</option>
+						{/foreach}
+					</select>
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">PayPal Email</span>
+					<input class="form-control input-sm" type="text" name="paypal" id="paypal" placeholder="Email Address" value="{if isset($profile.paypal)}{$profile.paypal}{/if}" />
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">Phone Number</span>
+					<input class="form-control input-sm" type="text" name="phone" id="phone" placeholder="Phone Number" value="{if isset($profile.phone)}{$profile.phone}{/if}" />
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">Are you currently signed exclusively with Instafluence?</span>
+
+					<input type="radio" name="exclusive" id="exclusive-y" value="true" {if isset($profile.exclusive) && $profile.exclusive == true}checked{/if} />
+					<label for="exclusive-y">Yes</label><br />
+
+					<input type="radio" name="exclusive" id="exclusive-n" value="false" {if isset($profile.exclusive) && $profile.exclusive == false}checked{/if} />
+					<label for="exclusive-n">No</label>
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">Have you worked on a promotional campaign with Instafluence in the past?</span>
+
+					<input type="radio" name="history" id="history-y" value="true" {if isset($profile.history) && $profile.history == true}checked{/if} />
+					<label for="history-y">Yes</label><br />
+
+					<input type="radio" name="history" id="history-n" value="false" {if isset($profile.history) && $profile.history == false}checked{/if} />
+					<label for="history-n">No</label>
+				</div>
+
+				<div class="form-group">
+					<span class="group-label">How would you categorize the content of your channels?<br />(Select all that apply)</span>
+					{foreach $contentCategories as $value => $display}
+					<input type="checkbox" name="categories[{$value}]" id="category-{$value}" {if isset($profile.categories[$value]) && $profile.categories[$value] == true}checked{/if} />
+					<label for="category-{$value}">{$display}</label><br />
+					{/foreach}
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group text-center">
+			<button type="button" class="btn btn-default cyan-outline-btn save-profile-btn">Save</button>
+		</div>
+	</div>
+
+</div>

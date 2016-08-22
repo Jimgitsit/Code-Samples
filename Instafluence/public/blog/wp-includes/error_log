@@ -1,0 +1,2 @@
+[21-Nov-2013 16:45:14 America/Denver] PHP Fatal error:  Class 'Walker' not found in /home2/classysi/public_html/instafluence/blog/wp-includes/nav-menu-template.php on line 17
+[21-Nov-2013 16:45:16 America/Denver] PHP Fatal error:  Call to undefined function add_action() in /home2/classysi/public_html/instafluence/blog/wp-includes/author-template.php on line 453

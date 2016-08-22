@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<title>AlaCarte - {{ pageTitle }}</title>
+	
+	{{ include('css.twig') }}
+
+	<link href="js/jquery-pulsewait/pulseWait.css" rel="stylesheet">
+</head>
+<body>
+{{ include('nav.twig') }}
+
+<div class="container">
+	
+	{{ include('alerts.twig') }}
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-2">
+			<div class="page-title">Group{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}s{% endif %}<span id="groupLoading"></span></div>
+		</div>
+		<div class="col-xs-12 col-sm-1">
+			{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+				<button class="btn btn-default btn-sm top-button pull-right" id="addGroupBtn">Add Group</button>
+			{% endif %}
+		</div>
+		<div class="col-xs-12 col-sm-2">
+			<div class="page-title">Users<span id="usersLoading"></span></div>
+		</div>
+		<div class="col-xs-12 col-sm-6">
+			<div class="filters">
+				<div class="filter-label">Filter by:</div>
+				{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+					<select id="filterGroup" class="select2-filter" data-prefix="Group">
+						<option value="all">All</option>
+						{% for group in groups %}
+							<option value="{{ group.name }}">{{ group.name }}</option>
+						{% endfor %}
+					</select>
+				{% endif %}
+				
+				<select id="filterStatus" class="select2-filter" data-prefix="Status">
+					<option value="all">All</option>
+					{% for status in statuses %}
+						<option value="{{ status }}">{{ status|capitalize }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-1">
+			<button class="btn btn-default btn-sm top-button pull-right" id="addUserBtn">Add User</button>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12 col-sm-3">
+			<div class="table-responsive">
+				<table id="groupsTable" class="table table-condensed table-hover">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Domains</th>
+					</tr>
+					</thead>
+					<tbody>
+					{% for group in groups %}
+						<tr class="group-row" data-id="{{ group.id }}">
+							<td>
+								<div class="group-name">{{ group.name }}</div>
+								<div class="group-machine-name">[{{ group.machineName }}]</div>
+							</td>
+							<td>
+								{% for domain in group.domains %}
+									<div class="group-domain">{{ domain }}</div>
+								{% endfor %}
+							</td>
+						</tr>
+					{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-9">
+			<div class="table-responsive">
+				<table id="usersTable" class="table table-condensed table-hover">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Email</th>
+							<th>Status</th>
+							{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+								<th>Group</th>
+							{% endif %}
+							<th>Level</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for user in users %}
+							{% if user.level != constant('USER_LEVEL_GLOBAL_ADMIN', user) or (user.level == constant('USER_LEVEL_GLOBAL_ADMIN', user) and curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser)) %}
+								<tr class="user-row{% if user.status == 'disabled' %} user-row-disabled"{% endif %}" data-id="{{ user.id }}">
+									<td>{{ user.name }}</td>
+									<td>{{ user.email }}</td>
+									<td>{{ user.status }}</td>
+									{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+										<td>{{ user.group.name }}</td>
+									{% endif %}
+									<td>
+										{% if user.level is empty %}
+											<span class="normal-admin-label"></span>
+										{% elseif user.level == constant('USER_LEVEL_GLOBAL_ADMIN', user) %}
+											<span class="global-admin-label">Global Admin</span>
+										{% elseif user.level == constant('USER_LEVEL_GROUP_ADMIN', user) %}
+											<span class="group-admin-label">Group Admin</span>
+										{% elseif user.level == constant('USER_LEVEL_CONTENT_EDITOR', user) %}
+											<span class="normal-admin-label">Content Editor</span>
+										{% else %}
+											<span class="normal-admin-label"></span>
+										{% endif %}
+									</td>
+								</tr>
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="addEditGroupModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">New Group</h4>
+			</div>
+			<div class="modal-body">
+				<form id="addGroupForm" method="POST">
+					<div class="form-group">
+						<label for="groupName">Group Name</label>
+						<!-- TODO: only allow a-z 0-9 space -->
+						<input id="groupName" name="groupName" class="form-control" type="text" minlength="2" maxlength="100" value="{{ post.groupName }}" required/>
+					</div>
+					<div class="form-group">
+						<label for="domains">Domains</label>
+						<select id="domains" name="domains[]" class="form-control select2-tags" multiple>
+							<option value="0" disabled>Enter a full domain name (Ex: mysub.mysite.com)</option>
+						</select>
+					</div>
+					<input type="hidden" name="action" value="saveGroup"/>
+					<input id="groupMode" type="hidden" name="mode" value="new"/>
+					<input id="groupId" type="hidden" name="groupId" value=""/>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+				<button id="saveGroupBtn" type="button" class="btn btn-sm btn-primary">Save</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<div id="addEditUserModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">New User</h4>
+			</div>
+			<div class="modal-body">
+				<form id="saveUserForm" method="POST">
+					<div class="form-group">
+						<label for="userName">Name</label>
+						<input id="userName" name="userName" class="form-control" type="text" maxlength="22" value="{{ post.userName }}" required/>
+					</div>
+					<div class="form-group">
+						<label for="userEmail">Email (login)</label>
+						<input id="userEmail" name="userEmail" class="form-control" type="email" maxlength="60" value="{{ post.userEmail }}" required/>
+					</div>
+					<div class="form-group">
+						<label for="userPassword">Temporary Password</label><span id="passwordChangeMsg"> (entering a value will prompt the user for a new password)</span>
+						<input id="userPassword" name="userPassword" class="form-control" type="password" minlength="6" maxlength="22" required/>
+						<div id="userApiSecretLabel">API Secret: </div><div id="userApiSecret"></div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="userStatus">Status</label>
+								<select id="userStatus" name="userStatus" class="form-control select2">
+									{% for status in statuses %}
+										<option value="{{ status }}" {% if post.userStatus == status %}selected{% endif %}>{{ status|capitalize }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="userLevel">Level</label>
+								<select id="userLevel" name="userLevel" class="form-control select2">
+									{% for userLevel in userLevels %}
+										{% if userLevel.value != constant('USER_LEVEL_GLOBAL_ADMIN', curUser) or (userLevel.value == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) and curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser)) %}
+											<option value="{{ userLevel.value }}" {% if post.userLevel == userLevel.value %}selected{% endif %}>{{ userLevel.name }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group" id="userGroupSelect">
+								<label for="userGroup">Group</label>
+								<select id="userGroup" name="userGroup" class="form-control select2">
+									{% for group in groups %}
+										<option value="{{ group.name }}" {% if post.userGroup == group.name %}selected{% endif %}>{{ group.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="col-sm-6">
+
+						</div>
+					</div>
+					
+					<input type="hidden" name="action" value="saveUser"/>
+					<input id="userMode" type="hidden" name="mode" value="new"/>
+					<input id="userId" type="hidden" name="userId" value=""/>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+				<button id="saveUserBtn" type="button" class="btn btn-sm btn-primary">Save</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{{ include('password_modal.twig') }}
+{{ include('js.twig') }}
+
+<script src="js/select2-filter.js"></script>
+<script src="js/query_string.js"></script>
+<script src="js/jquery-pulsewait/jquery.pulsewait.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+	// Tag select with no options
+	// The select should have a single disabled option that will be the help message
+	$(".form-control.select2-tags").select2({
+		tags: true,
+		width : "100%",
+		minimumResultsForSearch: Infinity,
+		tokenSeparators: [',', ' '],
+		matcher: function(term, obj) {
+			if (obj.id === "0") {
+				return obj;
+			}
+			return null;
+		}
+	});
+
+	// Selects in modals
+	$(".form-control.select2").select2({
+		width: "100%",
+		minimumResultsForSearch: Infinity
+	});
+	
+	{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+		var filterGroup = $("#filterGroup");
+		// Get group filter from query string
+		var filterGroupVal = $.QueryString['group'];
+		if (filterGroupVal != null) {
+			filterGroup.select2("val", filterGroupVal);
+		}
+
+		filterGroup.change(function() {
+			var url = UpdateQueryString("group", encodeURIComponent($(this).val()));
+			window.location = url;
+		});
+	{% endif %}
+
+	// Save state of status filter in cookie
+	var filterStatus = $("#filterStatus");
+	var filterStatusVal = $.QueryString['status'];
+	if (filterStatusVal != null) {
+		filterStatus.select2("val", filterStatusVal);
+	}
+	filterStatus.change(function() {
+		var url = UpdateQueryString("status", encodeURIComponent($(this).val()));
+		window.location = url;
+	});
+	
+	// Add group form
+	var addGroupForm = $("#addGroupForm");
+	addGroupForm.validate({
+		rules: {
+			groupName: {
+				// Alphanumiric with spaces
+				pattern: /^[a-zA-Z0-9\-\s]+$/
+			}
+		},
+		messages: {
+			groupName: "Only letters, numbers and spaces are allowed."
+		}
+	});
+	
+	$("#saveGroupBtn").click(function() {
+		if (addGroupForm.valid()) {
+			addGroupForm.submit();
+		}
+	});
+	
+	// Save user form
+	var saveUserForm = $("#saveUserForm");
+	saveUserForm.validate();
+	$("#saveUserBtn").click(function() {
+		if (saveUserForm.valid()) {
+			saveUserForm.submit();
+		}
+	});
+	
+	$("#addUserBtn").click(function() {
+		var modal = $("#addEditUserModal");
+		modal.find(".modal-title").text("New User");
+		modal.find("#userMode").val('new');
+		modal.find("#userPassword").attr("required", "");
+		modal.find("#passwordChangeMsg").hide();
+		modal.find("#userName").val('');
+		modal.find("#userEmail").val('');
+		modal.find("#userPassword").val('');
+		//modal.find("#userEmail").prop("disabled", false);
+		modal.find("#userId").val('');
+		modal.find("#userApiSecret").text('');
+
+		{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+		// Synchronize current filter group with modal group
+		var filterVal = $("#filterGroup").val();
+		if (filterVal !== '') {
+			$("#userGroup").select2("val", filterVal);
+		}
+		{% endif %}
+		
+		modal.modal();
+	});
+	
+	$("#userLevel").change(function() {
+		var group = $("#userLevel").val();
+		if (group == {{ constant('USER_LEVEL_GLOBAL_ADMIN', curUser) }}) {
+			$("#userGroupSelect").hide();
+		}
+		else {
+			{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+				$("#userGroupSelect").show();
+			{% endif %}
+		}
+	});
+
+	$("#usersLoading").pulseWait();
+	$(".user-row").click(function() {
+		$("#usersLoading").pulseWait("show");
+		
+		var userId = $(this).attr('data-id');
+		$.ajax({
+			method: 'POST',
+			url: '/users',
+			data: {
+				action: 'getUserAjax',
+				id: userId
+			}
+		}).done(function(user) {
+			console.log('user:', user);
+			var modal = $("#addEditUserModal");
+			modal.find(".modal-title").text("Edit User");
+			modal.find("#userMode").val('edit');
+			modal.find("#userPassword").removeAttr("required");
+			modal.find("#userPassword").val('');
+			modal.find("#passwordChangeMsg").show();
+			modal.find("#userId").val(userId);
+			
+			modal.find("#userName").val(user.name);
+			modal.find("#userEmail").val(user.email);
+			modal.find("#userStatus").val(user.status).change();
+			modal.find("#userLevel").val(user.level.value).change();
+			modal.find("#userApiSecret").text(user.apiSecret);
+			
+			if (user.group != null) {
+				modal.find("#userGroup").val(user.group.name).change();
+			}
+
+			{% if curUser.level != constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+				modal.find("#userGroupSelect").hide();
+			{% endif %}
+			
+			modal.modal();
+
+			$("#usersLoading").pulseWait("hide");
+		}, 'json');
+	});
+
+	$("#addGroupBtn").click(function() {
+		var modal = $("#addEditGroupModal");
+		modal.find(".modal-title").text("New Group");
+		modal.find("#groupMode").val('new');
+		modal.find("#groupName").val('');
+		modal.find("#groupId").val('');
+		modal.find('#domains').find('option[data-select2-tag="true"]').remove();
+		// Hack: This forces the select2 to update where .remove().change() does not :(
+		modal.find('#domains').append('<option></option>').change();
+		modal.modal();
+	});
+
+	$("#groupLoading").pulseWait();
+	$(".group-row").click(function() {
+		//$("#groupLoading").waiting({ overlay: false });
+		$("#groupLoading").pulseWait("show");
+		
+		var groupId = $(this).attr('data-id');
+		$.ajax({
+			method: 'POST',
+			url: '/users',
+			data: {
+				action: 'getGroupAjax',
+				id: groupId
+			}
+		}).done(function(group) {
+			console.log('group:', group);
+			var modal = $("#addEditGroupModal");
+			modal.find(".modal-title").text("Edit Group");
+			modal.find("#groupMode").val('edit');
+			modal.find("#groupName").val(group.name);
+			modal.find("#groupId").val(groupId);
+
+			modal.find('#domains').find('option[data-select2-tag="true"]').remove();
+			$(group.domains).each(function(index, domain) {
+				modal.find('#domains').append('<option data-select2-tag="true" selected>' + domain + '</option>').change();
+			});
+			
+			modal.modal();
+
+			//$("#groupLoading").waiting('done');
+			$("#groupLoading").pulseWait("hide");
+		}, 'json');
+	});
+});
+</script>
+
+</body>
+</html>

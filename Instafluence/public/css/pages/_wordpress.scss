@@ -1,0 +1,11 @@
+// ****************
+//  Wordpress Blog
+// ****************
+.wp-header { width:100%; height:90px; background:#fff; -webkit-box-shadow:0 1px 2px rgba(32,37,35,.2); -moz-box-shadow:0 1px 2px rgba(32,37,35,.2); box-shadow:0 1px 2px rgba(32,37,35,.2); }
+.wp-logo { float:left; max-width:300px; padding:30px 0 0 20px; }
+.wp-logo img { width:250px; height:auto;  }
+.wp-container { max-width:960px; margin:0 auto; }
+.wp-nav { float:right; list-style-type:none; padding:16px 20px 0 0; }
+.entry-meta a, .entry-content a { color:#5dc7d6; }
+.entry-title a:hover, .entry-meta a:hover, .entry-content a:hover { color:#329dac; }
+.site { background-color:#f8f8f8; }

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Register"}
+</head>
+<body class="register">
+	<div class="screen-overflow">
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="REGISTER"}
+
+		<div class="screen">
+			<div class="container with-nav">
+					{if isset( $errMsg )}
+					<div class="err-msg">{$errMsg}</div>
+					{/if}
+			
+					{if !isset( $userCreated )}
+						<!-- TODO: This form needs to be validated. -->
+						<form action="" id="register-form" method="POST">
+							<div class="register-inputs">
+								<div class="input">
+									<p>*</p>
+									<input class="first" name="company_name" {if isset( $smarty.post[ 'company_name' ] )}value="{$smarty.post[ 'company_name' ]}"{/if} type="text" placeholder="COMPANY NAME" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input class="text" name="first_name" {if isset( $smarty.post[ 'first_name' ] )}value="{$smarty.post[ 'first_name' ]}"{/if} type="text" placeholder="FIRST NAME" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input type="text" name="last_name" {if isset( $smarty.post[ 'last_name' ] )}value="{$smarty.post[ 'last_name' ]}"{/if} placeholder="LAST NAME" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input type="text" name="email" {if isset( $smarty.post[ 'email' ] )}value="{$smarty.post[ 'email' ]}"{/if} placeholder="EMAIL ADDRESS" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input type="password" name="password" placeholder="PASSWORD" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input type="password" name="password2" placeholder="RETYPE PASSWORD" />
+								</div>
+								<div class="input">
+									<p>*</p>
+									<input type="text" name="cell_phone" {if isset( $smarty.post[ 'cell_phone' ] )}value="{$smarty.post[ 'cell_phone' ]}"{/if} placeholder="CELL PHONE NUMBER" />
+								</div>
+								<div class="input">
+									<p></p>
+									<input class="last" type="text" name="account_number" {if isset( $smarty.post[ 'account_number' ] )}value="{$smarty.post[ 'account_number' ]}"{/if} placeholder="ACCOUNT NUMBER (optional)" />
+								</div>
+			
+								<input type="hidden" name="dist_id" value="{$distId}" />
+							</div>
+			
+							<button type="submit" name="action" value="register">REGISTER</button>
+						</form>
+					{else}
+						<div class="center">
+							<p>Thank you. Your account has been created and is awaiting approval. You will receive an email when your account has been activated.</p>
+							<br class="clear">
+							<button id="back-btn" data-loc="{if $smarty.const.LEGACY_HOST_NAME}login?dist_id={$distId}{else}login{/if}">BACK TO LOGIN</button>
+						</div>
+					{/if}
+			</div>
+		</div>
+	</div>
+</body>
+
+<script src="/templates/js/util.js"></script>
+
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	
+	$('#back-btn').click(function() {
+		window.location = $(this).attr('data-loc');
+	});
+});
+</script>

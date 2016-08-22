@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Preferences"}
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="distprefs"}
+
+<div class="container">
+	<h4>Preferences</h4>
+	<div class="col-md-12">
+		<span class="prefs-saving">saving...</span>
+		
+		<form role="form" id="distPrefsForm" method="POST" action="">
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_pricing_default" value="0"/>
+					<input type="checkbox" name="show_pricing_default" value="1" {if $dist.show_pricing_default == 1}checked{/if} /> Show pricing by default for new users? (this can be configured per user).
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_units" value="0"/>
+					<input type="checkbox" name="show_units" value="1" {if $dist.show_units == 1}checked{/if} /> Show units?
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="send_new_order_emails" value="0"/>
+					<input type="checkbox" name="send_new_order_emails" value="1" {if $dist.send_new_order_emails == 1}checked{/if} /> Send new order emails?
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_style_on_orders" value="0"/>
+					<input type="checkbox" name="show_style_on_orders" value="1" {if $dist.show_style_on_orders == 1}checked{/if} /> Show style on orders? (if you are not using styles, ie. product options, then leave this unchecked)
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_sku_on_orders" value="0"/>
+					<input type="checkbox" name="show_sku_on_orders" value="1" {if $dist.show_sku_on_orders == 1}checked{/if} /> Show SKU on orders?
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_product_number_on_orders" value="0"/>
+					<input type="checkbox" name="show_product_number_on_orders" value="1" {if $dist.show_product_number_on_orders == 1}checked{/if} /> Show Part Number on orders?
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="show_part_num_instead_of_sku" value="0"/>
+					<input type="checkbox" name="show_part_num_instead_of_sku" value="1" {if $dist.show_part_num_instead_of_sku == 1}checked{/if} /> Show and search by Part Number instead of SKU in app?
+				</label>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="hidden" name="branch_managers_own_orders" value="0"/>
+					<input type="checkbox" name="branch_managers_own_orders" value="1" {if $dist.branch_managers_own_orders == 1}checked{/if} /> Branch managers own all user's orders (despite what branch the order is assigned to)?
+				</label>
+			</div>
+			 
+			<input type="hidden" class="btn btn-default" name='action' value="save_prefs" />
+		</form>
+	</div>
+	
+	<h4>Admin Logins</h4>
+	<div  class="col-md-12">
+		<div class="t-table">
+			<div class="t-row">
+				<div class="t-cell">{$dist.contact_name}</div>
+				<div class="t-cell"><a href="mailto:{$dist.email}" target="_blank">{$dist.email}</a></div>
+				<div class="t-cell" style="font-size: 14px;">(main login can not be changed)</div>
+			</div>
+			{foreach $distLogins as $distLogin}
+			<div class="t-row">
+				<div class="t-cell">{$distLogin.name}</div>
+				<div class="t-cell"><a href="mailto:{$distLogin.email}" target="_blank">{$distLogin.email}</a></div>
+				<div class="t-cell"><div class="edit-dist-login table-control" data-id="{$distLogin.id}" data-name="{$distLogin.name}" data-email="{$distLogin.email}" data-emailPref="{$distLogin.email_setting}">edit</div> | <div class="delete-dist-login table-control" data-id="{$distLogin.id}" data-name="{$distLogin.name}">delete</div></div>
+			</div>
+			{/foreach}
+		</div>
+		<button id="addDistLogin" class="btn btn-default">Add</button>
+	</div>
+</div>
+
+{include file="admin/add_dist_login_modal.html"}
+
+{literal}
+<script type="text/javascript" src="/templates/js/jquery-validation/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/templates/js/jquery.activity-indicator-1.0.0.min.js"></script>
+<script type="text/javascript" src="/templates/js/bootbox.min.js"></script>
+	
+<script>
+
+$(document).ready(function() {
+	$('#distPrefsForm').on("change", function() {
+		$('.prefs-saving').show();
+		var data = $(this).serialize();
+		console.log(data);
+		$.post('/admin/distprefs', data, function() {
+			$('.prefs-saving').hide();
+		});
+	});
+	
+	$('#addDistLogin').click(function() {
+		$('#addDistLoginForm').validate({
+			rules: {
+				pw: {
+					required: true,
+					minlength: 6
+				},
+				pw2: {
+					equalTo: "#pw"
+				}
+			}
+		});
+
+		var id = $(this).attr('data-id');
+		var modal = $('#addDistLoginModal');
+		modal.find('.modal-title').html('Add Admin Login');
+		modal.find('#mode').val('add');
+		modal.find('#name').val('');
+		modal.find('#email').val('');
+		modal.find('#id').val(id);
+		modal.find('#passwordMsg').hide();
+		modal.modal('show');
+
+		setTimeout(function(){
+			modal.find('#name').focus();
+		}, 500);
+	});
+	
+	$('#addDistLoginSaveBtn').click(function() {
+		var form = $('#addDistLoginForm');
+		if (form.valid() == true) {
+			var saveIndicator = $('#savingIndicator').activity({
+				width: 2,
+				length: 5,
+				space: 2
+			});
+			
+			var data = form.serialize();
+			$.post('/admin/distprefs', data, function(response) {
+				console.log(response);
+				if (response.success == true) {
+					$('#addDistLoginModal').modal('hide');
+					window.location.reload();
+				}
+				else {
+					showMsg('danger', 'An error occurred. Please try again.')
+				}
+			}, 'json');
+
+			saveIndicator.activity(false);
+		}
+	});
+	
+	$('.delete-dist-login').click(function() {
+		var row = $(this).closest('.t-row');
+		var id = $(this).attr('data-id');
+		var name = $(this).attr('data-name');
+		bootbox.dialog({
+			message: "Are you sure you want to delete the admin login for " + name + "?",
+			buttons: {
+				main: {
+					label: 'Cancel',
+					className: 'btn-default'
+				},
+				danger: {
+					label: 'Yes, Delete It',
+					className: 'btn-danger',
+					callback: function() {
+						console.log('delete ' + id);
+						var data = {
+							action: 'ajax_delete_dist_login',
+							id: id
+						};
+						$.post('/admin/distprefs', data, function(response) {
+							if (response.success == true) {
+								row.remove();
+							}
+							else {
+								showMsg('danger', 'An error occurred. Please try again.')
+							}
+						}, 'json');
+					}
+				}
+			}
+		});
+	});
+	
+	$('.edit-dist-login').click(function() {
+		$('#addDistLoginForm').validate({
+			rules: {
+				pw: {
+					required: false,
+					minlength: 6
+				},
+				pw2: {
+					equalTo: "#pw"
+				}
+			}
+		});
+		
+		var id = $(this).attr('data-id');
+		var name = $(this).attr('data-name');
+		var email = $(this).attr('data-email');
+		var emailPref = $(this).attr('data-emailpref');
+		console.log($(this).html());
+		var modal = $('#addDistLoginModal');
+		modal.find('.modal-title').html('Edit Admin Login');
+		modal.find('#mode').val('edit');
+		modal.find('#name').val(name);
+		modal.find('#email').val(email);
+		modal.find('#id').val(id);
+		$("input[name=emailPref][value=" + emailPref + "]").attr('checked', 'checked');
+		modal.find('#passwordMsg').show();
+		modal.modal('show');
+	});
+});
+
+</script>
+{/literal}
+
+</body>
+</html>

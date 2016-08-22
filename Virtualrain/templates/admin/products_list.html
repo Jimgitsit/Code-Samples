@@ -1,0 +1,101 @@
+<table class="table" id="productListTable">
+	<tr id="productsListHeader">
+		<td>Active</td>
+		<td colspan="4"></td>
+	</tr>
+	
+	{include file="admin/new_product.html" currPriceCat=$currPriceCat}
+	
+	{foreach $products as $index => $product}
+		{if $index == 100}{break}{/if}
+		<tr class="base-row product-row" data-id="{$product.id}">
+			<td>
+				<input type="checkbox" class="control product-active" {if $product.active}checked{/if} />
+			</td>
+			<td colspan="3">
+				{if count( $product[ 'styles' ] ) > 0}
+					{if $product[ 'custom' ] == 1}
+						<div class="product-list-image-frame"><img class="product-list-image" src="{$product[ 'default_style' ][ 'image_name' ]}"></div>
+					{else}
+						<div class="product-list-image-frame"><img class="product-list-image" src="http://{$product[ 'default_style' ][ 'image_name' ]}"></div>
+					{/if}
+				{else}
+					<div class="product-list-image-frame"><img class="product-list-image" src="/templates/img/no-image.jpg"></div>
+				{/if}
+				<div class="product-list-title-wrap">
+					<div class="product-list-title">
+						{$product[ 'title' ]}
+						{if isset( $product[ 'invalid' ] ) && $product[ 'invalid' ] == true} <span style="color: red;">[invalid product, no styles!]</span>{/if}
+					</div>
+					<div class="product-list-partnum">{$product[ 'sku' ]}</div>
+				</div>
+			</td>
+			<td style="white-space: nowrap; text-align: right; width: 128px;">
+				{if $product[ 'custom' ] == 1}
+					<span class="custom-product-text">custom product</span>
+				{/if}
+				<button class="btn btn-default product-save-btn" data-id="{$product.id}">Save</button>
+				<span class="product-saving-msg" style="display: none; margin-right: 10px;"><b>Saving...</b></span>
+				<button class="btn btn-default product-edit-btn" data-id="{$product.id}">Edit</button>
+			</td>
+		</tr>
+		<tr class="base-row product-details-row" data-id="{$product.id}">
+			<td colspan="5">
+				<table class="table" id="productDetailsTable">
+					<tr>
+						<td colspan="3" style="padding-right: 25px !important;">
+							<div class="product-list-details-frame">
+								<div><b>Product Title</b></div>
+								<input class="product-list-title-input form-control control" type="text" value="{$product.title|escape}" />
+								<div><b>Product Description</b></div>
+								<textarea class="product-list-description form-control">{$product.manufacturer_description|escape}</textarea>
+							</div>
+						</td>
+						<td style="vertical-align: bottom !important;">
+							{if $product[ 'custom' ] == 0}
+								<!--
+								<input type="checkbox" class="control show-manual" {if $product.show_manual}checked{/if} /> Show manual<br />
+								<input type="checkbox" class="control show-specs" {if $product.show_specs}checked{/if} /> Show specs<br />
+								<input type="checkbox" class="control show-video" {if $product.show_video}checked{/if} /> Show video
+								-->
+							{/if}
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" style="text-align: center !important; border-bottom: 1px solid #DDDDDD; font-size: 1.1em;"><b>Styles</b></td>
+					</tr>
+					<tr>
+						<td>
+							<b>Style description</b>
+						</td>
+						<td>
+							<b>Base price</b>
+						</td>
+						<td>
+							<b>{$currPriceCat.name} price</b>
+						</td>
+						<td>
+							<b>Default</b>
+						</td>
+					</tr>
+					{foreach $product.styles as $style}
+						<tr class="product-style-row" data-id="{$style.id}">
+							<td>
+								<input class="product-style-description form-control control" type="text" value="{$style.style_description|escape}" />
+							</td>
+							<td>
+								$ {$style.base_price|number_format:2}
+							</td>
+							<td>
+								$ <input class="product-style-price form-control control" type="number" value="{$style.price|number_format:2}" />
+							</td>
+							<td>
+								<input class="product-style-default control" type="radio" name="defaultStyle_{$product.id}" value="{$style.id}" {if $style.default_style == 1}checked{/if} />
+							</td>
+						</tr>
+					{/foreach}
+				</table>
+			</td>
+		</tr>
+	{/foreach}
+</table>

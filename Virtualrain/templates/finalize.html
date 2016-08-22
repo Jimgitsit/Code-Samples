@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Check Out"}
+</head>
+<body class="finalizepage">
+	<div class="screen-overflow">
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="CHECK OUT"}
+	
+		<div class="screen">
+			<div class="container list with-nav">
+				<div id="finalize">
+					{if count($cartItems) > 0}
+						<ul id="productList">
+							{foreach $cartItems as $index => $item}
+								<li class="finalize-cart-item" data-index="{$index}">
+									<input type="checkbox" class="finalize-item-checkbox"/>
+									<img class="product-image" src="{$item[ 'product' ][ 'image' ]}"/>
+									<div class="left">
+										<div class="title">{$item[ 'product' ][ 'title' ]}</div>
+										<div class="part-wrap">
+											<div class="part-num">{if $showPNInsteadOfSKU}{$item[ 'product' ][ 'part_num' ]}{else}{$item[ 'product' ][ 'sku' ]}{/if}</div>
+											<div class="manufacturer">{$item[ 'product' ][ 'manufacturer' ]}</div>
+										</div>
+									</div>
+									<div class="right">
+										<p><input type="number" class="finalize-cart-qty" value="{$item[ 'quantity' ]}"/></p>
+										<div class="item-price">
+											{if $showPricing}
+												<span>${$item['style']['price']|number_format:2}</span>
+											{/if}
+											{if $showUnits && isset($item['style']['unit'])}
+												<span class="item-units">{if $showPricing}/{/if}{$item['style']['unit']|upper}</span>
+											{/if}
+										</div>
+									</div>
+									<br class="clear"/>
+								</li>
+							{/foreach}
+						</ul>
+						<div class="total">
+							{if $showPricing}
+							<div class="sub-total">
+								<table>
+									<tr>
+										<td>SUB TOTAL:</td>
+										<td class="bold total-price-with-tax">${$cartSubtotal|number_format:2}</td>
+									</tr>
+								</table>
+							</div>
+							{/if}
+							<div class="update-qty-btn">UPDATE QUANTITIES</div>
+							<div class="finalize-clear-items-btn">CLEAR SELECTED ITEMS</div>
+							<form method="POST">
+								<p>Purchase Order # (optional):</p>
+								<input type="text" name="po_num" id="poNum" />
+								
+								{if isset( $showPricing ) && showPricing == 1}
+									<table>
+										<tr>
+											<td>Total: </td>
+											<td class="bold">$ {$totalPrice|number_format:2}</td>
+										</tr>
+									</table>
+								{/if}
+								<br class="clear"/>
+								{if isset( $hasPickupLocations )}	
+									<button type="submit" name="action" value="select_pickup_location" class="finalize-btn">SELECT PICKUP LOCATION</button>
+								{/if}
+								
+								<button type="submit" name="action" value="select_shipping_location"  class="finalize-btn shipping-btn">SELECT SHIPPING LOCATION</button>
+								
+								<!-- 
+								<a href="/shipping">
+									<div class="finalize-btn add-shipping-btn">+ ADD SHIPPING LOCATION</div>
+								</a>
+								 -->
+							</form>
+						</div>
+					{/if}
+					<div class="message text-center">
+						<h3>No items in cart</h3>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="footer.html" viewTypeActive="no"}
+		{include file="cart.html" cartItems=$cartItems}
+	</div>
+</body>
+
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	checkImages($('img.product-image'));
+	
+	$('.finalize-item-checkbox').click(function() {
+		if($('.finalize-item-checkbox:checked').length > 0) {
+			$('.finalize-clear-items-btn').show();
+		}
+		else {
+			$('.finalize-clear-items-btn').hide();
+		}
+	});
+	
+	$('.item-checkbox').click(function() {
+		var sideCartItem = $(this).closest('li');
+		var index = sideCartItem.attr('data-index');
+		
+		var finalizeCartItem = $('#productList').find('li[data-index="' + index + '"]');
+		finalizeCartItem.find('.finalize-item-checkbox').prop('checked', $(this).is(':checked'));
+	});
+	
+	$('.finalize-cart-qty').on('change keyup', function() {
+		$('.sub-total').hide();
+		$('.update-qty-btn').show();
+	});
+	
+	// If a qty changes in the side cart we want to reflect that change on this page
+	$('.side-cart-qty').on('change keyup', function() {
+		$('.sub-total').hide();
+		$('.update-qty-btn').show();
+		
+		var sideCartItem = $(this).closest('li');
+		var index = sideCartItem.attr('data-index');
+		var newQty = $(this).val();
+		var cartItem = $('#productList').find('li[data-index="' + index + '"]');
+		var qtyInput = cartItem.find('.finalize-cart-qty');
+		qtyInput.val(newQty);
+	});
+
+	// Scroll the element up on focus
+	$('.finalize-cart-qty, #poNum').focus(function() {
+		// Select all text on focus
+		this.select();
+		
+		// Scroll
+		$('.screen').animate({
+			scrollTop: ($('.screen').scrollTop() + $(this).offset().top) - ($('.top-nav').height() + 40)
+		}, 500);
+	});
+
+	// This fixes selecting all text in webkit browsers
+	$('.finalize-cart-qty, #poNum').mouseup(function(e) {
+		return false;
+	});
+});
+</script>

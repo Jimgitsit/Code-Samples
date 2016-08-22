@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Products"}
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="products"}
+
+<div class="container">
+	{if !isset( $category ) && isset( $categories )}
+		<!-- LIST CATEGORIES -->
+		<form method="GET" action="/admin/products">
+			<div class="form-group">
+				<input type="text" name="search" class="form-control product-search-form-input" placeholder="Search Products">
+				<button type="submit" class="btn btn-default">Search</button>
+			</div>
+		</form>
+
+		<table id="categoryTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<td>Choose Category</td>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $categories as $cat}
+					{if $cat[ 'name' ] != 'Discount'}
+					<tr>
+						<td>
+							<a href="/admin/products?c={$cat[ 'id' ]}">{$cat[ 'name' ]|capitalize}</a>
+							<span class="pull-right">{$cat[ 'sub_count' ]} Sub Categories</span>
+						</td>
+					</tr>
+					{/if}
+				{/foreach}
+			</tbody>
+		</table>
+	{elseif isset( $category ) && !isset( $subCategory ) && isset( $subCategories )}
+		<!-- LIST SUB-CATEGORIES -->
+		<h2 style="display: inline; margin-right: 10px;">{$category.name|capitalize}</h2>
+		<br /><br />
+		<table id="subCategoryTable" class="table table-bordered">
+			<thead>
+				<tr>
+					<td>Choose Sub Category</td>
+				</tr>
+			</thead>
+			<tbody>
+				{foreach $subCategories as $subCat}
+				<tr>
+					<td>
+						<a href="/admin/products?c={$category[ 'id' ]}&s={$subCat[ 'id' ]}&p=1">{$subCat[ 'name' ]|capitalize}</a>
+						<span class="pull-right">{$subCat[ 'product_count' ]} products</span>
+					</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	{elseif isset( $products ) && isset( $subCategory ) && isset( $category )}
+		<!-- LIST PRODUCTS -->
+		<div>
+			<h2 style="display: inline; margin-right: 5px;"><a href="/admin/products?c={$category.id}">{$category.name|capitalize}</a></h2>
+			<h3 style="display: inline;">- {$subCategory.name|capitalize}</h3>
+			<input type="hidden" id="subCatId" value="{$subCategory.id}" />
+			<button id="newProductButton" class="btn btn-default">Add a New Product</button>
+		</div>
+
+		<div>
+			{if isset( $pageStart )}
+			<div class="pull-left top-control-btn-wrap">
+				<ul class="pager pull-left">
+					<li {if $prevPage == 0}class="disabled"{/if}>
+						<a {if $prevPage == 0}href="javascript:void(0)"{else}href="?c={$category.id}&s={$subCategory.id}&p={$prevPage}"{/if}>Previous</a>
+					</li>
+					<li {if $nextPage == 0}class="disabled"{/if}>
+						<a {if $nextPage == 0}href="javascript:void(0)"{else}href="?c={$category.id}&s={$subCategory.id}&p={$nextPage}"{/if}>Next</a>
+					</li>
+				</ul>
+				<div class="pull-right pager-block">
+					<span class="pager-text">Showing {$pageStart}-{$pageEnd} of {$totalProducts}</span>
+					<div class="save-all-btn-wrap">
+						<div id="saveAllBtnBoxTop" class="save-all-btn-box">
+							<button class="btn btn-default product-save-all-btn">Save All</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			{/if}
+			<div class="pull-right price-cat-box">
+				{include file="admin/price_cat.html" priceCategories=$priceCategories currPriceCat=$currPriceCat}
+			</div>
+		</div>
+
+		{include file="admin/products_list.html" products=$products}
+
+		{if isset( $pageStart )}
+		<div class="pull-left">
+			<ul class="pager pull-left">
+				<li {if $prevPage == 0}class="disabled"{/if}>
+					<a {if $prevPage == 0}href="javascript:void(0)"{else}href="?c={$category.id}&s={$subCategory.id}&p={$prevPage}"{/if}>Previous</a>
+				</li>
+				<li {if $nextPage == 0}class="disabled"{/if}>
+					<a {if $nextPage == 0}href="javascript:void(0)"{else}href="?c={$category.id}&s={$subCategory.id}&p={$nextPage}"{/if}>Next</a>
+				</li>
+			</ul>
+			<div class="pull-right pager-block">
+				<span class="pager-text">Showing {$pageStart}-{$pageEnd} of {$totalProducts}</span>
+				<div class="save-all-btn-wrap">
+					<div id="saveAllBtnBoxTop" class="save-all-btn-box">
+						<button class="btn btn-default product-save-all-btn">Save All</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{/if}
+	{else}
+		<!-- SEARCH RESULTS -->
+		<div class="pull-left">
+			<form method="GET" action="/admin/products">
+				<div class="form-group">
+					<input type="text" name="search" value="{$term}" class="form-control product-search-form-input" placeholder="Search Products">
+					<button type="submit" class="btn btn-default">Search</button>
+				</div>
+			</form>
+
+			<div>
+				<h3 style="display: inline; margin-right: 5px;">Found {count($products)} Product{if count($products) > 1 || count($products) == 0}s{/if}</h3>
+				{if count($products) > 100}
+					<h4>(only showing the first 100 results)</h4>
+				{/if}
+			</div>
+		</div>
+
+		<div class="pull-right">
+			{include file="admin/price_cat.html" priceCategories=$priceCategories}
+		</div>
+
+		{include file="admin/products_list.html" products=$products}
+
+		<div id="saveAllBtnBox" class="save-all-btn-box">
+			<button id="saveAllBtn" class="btn btn-default product-save-all-btn">Save All</button>
+		</div>
+	{/if}
+</div>
+
+<script type="text/javascript" src="/templates/js/tinymce/tinymce.min.js"></script>
+<script>
+$(document).ready(function() {
+	var unsavedChanges = false;
+	var setUnsavedChanges = function() {
+		/*
+		$('.product-save-all-btn').each(function() {
+			if( $(this).attr('display') != 'none' ) {
+				unsavedChanges = true;
+				return;
+			}
+		});
+		*/
+		
+		var saveBtns = $('.product-save-btn').filter(':visible');
+		if( saveBtns.length > 0 ) {
+			unsavedChanges = true;
+			$('.product-save-all-btn').show();
+			return;
+		}
+		
+		if( $('.new-product-row').is(':visible') ) {
+			unsavedChanges = true;
+			return;
+		}
+		
+		unsavedChanges = false;
+		$('.product-save-all-btn').hide();
+	};
+
+	window.onbeforeunload = function() {
+		if( unsavedChanges ) {
+			return false;
+		}
+	};
+
+	var onTinyMCEChange = function(id) {
+		var el = $('#' + id);
+		onControlChange(el);
+	};
+	
+	var onControlChange = function(el) {
+		var sanity = 0;
+		while( !$(el).hasClass("base-row") ) {
+			el = $(el).parent();
+			sanity++;
+			if( sanity == 50 ) {
+				console.log( 'too many' );
+				return;
+			}
+		}
+
+		var prodId = el.attr("data-id");
+		var btn = $(".product-row[data-id=" + prodId + "]").find(".product-save-btn");
+		btn.show();
+
+		$(".save-all-btn-box").show();
+
+		unsavedChanges = true;
+	}
+
+	$(".control").each(function() {
+		$(this).bind("change keypress", function() {
+			onControlChange(this);
+		});
+	});
+	
+	$(".product-edit-btn").each(function() {
+		$(this).click(function() {
+			var productId = $(this).attr("data-id");
+			var tr = $(".product-details-row[data-id=" + productId + "]");
+			if( tr.is(":hidden") ) {
+				tr.show();
+				/*
+				tr.find('td')
+				.wrapInner('<div style="display: none;" />')
+				.parent()
+				.find('td > div')
+				.slideDown(700, function(){
+					var $set = $(this);
+					$set.replaceWith($set.contents());
+				});
+				*/
+				
+				$('html, body').animate({
+					scrollTop: tr.offset().top - 105
+				}, 250);
+			}
+			else {
+				tr.hide();
+			}
+		});
+	});
+
+	$(".product-save-btn").each(function() {
+		$(this).click(function() {
+			var productId = $(this).attr('data-id');
+			
+			var productRow = $('.product-row[data-id=' + productId + ']');
+			var detailsRow = $('.product-details-row[data-id=' + productId + ']');
+			
+			showManual = detailsRow.find(".show-manual").prop('checked') ? 1 : 0;
+			showSpecs = detailsRow.find(".show-specs").prop('checked') ? 1 : 0;
+			showVideo = detailsRow.find(".show-video").prop('checked') ? 1 : 0;
+			
+			active = productRow.find(".product-active").prop('checked') ? 1 : 0;
+			
+			var title = detailsRow.find(".product-list-title-input").val().trim();
+			if( title == '' ) { showMsg( 'danger', 'Product Title can not be blank.' ); return; }
+			
+			var product = {
+				id: productId,
+				title: title,
+				manufacturer_description: detailsRow.find(".product-list-description").val().trim(),
+				active: active,
+				show_manual: showManual,
+				show_specs: showSpecs,
+				show_video: showVideo
+			}
+
+			var styles = new Array();
+			var defaultStyleId = detailsRow.find('input[name=defaultStyle_' + productId + ']:checked').val();
+			detailsRow.find(".product-style-row").each(function() {
+				var styleId = $(this).attr('data-id');
+				var defaultStyle = 0;
+				if( styleId == defaultStyleId ) {
+					defaultStyle = 1;
+				}
+				
+				var description = $(this).find('.product-style-description').val().trim();
+				if( description == '' ) { showMsg( 'danger', 'Style Description can not be blank.' ); return; }
+				
+				var price = $(this).find('.product-style-price').val().trim().replace(',', '');
+				if( !$.isNumeric(price) ) { showMsg( 'danger', 'Style price must be a numeric value.' ); return; }
+				
+				styles.push({
+					id: $(this).attr('data-id'),
+					style_description: description,
+					price: price,
+					default_style: defaultStyle,
+					price_cat_id: $('#priceCategorySelect option[selected]').val(),
+					product_id: productId
+				});
+			});
+			
+			var saveBtn = $(this);
+			saveBtn.hide();
+			
+			var savingMsg = productRow.find('.product-saving-msg');
+			savingMsg.show();
+
+			var data = { action: 'save_product_ajax', product: product, styles: styles };
+			$.post('/admin/products', data, function(ret) {
+				savingMsg.hide();
+				setUnsavedChanges();
+			});
+		});
+	});
+
+	$('.product-save-all-btn').click(function() {
+		var btns = $('.product-save-btn').filter(':visible');
+		btns.each(function() {
+			$(this).click();
+		});
+	});
+
+	tinymce.init({
+		selector: ".product-list-description",
+		theme: "modern",
+		content_css: "/css/tinymce.css",
+		height: 200,
+		resize: true,
+		menubar: false,
+		statusbar: false,
+		//plugins: "preview",
+		toolbar: "undo redo | bold italic | bullist numlist outdent indent",
+		setup: function( editor ) {
+			editor.on('change', function(event) {
+				tinymce.triggerSave();
+				onTinyMCEChange(event.target.id);
+			});
+		}
+	});
+
+	$('#newProductButton').click(function() {
+		$('.new-product-row').show();
+		$('.new-product-details-row').show();
+		$('.new-product-list-title-input').focus();
+		$('html, body').animate({
+			scrollTop: $("#productsListHeader").offset().top - 50
+		}, 250);
+	})
+	
+	$('.new-product-cancel-btn').click(function() {
+		$('.new-product-row').hide();
+		$('.new-product-details-row').hide();
+	});
+	
+	$('.new-product-save-btn').click(function() {		
+		showManual = $(".new-product-show-manual").prop('checked') ? 1 : 0;
+		showSpecs = $(".new-product-show-specs").prop('checked') ? 1 : 0;
+		showVideo = $(".new-product-show-video").prop('checked') ? 1 : 0;
+		
+		active = $(".new-product-product-active").prop('checked') ? 1 : 0;
+		
+		var styles = new Array();
+		$('.new-product-style-row').each(function() {
+			var defaultStyle = $(this).find('.product-style-default').prop('checked') ? 1 : 0;
+			
+			var description = $(this).find('.product-style-description').val().trim();
+			if( description == '' ) { showMsg( 'danger', 'Style Description can not be blank.' ); return; }
+			
+			var price = $(this).find('.product-style-price').val().trim().replace(',', '');
+			if( !$.isNumeric(price) ) { showMsg( 'danger', 'Style price must be a numeric value.' ); return; }
+			
+			styles.push({
+				style_description: description,
+				price: price,
+				default_style: defaultStyle,
+				image_name: $('#newProductImg').attr('src')
+			});
+		});
+		
+		var title = $('.new-product-list-title-input').val().trim();
+		if( title == '' ) { showMsg( 'danger', 'Product Title can not be blank.' ); return; }
+		
+		var product = {
+			title: title,
+			sub_cat_id: $('#subCatId').val(),
+			manufacturer_description: $('.new-product-list-description').val()
+		};
+		
+		$('.new-product-save-btn').hide();
+		$('.new-product-cancel-btn').hide();
+		$('.new-product-saving-msg').show();
+		
+		var data = { action: 'save_new_product_ajax', product: product, styles: styles, active: active }
+		
+		$.post('/admin/products', data, function(ret) {
+			$('.new-product-saving-msg').hide();
+			//setUnsavedChanges();
+			unsavedChanges = false;
+			window.location = document.URL;
+		});
+	});
+	
+	$('.new-style-btn').click(function() {
+		var newRow = $('.new-product-style-row').last().clone();
+		newRow.find('input[name=defaultStyle_new]').val( $('.new-product-style-row').length );
+		var lastRow = $('.new-product-style-row').last();
+		newRow.insertAfter(lastRow);
+	});
+});
+</script>
+
+</body>
+</html>

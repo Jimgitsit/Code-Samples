@@ -1,0 +1,61 @@
+{assign var="totalPrice" value=0}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Favorites"}
+</head>
+<body class="finalizepage">
+	<div class="screen-overflow">
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="FAVORITES"}
+	
+		<div class="screen">
+			<div class="container list with-nav">
+				<div id="favorites">
+					
+					<ul id="productList">
+						{foreach $favorites as $index => $item}
+							<li class="item">
+								<a href="/item?id={$item[ 'product' ][ 'id' ]}">
+									<img class="product-image" src="{$item[ 'product' ][ 'image' ]}"/>
+									<div class="left">
+										<div class="title">{$item[ 'product' ][ 'title' ]}</div>
+										<div class="part-wrap">
+											<div class="part-num">{if $showPNInsteadOfSKU}{$item[ 'product' ][ 'part_num' ]}{else}{$item[ 'product' ][ 'sku' ]}{/if}</div>
+											<div class="manufacturer">{$item[ 'product' ][ 'manufacturer' ]}</div>
+											<!-- TODO: Add product style info for the fav -->
+										</div>
+									</div>
+								</a>
+								<div class="right">
+									<form method="POST">
+										<input type="hidden" name="sku" value="{$item['product']['sku']}" />
+										<input type="hidden" name="style_num" value="{$item['style']['style_num']}" />
+										<button type="submit" class="del-fav-btn" name="action" value="delete_favorite">X</button>
+									</form>
+								</div>
+								<br class="clear"/>
+							</li>
+						{/foreach}
+					</ul>
+					
+				</div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/util.js"></script>
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	checkImages($('img.product-image'));
+});
+</script>
+
+<script src="/templates/js/menu.js"></script>

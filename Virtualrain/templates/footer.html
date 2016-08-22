@@ -1,0 +1,29 @@
+<div class="search-bar">
+	<div class="search-filter">
+		{if $searchCatName != ''}
+			<div class="search-filter-text search-filter-within">
+				<div class="search-within-check" data-parent-id="{$searchCatId}"></div>
+				<span class="search-within-text">Within:&nbsp;</span>
+				<span class="search-filter-cat-name upper-case bold">{$searchCatName}</span>
+			</div>
+		{/if}
+	</div>
+	<form id="searchForm" action="searchresults" method="GET">	
+		<input id="searchInput" name="search_term" type="text" placeholder="SEARCH" value="{$searchTerm}"/>
+		{if $searchCatId != null}
+			<input type="hidden" id="searchCatId" name="search_cat_id" value="{$searchCatId}" />
+			<input type="hidden" id="searchWithin" name="search_within_cat" value="false" />
+		{/if}
+		<button class="search-btn" type="submit"></button>
+	</form>
+</div>
+
+<div class="footer">
+	<ul>
+		<li id="account" class="account"></li>
+		<li class="search"></li>
+		<li class="home"><a href="/categories"></a></li>
+		<li class="notifications"><a href="/notifications">{if $notifications > 0}<p>{$notifications}</p>{/if}</a></li>
+		<li class="cart">{if $cartNum != ''}<p>{$cartNum}</p>{/if}</li>
+	</ul>
+</div>

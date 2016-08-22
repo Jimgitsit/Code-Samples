@@ -1,0 +1,109 @@
+<tr class="base-row new-product-row" style="display: none;">
+	<td>
+		<input type="checkbox" class="control product-active new-product-product-active" checked />
+	</td>
+	<td colspan="3">
+		<div class="product-list-image-frame"><img class="new-product-list-image" id="newProductImg" src="/templates/img/no-image.jpg"></div>
+		<div class="product-list-title-wrap">
+			<div class="product-list-title">New Product</div>
+			<div class="product-list-partnum" id="uploadImageMsg"><a href="javascript:imageUploadClick();">click here to upload an image</a></div>
+			<div class="product-list-partnum" id="uploadingImageMsg" style="display: none;">uploading image...</div>
+			<div id="newProductImageUploadBlock" style="display: none;">
+				<form id="newProductImageUploadForm" action="products" method="POST" enctype="multipart/form-data" target="admin/products">
+					<input type="file" name="new_product_image" id="newProductImageUpload" accept="image/*" onchange="handleFileUpload(this.files);" />
+					<input type="submit" id="newProductImageUploadSubmit" name="action" value="upload_new_product_image_ajax" />
+				</form>
+			</div>
+		</div>
+	</td>
+	<td style="white-space: nowrap; text-align: right; width: 128px;">
+		<button class="btn btn-default new-product-save-btn">Save</button>
+		<button class="btn btn-default new-product-cancel-btn">Cancel</button>
+		<span class="new-product-saving-msg" style="display: none; margin-right: 10px;"><b>Saving...</b></span>
+	</td>
+</tr>
+<tr class="base-row product-details-row new-product-details-row" style="display: none;">
+	<td colspan="5">
+		<table class="table" id="productDetailsTable">
+			<tr>
+				<td colspan="3" style="padding-right: 25px !important;">
+					<div class="product-list-details-frame">
+						<div><b>Product Title</b></div>
+						<input class="product-list-title-input new-product-list-title-input form-control control" type="text" value="" />
+						<div><b>Product Description</b></div>
+						<textarea class="product-list-description new-product-list-description form-control"></textarea>
+					</div>
+				</td>
+				<td style="vertical-align: bottom !important;">
+				<!-- 
+					<input type="checkbox" class="control show-manual new-product-show-manual" checked /> Show manual<br />
+					<input type="checkbox" class="control show-specs new-product-show-specs" checked /> Show specs<br />
+					<input type="checkbox" class="control show-video new-product-show-video" checked /> Show video
+				 -->
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4" style="text-align: center !important; border-bottom: 1px solid #DDDDDD; font-size: 1.1em;"><b>Styles</b></td>
+			</tr>
+			<tr>
+				<td>
+					<b>Style description</b>
+				</td>
+				<td>
+					
+				</td>
+				<td>
+					<b>{$currPriceCat.name} price</b>
+				</td>
+				<td>
+					<b>Default</b>
+				</td>
+			</tr>
+			<tr class="new-product-style-row">
+				<td>
+					<input class="product-style-description form-control control" type="text" value="" />
+				</td>
+				<td>
+					
+				</td>
+				<td>
+					$ <input class="product-style-price form-control control" type="number" value="" />
+				</td>
+				<td>
+					<input class="product-style-default control" type="radio" name="defaultStyle_new" value="0" checked />
+				</td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<button class="btn btn-default new-style-btn">Add a Style</button>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script>
+var imageUploadClick = function() {
+	$('#newProductImageUpload').click();
+}
+
+var handleFileUpload = function(file) {
+	$('#uploadImageMsg').hide();
+	$('#uploadingImageMsg').show();
+	$('#newProductImageUploadSubmit').click();
+}
+
+$(document).ready(function() {
+	$('#newProductImageUploadForm').ajaxForm(function(ret) {
+		if( ret == 'error' ) {
+			alert( 'Error: Bad image.' );
+		}
+		else {
+			$('#newProductImg').attr('src', ret);
+		}
+		$('#uploadingImageMsg').hide();
+		$('#uploadImageMsg').show();
+	});
+});
+</script>

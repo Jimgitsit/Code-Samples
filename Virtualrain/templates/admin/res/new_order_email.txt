@@ -1,0 +1,21 @@
+A new order has been placed.
+
+Order Details:
+--------------
+Order #: {orderNum}
+Total: {orderTotal}
+Name: {userName}
+Company: {companyName}
+Email: {userEmail}
+Phone: {phoneNumber}
+Account #: {accountNumber}
+Purchase Order #: {poNum}
+Comments: {comments}
+
+{locationType}:
+---------------
+{location}
+
+Items:
+------
+{products}

@@ -1,0 +1,65 @@
+/* Backgrounds */
+body { background-color: #FFFFFF; }
+.footer { background-color: #FFFFFF; }
+.top-nav { background-color: #FFFFFF;}
+.side-bar { background-color: #FFFFFF; border-color: #FFFFFF; }
+#cart { background-color: #FFFFFF; border-color: #FFFFFF; }
+.list ul li { background-color: #FFFFFF; border-color: #FFFFFF; }
+.search-bar { background-color: #FFFFFF; }
+
+/* General elements */
+button { background-color: #00AEEC !important; }
+.btn-pressed { background-color: #00a3d4 !important; }
+
+/* Specific elements */
+.page-logo {
+    background-image: url("../logo_vanden_bussche.png");
+	background-size: 135px;
+}
+.login button { background-color: #006cb7; }
+.list h4 {  color:#303030; }
+.grid-view h4 {  color:#303030; }
+.updateText h4 {background: none repeat scroll 0 0 #303030;  }
+.manual p, .specs p, .video p {  color: #303030; }
+#cart .total h4 { color:#303030; }
+.finalize-btn { background:#303030; }
+#finalize .right p { /* border: 1px solid #303030; */ /* color: #303030; */}
+#finalize .total h4 { color:#303030;  }
+#thankyou h3 { color: #303030;  }
+.side-bar h4 {  color: #303030;  }
+#save-btn {  background:#303030;  }
+.saved-box p { color:#303030;}
+.view-btn { background:#303030;  }
+.reorder-btn { background:#303030; }
+#favoriteBtnBlock button { background-color: #303030 }
+.save-btn { background-color: #303030; }
+.category { background-color: #303030; }
+.search-bar input { border-color: #303030; }
+.clear-search-filter { background-color: #303030; }
+.qty-wrap { border-color: #006cb7;}
+.new-location { background-color: #FFFFFF; }
+.edit-shipping-locations-btn { border: 1px solid rgb(223, 223, 223); }
+
+/* Icons */
+.back { background-image: url("back-btn.png"); }
+.favorites-img { background-image:url('favorites.png'); }
+.notification-img { background-image:url('notifications.png'); }
+.history-img { background-image:url('history.png'); }
+.shipping-img { background-image:url('shipping.png'); }
+.location-img { background-image:url('location.png'); }
+.info-img { background-image:url('info.png'); }
+.logout-img { background-image:url('logout.png'); }
+#account { background-image:url('account.png'); }
+.search { background-image:url('search.png'); }
+.search-btn { background-image:url('search.png'); }
+.home { background-image:url('home.png'); }
+.cart { background-image:url('cart.png'); }
+.notifications { background-image:url('notifications.png'); }
+.preferred-checkbox.checked { background-image: url("check.png") }
+
+
+
+
+
+
+

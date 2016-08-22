@@ -1,0 +1,218 @@
+/* Custom Responsive */
+
+@media (min-width: 1000px) {
+.step-1-inner, .step-2-inner, .step-3-inner { max-width:960px; margin:0 auto; }
+} 
+
+/**************************************************
+			Desktop and larger
+***************************************************/
+@media (min-width: 979px) { 
+.account-settings input, .account-settings textarea { width:96%; padding:4px 6px; }
+	.account-settings button { width:100%; }
+.sub input, .sub textarea { width:96%; padding:4px 6px; }
+.sub button { width:100%; }
+}
+
+/**************************************************
+			Desktop and Smaller
+***************************************************/
+@media (max-width: 979px) { 
+
+}
+
+/**************************************************
+			In between iPad and Desktop
+***************************************************/
+@media (min-width: 768px) and (max-width: 979px) {
+
+}
+
+/**************************************************
+			In between Phone and Desktop
+***************************************************/
+@media (min-width: 481px) and (max-width: 2000px) {
+
+}
+
+/**************************************************
+			iPad portrait
+***************************************************/
+@media (min-width: 767px) and (max-width: 979px) { 
+.account-settings input, .account-settings textarea { width:96%; padding:4px 6px; }
+.step-1-text { width:40%; padding-top:85px; }
+	.step-2-text { width:40%; }
+	.step-2-text p { padding:0; }
+	.step-2-text h1 { text-align:center; }
+	.step-3-text { width:60%; padding-top:80px; }
+	.sub input, .sub textarea { width:96%; padding:4px 6px; }
+	.laptop { display:none; }
+}
+
+
+/**************************************************
+			iPad and Smaller
+***************************************************/
+@media (min-width: 320px) and (max-width: 979px) { 
+.container { max-width:767px; }
+
+body { padding:0; }
+
+.logo { padding-left:15px; }
+.navigation { padding-right:15px; }
+
+.main-video { height:400px; }
+
+.ribbon { display:none; }
+
+.car-info { margin:25px 0 0 0; width:100%; height:180px; padding-right:0; background:none; }
+	.car-info-photo { margin-right:0; width:100%; margin:0 auto; display:block; }
+		.car-info-photo img { margin:0 auto; display:block; width:98px; float:none; }
+	.car-info-text { width:100%; float:left; text-align:center; margin:10px 0 0 0; }
+		.car-info h3 { font-size:21px; line-height:21px; margin-bottom:10px; }
+		.car-info p.type { font-size:14px; line-height:14px; margin-bottom:9px;  }
+		.car-info p.vin { font-size:14px; line-height:14px; }
+.price-wrap { width:100%; }
+	.price { width:96%; margin:0 auto; }
+	.price h1 { font-size:44px; line-height:44px; float:none; margin:15px 0 10px 0; text-align:center; }
+	.price p { font-size:14px; line-height:14px; float:none; margin:0; text-align:center; }
+
+.left-wrap { width:100%; margin-top: 25px; }
+	.action-specs-wrap { width:100%; float:left; padding-right:0; border:none; margin:25px 0; }
+	.action-specs { width:96%; margin:0 auto; }
+	
+	.action-share-wrap { width:100%; float:left; padding-right:0; border:none; margin-top:0; }
+	.action-share{ width:96%; margin:0 auto; }
+
+	
+
+.sidebar-info-wrap { width:100%; }
+.sidebar-info { width:96%; margin:0 auto; }
+	.sidebar-info { padding-bottom:0; }
+	.insurance { margin-bottom:0; }
+	
+.garage .price-wrap{ display:none; }
+
+.modal.fade.in{ top:5% }
+
+.play-btn { display:none; }
+		
+.laptop { display:none; }
+
+.footer { background:url('../img/footer-bg.png')repeat-x #3a3a3a; }
+
+.sub h3 { font-size:18px; }
+.sub p { font-size:15px; line-height:18px; }
+}
+
+/**************************************************
+			In between iPad and iPhone
+***************************************************/
+@media (min-width: 480px) and (max-width: 768px) {
+
+}
+
+/**************************************************
+				iPhone - Landscape
+***************************************************/
+@media (min-width: 480px) and (max-width: 767px) {
+	.logo, .login { display:none; }
+
+	.header .container { width:100%; }	
+	
+	.navigation { padding-right:0; margin:0 auto; float:none; width:270px; }
+	.navigation .nav-btn.first { margin-left:0; }
+	
+	.green { margin-right:15px; }
+	.navigation .nav-btn.first { margin-left:0; }
+		
+	.logos { padding-top:35px; }
+	.logos li img { width:80px; height:auto; }
+	.testimonials { height:90px; padding-top:0; }
+	.logos li { padding-bottom:30px; }
+	
+	.main-video { height:400px; }
+
+	.step-1 { min-height:540px; }
+		.step-1-text { width:100%; float:none; text-align:center; padding-top:50px; }
+		.step-1-inner { min-height:575px; }
+	.step-2 { height:614px; }
+		.step-2-text { width:100%; float:none; text-align:center; padding-top:50px; }
+		.step-2-inner { min-height:615px; background: url('../img/step-3-img.png')no-repeat bottom center; }
+	.step-3 { min-height:600px; }
+		.step-3-text { width:100%; float:none; text-align:center; padding: 50px 0 0 0; }
+		.step-3-inner { height:770px; background: url('../img/step-2-img.png')no-repeat bottom center; }
+
+	.laptop { display:none; }
+
+	.slider { height:350px; display:none; }
+	.slider-copy-wrap { padding-top:40px; }
+	.carousel-control { display:none; }
+
+	.footer { height:165px; padding-top:25px; background:url('../img/footer-bg.png')repeat-x #3a3a3a; }
+	ul.footer-nav { color:#878787; width:390px; height:20px; padding-top:10px; margin:0 auto 20px auto; font-size:14px; line-height:18px; }
+	ul.footer-nav li { float:left; margin-right:10px; border-right:none; padding-right:0; }
+
+	
+	.support { display:none; }	
+	.drop-down { display:block; }
+}
+
+/**************************************************
+				iPhone - Portrait
+***************************************************/
+@media (min-width: 320px) and (max-width: 479px) {
+.logo { display:none; }
+.navigation { padding-right:0; margin:0 auto; float:none; width: 100%; }
+	.green { margin-right:15px; }
+.navigation .nav-btn.first { margin-left:0; }
+
+.header .container { width:100%; }
+.support { display:none; }	
+.drop-down { display:block; }
+
+.main-video { height:300px; }
+.main-video h3 { padding:50px 15px 30px 15px; font-size:24px; line-height:32px; }
+.main-video h3 br { display:none; }
+.main-video h1 { font-size: 22px; line-height: 26px; padding: 70px 0 10px 0; }
+
+.logos { padding-top:35px; }
+.logos li img { width:60px; height:auto; }
+.testimonials { height:90px; padding-top:0; }
+.logos li { padding-bottom:30px; }
+
+.steps h1 { font-size:24px; line-height:32px; }
+.step-1 { min-height:300px; background:url('../img/shadow.png')no-repeat bottom center, url('../img/gray.png')repeat; }
+	.step-1-text { width:100%; float:none; text-align:center; padding-top:50px; }
+	.step-1-inner { min-height:305px; background-image:none; }
+.step-2 { height:640px; background:url('../img/shadow.png')no-repeat bottom center; }
+	.step-2-text { width:100%; float:none; text-align:center; padding-top:50px; }
+	.step-2-inner { min-height:715px; background: url('../img/step-3-img.png')no-repeat bottom center; }
+.step-3 { min-height:300px; background:url('../img/shadow.png')no-repeat bottom center, url('../img/gray.png')repeat; }
+	.step-3-text { width:100%; float:none; text-align:center; padding: 50px 0 0 0; }
+	.step-3-inner { height:810px; background: url('../img/step-2-img.png')no-repeat bottom center; }
+	
+.laptop { display:none; }
+
+.slider { height:290px; display:none; }
+.slider-copy-wrap { padding-top:20px; }
+.slider-copy { padding:40px; margin:0 auto; width:240px; }
+.slider-copy p { font-size:14px; line-height:24px; width:240px; }
+.carousel-control { display:none; }
+
+.footer { height:185px; padding-top:25px; background:url('../img/footer-bg.png')repeat-x #3a3a3a; }
+	ul.footer-nav { color:#878787; width:300px; height:20px; padding-top:10px; margin:0 auto 40px auto; font-size:14px; line-height:18px; }
+	ul.footer-nav li { float:left; margin-right:10px; border-right:none; padding-right:0; }
+
+.contact-form { max-width:220px; }
+
+.sub-wrap { min-height:400px; margin-bottom:0; margin-top:0; }
+.about .sub-wrap { margin-top:0; margin-bottom:0; }
+.page .sub-wrap { margin-bottom:0; margin-top:0; }
+.sub { max-width:220px; }
+
+.binding-login { min-height:420px; }
+
+}
+
+

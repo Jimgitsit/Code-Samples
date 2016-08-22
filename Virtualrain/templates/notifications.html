@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+</head>
+<body class="notificationspage">	
+
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="MESSAGES"}
+		
+		<div class="screen">
+			<div class="container with-nav">
+				{if isset($messages) }
+					<ul class="user-messages">
+						{foreach $messages as $message}	
+							{$message}					
+						{/foreach}
+					</ul>
+					<div id="loadingDiv">Loading more...</div>
+				{elseif isset($message)}
+					<input id="msgContents" type="hidden" value="<html><head><link rel=&quot;stylesheet&quot; href=&quot;/css/messages.css&quot;></head><body style=&quot;font-family: 'Open Sans',arial,sans-serif !important;&quot;>{$message['message']|escape:'html'}<br class=&quot;clear&quot;/></body></html>" />
+			
+					<div class="full-message">
+						<!-- 
+						<form action="" method="POST">	
+							<input type="hidden" name="id" value="{$message['id']}" />
+							<button name="action" value="delete_message" class="delete-btn">Delete</button>
+						</form>
+						 -->
+						<h4>{$message['title']}</h4>
+						<span class="msg-date">{$message['local_date']|date_format:"%b %e, %G - %I:%M %p"}</span>
+						<div class="message-content">
+							<iframe id=messageIframe></iframe>
+						</div>
+						<br class="clear"/>
+					</div>
+				{/if}
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+
+	<input type="hidden" id="notificationsPerPage" value="{$notificationsPerPage}"/>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+
+{literal}
+<script>
+$(document).ready(function () {
+	var resizeIframe = function () {
+		var iframe = document.getElementById('messageIframe');
+		var iframewindow = iframe.contentWindow ? iframe.contentWindow : iframe.contentDocument.defaultView;
+		var msgFrameHeight = $(iframewindow.document).height();
+
+		//console.log(msgFrameHeight);
+
+		var msgFrame = $('#messageIframe');
+		msgFrame.height(msgFrameHeight);
+		$('.full-message').height(msgFrameHeight);
+	};
+
+	var initIframe = function () {
+		var iframe = document.getElementById('messageIframe');
+		if (iframe) {
+			iframe.contentWindow.document.open();
+			iframe.contentWindow.document.write($('#msgContents').val());
+			iframe.contentWindow.document.close();
+
+			$(iframe).ready(function() {
+				// This looks wierd but it's a timing issue
+				$(iframe).imagesLoaded(setTimeout(resizeIframe, 100));
+				setTimeout(resizeIframe, 500);
+				setTimeout(resizeIframe, 1000);
+				setTimeout(resizeIframe, 5000);
+			});
+		}
+	};
+	
+	initIframe();
+	setScreenHeight();
+	
+	var scrollRefresh = {
+		atBottom: function(callback) {
+			var viewPortHeight = $('.screen').height();
+			var scrollTop = $('.screen').scrollTop();
+			var scrollBottom = viewPortHeight + scrollTop;
+			var listHeight = $('.orders').height();
+
+			if(scrollBottom >= listHeight - $('.order-info').height()) {
+				//console.log( 'at bottom' );
+				callback();
+				this.pastBottom = true;
+			}
+			else {
+				this.pastBottom = false;
+			}
+		}
+	};
+	
+	var loadMore = function (pos) {
+		if (loadingMore) return;
+		if (disable) return;
+		loadingMore = true;
+
+		$("#loadingDiv").show();
+		$("html, body").animate({scrollTop: $(document).height()}, 1);
+
+		offset += parseInt($('#notificationsPerPage').val());
+		var data = {
+			action: "more_notifications_ajax",
+			offset: offset
+		};
+		var url = 'notifications';
+		$.post(url, data, function (ret) {
+			if (ret.length == 0) {
+				disable = true;
+			}
+			$.each(ret, function (index, html) {
+				var li = $(html);
+				$(".user-messages").append(li);
+			});
+
+			loadingMore = false;
+			$("#loadingDiv").hide();
+		}, 'json');
+	};
+
+	var loadingMore = false;
+	var offset = 0;
+	var disable = false;
+
+	$('.screen').scroll(function () {
+		//console.log('scrolling');
+		scrollRefresh.atBottom(loadMore);
+	});
+});
+</script>
+{/literal}
+
+
+
+
+
+
+
+
+

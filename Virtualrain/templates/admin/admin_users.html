@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Users"}
+</head>
+
+<body>
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="admin_users"}
+
+<div class="container">
+
+<h4 style="float:left;">Admin Users</h4><a href="#" class="btn btn-default" id="add-admin-user" style="float:right;">Add Admin User</a>
+<table id="super-users" class="table table-condensed">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>email</th>
+			<th>Actions</th>
+		</tr>
+	</thead>
+	<tbody>
+	    {foreach $admins as $admin}
+		<tr data-id="{$admin['id']}">
+			<td class="user-name">{$admin['full_name']}</td>
+			<td class="user-email">{$admin['email']}</td>
+			<td class="user-actions" data-id="{$admin['id']}">
+				<a href="#" class="save-user">Save<span class="spacer">|</span></a>
+				<a href="#" class="edit-user">Edit<span class="spacer">|</span></a>
+				<a href="#" class="delete-user">Delete</a>
+			</td>
+		</tr>
+		<tr class="user-details" data-id="{$admin['id']}">
+		     <td colspan="3">
+		          <div class="row">
+		               <div class="col-md-6">
+		                    <div class="col-md-6">
+		                         <p>Full Name:</p>
+		                         <input class="inline form-control" type="text" value="{$admin['full_name']}" class="edtUserName form-control" />
+		                    </div>
+		                    <div class="col-md-6">
+		                         <p>Email:</p>
+		                         <input class="inline form-control" type="text" value="{$admin['email']}" class="edtUserEmail form-control" />
+		                    </div>
+		               </div>
+		               <div class="col-md-6">
+		                    <div class="col-md-6">
+		                         <p>Password:</p>
+		                         <input class="inline form-control" type="password" class="edtPassword form-control" />
+		                    </div>
+		                    <div class="col-md-6">
+		                         <p>Verify Password:</p>
+		                         <input class="inline form-control" type="password" class="edtVerifyPassword form-control" />
+		                    </div>
+		               </div>
+		          </div>
+		     </td>
+		</tr>
+          {/foreach}
+	</tbody>
+</table>
+<div class="modal fade" id="deleteConfirmModal">
+     <div class="modal-dialog">
+          <div class="modal-content">
+               <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Are you sure?</h3>
+               </div>
+               <div class="modal-body">
+                    <p>Are you sure you want to delete <strong><span id="deleteComfirmName"></span></strong>?</p>
+                    <p>This cannot be undone.</p>
+               </div>
+               <div class="modal-footer">
+                    <a class="btn" data-dismiss="modal">Cancel</a>
+                    <a id="deleteConfirmButton" class="btn btn-default">Delete</a>
+               </div>
+          </div>
+     </div>
+</div>
+</div>
+<script type="text/javascript">
+     $(function(){
+          var unsavedChanges = false;
+
+          $('#add-admin-user').click(function(e){
+               e.preventDefault();
+
+               var row = $("tr[data-id=TBD]");
+               if(row.length == 0){
+                    $('#super-users').prepend(newRow);
+               }
+          });
+
+          $(document).on("click", ".edit-user", function(e){
+               e.preventDefault();
+               var row = $(this).parent().parent();
+               var detailsRow = $(row).next();
+               $(detailsRow).toggle();
+          });
+
+          $(document).on("click", ".delete-user", function(e){
+               e.preventDefault();
+
+               var id = $(this).parent().attr("data-id");
+               var name = $(this).parent().parent().find('.user-name').text();
+               $('#deleteComfirmName').text(name);
+               $('#deleteConfirmButton').click(function(e){
+                    $('#deleteConfirmModal').modal('hide');
+                    showMsg('info','Deleting '+name+'...');
+                    $.ajax({
+                         url: "adminusers",
+                         type: "POST",
+                         data: {
+                              id: id,
+                              action: "delete_user"
+                         }
+                    }).done(function(res){
+                         res = JSON.parse(res);
+                         if(res.success){
+                              $("tr[data-id='"+id+"']").remove();
+                              showMsg('success', "Successfully deleted "+name+".");
+                         }else{
+                              showMsg('danger', "We've experienced an error, please try again later");
+                         }
+                    });
+               });
+               $('#deleteConfirmModal').modal();
+          });
+
+          $(document).on("click", ".save-user", function(e){
+               e.preventDefault();
+
+               var id = $(this).parent().attr("data-id");
+               var userDetails = $(this).parent().parent().next();
+               var name = $(userDetails).find('.edtUserName').val();
+               var email = $(userDetails).find('.edtUserEmail').val();
+               var password = $(userDetails).find('.edtPassword').val();
+               var vPassword = $(userDetails).find('.edtVerifyPassword').val();
+
+               if(password != vPassword){
+                    showMsg('danger',"Passwords must match");
+               }else{
+                    $('.save-user').slideUp();
+                    $.ajax({
+                         url: "adminusers",
+                         type: "POST",
+                         data: {
+                              action: "save_user",
+                              user: {
+                                   id: id,
+                                   name: name,
+                                   email: email,
+                                   password: password
+                              }
+                         }
+                    }).done(function(res){
+                         res = JSON.parse(res);
+                         if(res.success){
+                              $("tr[data-id='"+id+"'] .user-name").text(name);
+                              $("tr[data-id='"+id+"'] .user-email").text(email);
+                              $(userDetails).find('.edtPassword, .edtVerifyPassword').val("");
+                              $('.user-details').hide();
+                              showMsg("success", "Successfully saved "+name);
+                              unsavedChanges = false;
+                         }else{
+                              showMsg("danger","We've experienced some kind of error. Please try again later.");
+                         }
+                    });
+               }
+          });
+
+          $(document).on("click", ".save-new", function(e){
+               e.preventDefault();
+
+               var userDetails = $(this).parent().parent().next();
+               var name = $(userDetails).find('.edtUserName').val();
+               var email = $(userDetails).find('.edtUserEmail').val();
+               var password = $(userDetails).find('.edtPassword').val();
+               var vPassword = $(userDetails).find('.edtVerifyPassword').val();
+
+               if(password != vPassword){
+                    showMsg('danger',"Passwords must match");
+               }else if(name == "" || email == "" || password == ""){
+                    showMsg('danger', "All fields are required to create a new user");
+               }else{
+                    $.ajax({
+                         url: "adminusers",
+                         type: "POST",
+                         data: {
+                              action: "create_new",
+                              user: {
+                                   name: name,
+                                   email: email,
+                                   password: password
+                              }
+                         }
+                    }).done(function(res){
+                         res = JSON.parse(res);
+                         if(res.success){
+                              $("tr[data-id='TBD'] .user-name").text(name);
+                              $("tr[data-id='TBD'] .user-email").text(email);
+                              $("tr[data-id='TBD'] .user-actions").attr("data-id",res.id).html(actionCell);
+                              $("tr[data-id='TBD']").each(function(e){
+                                   $(this).attr("data-id",res.id);
+                                   if($(this).hasClass("user-details")){
+                                        console.log("cool");
+                                        $(this).find('.edtPassword').val("");
+                                        $(this).find('.edtVerifyPassword').val("");
+                                   }
+                              });
+                              $('.save-user').hide();
+                              $('.user-details').hide();
+                              showMsg("success", "Successfully created "+name);
+                         }else{
+                              showMsg("danger","We've experienced some kind of error. Please try again later");
+                         }
+                    });
+               }
+          });
+
+          $(document).on("click", ".cancel-new", function(e){
+               e.preventDefault();
+               $("tr[data-id='TBD']").remove();
+          });
+
+          $(document).on("keypress change", "input", function(e){
+               $(this).closest('tr').prev().find('.save-user').slideDown();
+               unsavedChanges = true;
+          });
+
+          window.onbeforeunload = function(){
+               if(unsavedChanges){
+                    return "You have some unsaved changes.";
+               }
+          };
+
+          $('.user-details').hide();
+          $('.save-user').hide();
+
+          var actionCell = '<a href="#" class="btn btn-default save-user">Save</a> <a href="#" class="btn btn-default edit-user">Edit</a> <a href="#" class="btn btn-primary delete-user">Delete</a>';
+
+          var newRow = '<tr data-id="TBD">'
+                    +'<td class="user-name"></td>'
+                    +'<td class="user-email"></td>'
+                    +'<td class="user-actions"><a href="#" class="btn btn-default save-new">Save</a> <a href="#" class="btn btn-default cancel-new">Cancel</a></td>'
+               +'</tr>'
+               +'<tr class="user-details" data-id="TBD">'
+                    +'<td colspan="3">'
+                         +'<div class="row">'
+                              +'<div class="col-md-6">'
+                                   +'<div class="col-md-6">'
+                                        +'<p>Full Name:</p>'
+                                        +'<input type="text" placeholder="Full Name" class="edtUserName form-control" />'
+                                   +'</div>'
+                                   +'<div class="col-md-6">'
+                                        +'<p>Email:</p>'
+                                        +'<input type="text" placeholder="Email" class="edtUserEmail form-control" />'
+                                   +'</div>'
+                              +'</div>'
+                              +'<div class="col-md-6">'
+                                   +'<div class="col-md-6">'
+                                        +'<p>Password:</p>'
+                                        +'<input type="password" class="edtPassword form-control" />'
+                                   +'</div>'
+                                   +'<div class="col-md-6">'
+                                        +'<p>Verify Password:</p>'
+                                        +'<input type="password" class="edtVerifyPassword form-control" />'
+                                   +'</div>'
+                              +'</div>'
+                         +'</div>'
+                    +'</td>'
+               +'</tr>';
+     });
+</script>
+</body>
+</html>

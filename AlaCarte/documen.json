@@ -1,0 +1,62 @@
+{
+  "output-dir": "/app/views/docs",
+  "project-title": "AlaCarte API",
+  "css-file": "/public/css/documen.css",
+  "methods": [
+    {
+      "class": "AlaCarteAPI",
+      "name": "getOAuth2Token",
+      "label": "/api/authorize"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "getContent",
+      "label": "/api/nodes/get/content"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "addContent",
+      "label": "/api/node/[*:alacarteId]/content/add"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "saveContent",
+      "label": "/api/node/content/[*:contentId]/save"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "deleteContent",
+      "label": "/api/node/content/[*:contentId]/delete"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "getNode",
+      "label": "/api/node/[*:alacarteId]/get"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "saveBanners",
+      "label": "/api/banners/save"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "getBanners",
+      "label": "/api/banners/get"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "deleteBanner",
+      "label": "/api/banner/[*:alacarteId]/delete"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "uploadBannerFile",
+      "label": "/api/banner/upload"
+    },
+    {
+      "class": "AlaCarteAPI",
+      "name": "checkFFNewVersion",
+      "label": "/api/getffaddon"
+    }
+  ]
+}

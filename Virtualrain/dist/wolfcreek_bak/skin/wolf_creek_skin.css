@@ -1,0 +1,50 @@
+.list h4 {  color:#408d45; }
+.grid-view h4 {  color:#408d45; }
+.Item-price h3 {  color:#408d45; }
+.add-box { background:#408d45; }
+.updateText h4 {background: none repeat scroll 0 0 #408d45;  }
+.manual p, .specs p, .video p {  color: #408d45; }
+#cart .total h4 { color:#408d45; }
+.finalize-btn { background:#408d45; }
+#finalize .right p { border: 1px solid #408d45; color: #408d45;}
+#finalize .total h4 { color:#408d45;  }
+#thankyou h3 { color:#408d45;  }
+.side-bar h4 {  color: #408d45;  }
+#save-btn {  background:#408d45;  }
+.saved-box p { color:#408d45;}
+.view-btn { background:#408d45;  }
+.reorder-btn { background:#408d45; }
+.green-btn { background:#408d45; }
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:   #408d45;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #408d45;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #408d45;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    #408d45;
+}
+
+
+.notification-img { background:url('/dist/wolfcreek_bak/notifications.png') no-repeat; background-position: center; background-size: 100%; }
+.history-img { background:url('/dist/wolfcreek_bak/history.png') no-repeat; background-position: center; background-size: 100%; }
+.shipping-img { background:url('/dist/wolfcreek_bak/shipping.png') no-repeat; background-position: center; background-size: 100%; }
+.location-img { background:url('/dist/wolfcreek_bak/location.png') no-repeat; background-position: center; background-size: 100%; }
+.info-img { background:url('/dist/wolfcreek_bak/info.png') no-repeat; background-position: center; background-size: 100%;  }
+.logout-img { background:url('/dist/wolfcreek_bak/logout.png') no-repeat; background-position: center; background-size: 100%;  }
+#account { background:url('/dist/wolfcreek_bak/account.png') no-repeat; background-position: center 13px; background-size: 28px;  }
+.search { background:url('/dist/wolfcreek_bak/search.png') no-repeat; background-position: center 11px; background-size: 23px;  }
+.home { background:url('/dist/wolfcreek_bak/home.png') no-repeat; background-position: center 11px; background-size: 27px;  }
+.cart { background:url('/dist/wolfcreek_bak/cart.png') no-repeat; background-position: center 11px; background-size: 25px;  }
+.notifications { background:url('/dist/wolfcreek_bak/notifications.png') no-repeat; background-position: center 11px; background-size: 25px;  }
+
+
+
+
+
+
+

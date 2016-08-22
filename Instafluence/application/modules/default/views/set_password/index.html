@@ -1,0 +1,70 @@
+{include file='templates/header.tpl' pageTitle='Set Password'}
+
+<article class="signin">
+	<div class="container">
+		<h1 style="width: 100%;">Influencer Sign Up</h1>
+		<form class="form-horizontal" action="/setpassword/?t={$token}" method="POST" name="signup">
+			<p class="auth-error">{validation_errors()}</p>
+	
+			<div class="form-group">
+				<label for="first_name" class="col-md-4 control-label">First Name:</label>
+				<div class="col-md-8">
+					<p class="form-control-static">{$user.first_name}</p>
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="last_name" class="col-md-4 control-label">Last Name:</label>
+				<div class="col-md-8">
+					<p class="form-control-static">{$user.last_name}</p>
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="email" class="col-md-4 control-label">Email:</label>
+				<div class="col-md-8">
+					<p class="form-control-static">{$user.email}</p>
+					<input type="hidden" name="email" value="{$user.email}" />
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="password" class="col-md-4 control-label">Password:</label>
+				<div class="col-md-8">
+					<input class="form-control" id="password" type="password" name="password" value="" autofocus />
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<label for="password_confirm" class="col-md-4 control-label">Retype Password:</label>
+				<div class="col-md-8">
+					<input class="form-control" id="password_confirm" type="password" name="password_confirm" value="" />
+				</div>
+			</div>
+	
+			<div class="form-group">
+				<div class="col-md-offset-4 col-md-8">
+					<button type="submit" class="btn btn-default cyan-outline-btn">Login</button>
+				</div>
+			</div>
+			
+		</form>
+	</div>
+</article>
+
+{include file='templates/contact_modal.tpl'}
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/static.js"></script>
+
+{literal}<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->{/literal}
+
+</body>
+</html>

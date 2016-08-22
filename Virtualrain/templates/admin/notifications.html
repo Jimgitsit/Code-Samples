@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	{include file="admin/head.html" pageTitle="Admin - Messages"}
+	<link rel="stylesheet" href="/templates/js/chosen/chosen.css"/>
+	<link href="/templates/js/froala_editor/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="/templates/js/froala_editor/css/froala_editor.min.css" rel="stylesheet" type="text/css">
+	<script>
+		var messageIframe = null;
+		function initIframe(obj) {
+			messageIframe = $(obj.document.getElementsByTagName("body")[0]);
+		}
+	</script>
+</head>
+
+<body>
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="notifications"}
+
+<div class="container">
+
+	<div id="notifications">
+		<form action="">
+			<label>Send Message to:</label>
+			<select class="chosen-select" multiple>
+			     <option value="0">All Users</option>
+			   {foreach $users as $user}
+			       <option value="{$user['id']}">{$user['first_name']} {$user['last_name']}</option>
+			   {/foreach}
+			</select>
+			<label>Title:</label>
+			<input type="text" id="notificationTitle" class="form-control">
+			<label>Message Body:</label>
+			<textarea id="notificationMessage"></textarea>
+			
+			<div class="pull-right">
+				<div id="previewBtn" class="btn btn-default preview-notification">Preview</div>
+				<button type="submit" class="btn btn-default send-notification">Send</button>
+			</div>
+		</form>
+		<br class="clear"/>
+		<div class="previous-notifications">
+			<label>Sent Messages:</label>
+			<table id="notificationTable">
+				{if count( $notifications ) == 0}
+					<tr><td colspan="4">No messages have been sent.</td></tr>
+				{/if}
+			    {foreach $notifications as $notification}
+				<tr class="message-row">
+					<td>{$notification['date']}</td>
+					<td class="bold" style="width:400px;">{$notification['title']}</td>
+					<td>Sent to {$notification['total']} user{if $notification['total'] > 1}s{/if}</td>
+					<td class="view" style="width:47px;"><a href="#" class="toggle-drawer" data-messageId="{$notification['id']}">View</a></td>
+				</tr>
+				<tr class="view-message" id="drawer{$notification['id']}">
+					<td colspan="4">
+						<p>Read by {$notification['total'] - $notification['unread']} user(s)</p><br/>
+						{$notification['message']}
+					</td>
+				</tr>
+				{/foreach}
+			</table>
+		</div>
+	</div>
+
+</div>
+
+<div class="modal fade" id="messagePreviewModal">
+     <div class="modal-dialog">
+          <div class="modal-content">
+               <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h4>Message Preview</h4>
+               </div>
+               <div class="modal-body">
+               		<div class="size-controls"><span id="previewSizeLargeBtn">Large</span><span>|</span><span id="previewSizeSmallBtn">Small</span></div>
+               		<div id="messagePreviewWrap">
+                   		<div id="messagePreviewBody">
+                   			<iframe id="messageIframe" name="message_iframe" onload="initIframe(window.message_iframe);" srcdoc="<html><head><link rel=&quot;stylesheet&quot; href=&quot;/css/messages.css&quot;></head><body style=&quot;font-family: 'Open Sans',arial,sans-serif !important;&quot;><br class=&quot;clear&quot;/></body></html>"></iframe>
+                   		</div>
+                   	</div>
+               </div>
+               <div class="modal-footer">
+                    <a class="btn btn-default" data-dismiss="modal">Close</a>
+               </div>
+          </div>
+     </div>
+</div>
+
+{literal}
+<script src="/templates/js/froala_editor/js/froala_editor.min.js"></script>
+<script src="/templates/js/chosen/chosen.jquery.js" type="text/javascript"></script>
+
+<script>
+
+$(document).ready(function(){
+	
+	$('#notificationMessage').editable({
+		inlineMode: false,
+		height: 400,
+		buttons: ["bold", "italic", "underline", "strikeThrough", "fontSize", "color", "sep", "formatBlock", "align", "insertOrderedList", "insertUnorderedList", "insertImage",],
+		imageButtons: ["floatImageLeft", "floatImageNone", "floatImageRight", "removeImage"],
+		borderColor: "#CCCCCC",
+		imageUploadURL: '/admin/notifications',
+		imageUploadParam: "image_upload",
+		editorClass: "froala-custom",
+		placeholder: '',
+		imageMargin: 5,
+		imageErrorCallback: function(data) {
+			console.error(data);
+		}
+	});
+	
+	$('#previewSizeLargeBtn').click(function() {
+		$('#messagePreviewModal .modal-dialog').animate({'width':825}, 500);
+	});
+	
+	$('#previewSizeSmallBtn').click(function() {
+		$('#messagePreviewModal .modal-dialog').animate({'width':382}, 500);
+	});
+	
+	$('#previewBtn').click(function() {
+		messageIframe.html($("#notificationMessage").editable("getHTML"));
+		//$('#messagePreviewBody').html($("#notificationMessage").editable("getHTML"));
+		$('#messagePreviewModal').modal({
+			width: 500
+		});
+	});
+	
+	var allSelected = false;
+	$(".chosen-select").chosen().change(function(e){
+	     var array = $(this).val();
+	     if(array != null && array.indexOf("0") >= 0){
+	          if(allSelected){
+	               array.splice(0,1);
+	               $(".chosen-select").val(array).trigger('chosen:updated');
+	               allSelected = false;
+	          }else{
+	               array.splice(1);
+	                   $(".chosen-select").val(array).trigger('chosen:updated');
+	                   allSelected = true;
+	          }
+	     }
+	});
+	
+	var drawers = [];
+	$('.view-message').hide();
+	$('.view-message').each(function(i){
+	     //$(this).hide();
+	     drawers[$(this).attr('id')] = false;
+	});
+	
+	$(document).on('click', '.toggle-drawer', function(event){
+		event.preventDefault();
+		var message = $(this).attr('data-messageId');
+		//$("#drawer" + message).slideToggle();
+		if(drawers[message] === false) {
+		     $(this).html('View');
+		     drawers[message] = true;
+		     $("#drawer" + message).hide();
+		}
+		else {
+		     $(this).html('Close');
+		     drawers[message] = false;
+		     $("#drawer" + message).show();
+		}
+	});
+
+	$('.send-notification').click(function(event) {
+		event.preventDefault();
+	        
+		var title = $("#notificationTitle").val().trim();
+		var sendTo = $(".chosen-select").val();
+		var message = $("#notificationMessage").editable("getHTML")[0];
+	    
+		if (title != "" && sendTo != null && sendTo.length > 0 && message != "") {
+			var data = {
+				action: "send_notification",
+				title: title,
+				users: sendTo,
+				message: message
+			};
+			showMsg('info','Sending Notification...');
+			
+			// clear input fields
+			//$('#notificationTitle').val('');
+			//$('.chosen-select').val(null).trigger('chosen:updated');
+			//$('#notificationMessage').val('');
+			
+			$.ajax({
+				url: "/admin/notifications",
+				type: "POST",
+				data: data,
+				success: function(ret) {
+					// build new rows in table
+					showMsg('success',"Message was sent successfully!");
+					ret = JSON.parse(ret);
+					var numUsers = ret.data.users;
+					var htmlString = '<tr>'
+						+'<td>'+ret.data.date+'</td>'
+						+'<td class="bold" style="width:400px;">'+ret.data.title+'</td>'
+						+'<td>Sent to '+numUsers+' user'+(numUsers == 1 ? "" : "s")+'</td>'
+						+'<td class="view" style="width:47px;"><a href="#" class="toggle-drawer" data-messageId="'+ret.data.id+'">View</a></td>'
+						+'</tr>'
+						+'<tr class="view-message" id="drawer'+ret.data.id+'" style="display:none;">'
+						     +'<td colspan="4">'
+						          +'<p>Sent to '+numUsers+' user'+(numUsers == 1 ? "s" : "")+'</p><br/>'
+						          +ret.data.message
+						     +'</td>'
+						+'</tr>';
+					$('#notificationTable').prepend(htmlString);
+				}
+			});
+		}
+		else {
+			showMsg("danger", "Please fill in all fields.");
+		}
+	});
+});
+</script>
+{/literal}
+
+</body>
+</html>

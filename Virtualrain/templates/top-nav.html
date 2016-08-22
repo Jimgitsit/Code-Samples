@@ -1,0 +1,25 @@
+<div class="top-nav">
+	<div class="page-logo"></div>
+	<img class="line" src="templates/img/line.png"/>
+	
+	{if !isset( $hideBackButton ) && $prev_request != ''}
+		{if isset( $catId )}
+			<a href="{$prev_request}">
+		{elseif isset( $itemIndex )}
+			<a href="{$prev_request}&item_index={$itemIndex}">	
+		{else}
+			<a href="{$prev_request}">	
+		{/if}
+				<div class="back"></div>
+			</a>
+	{/if}
+	
+	
+	{if isset($catId)}
+		<h3>{$categoryTitle}</h3>
+	{elseif isset( $catName )}
+		<h3>{$catName}</h3>
+	{elseif isset( $pageTitle )}
+		<h3>{$pageTitle}</h3>
+	{/if}
+</div>

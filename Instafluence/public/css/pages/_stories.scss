@@ -1,0 +1,44 @@
+// ************
+//  Stories Page
+// ************
+
+#stories-page {
+    .screen {
+        margin-top:79px;
+    }
+}
+#stories-banner { width:100%; background:url('/img/stories-banner.jpg') no-repeat; background-size:cover; padding:185px 0 85px; text-align:center;
+    h1 { color:white; padding-bottom:32px; font-size:48px; line-height:1.3em; }
+    p { color:#5dc7d6; padding-bottom:62px; font-size:24px; line-height:1.3em; }
+    img { display:block; margin:0 auto; }
+}
+
+#kit { padding:50px 0;
+    h1 { text-align:center; padding-bottom:20px; font-size:48px; }
+    p { text-align:center; font-size:24px; color:#545965; opacity:.7; line-height:1.7em; padding-bottom:30px; }
+    button { display:block; margin:0 auto; border:none; background:#5dc7d6; color:white; font-size:15px; font-weight:100; cursor:pointer; }
+}
+
+#stories { background:#f8f8f8; padding:45px 0;
+    .story { width:100%; background:white; padding:14px 0; margin-bottom:42px;
+        .left { float:left; max-width:480px;
+            img { width:100%; }
+            .split {
+                width:50%;
+                float:left;
+            }
+        }
+        .right { float:right; max-width:520px; padding:0 0 0 46px; display:table;
+            h1 {
+                a {
+                    &:hover {
+                        color:#555;
+                    }
+                }
+            }
+            h3 { font-size:18px; color:#5dc7d6; text-transform:uppercase; font-weight:100; letter-spacing:2px; padding:17px 0; }
+            h4 { font-size:20px; color:#636363; font-style:italic; padding-bottom:25px; }
+            p { font-size:15px; color:#636363; line-height:1.7em; }
+        }
+    }
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Login"}
+</head>
+<body class="loginpage">
+	<div class="container">
+		<div class="login">
+			{if isset( $distLogo ) && $distLogo != ''}
+				<img id="logo" src="{$distLogo}"/>
+			{elseif isset( $distName )}
+				{$distName}
+			{else}
+				<!-- TODO: Might want to be more harsh than this. -->
+				<p>Error: Missing dist_id</p>
+			{/if}
+			<div class="err-msg">{$errMsg}</div>
+			<form method="POST" action="" id="login-form">
+				<input type="hidden" id="clientTimezone" name="client_timezone" value=""/>
+				{if $signup}
+					<input type="text" name="email" placeholder="Email" value="{$current_user.email}"/><br class="clear"/>
+					<input type="password" name="pass1" placeholder="Password"/><br class="clear"/>
+					<input type="password" name="pass2" placeholder="Repeat Password"/><br class="clear"/>
+					<button name="action" value="signup" type="submit">SUBMIT</button>
+				{else}	
+					<input id="email" type="text" name="email" placeholder="Email" value="{if isset($email)}{$email}{elseif isset($userEmail)}{$userEmail}{/if}"/><br class="clear"/>
+					<input type="password" name="password" placeholder="Password"/><br class="clear"/>
+					<button id="loginBtn" name="action" value="login" type="submit">SIGN IN</button>
+				{/if}
+			</form>
+			{if isset($distId)}	
+				<p>
+					<a href="/register">register / </a>
+					<a href="/forgot">forgot password</a>
+				</p>
+				<br class="clear"/>
+			{elseif !$signup}
+				<p><a href="/forgot">forgot password</a></p>
+				<br class="clear"/>
+			{/if}
+		</div>
+	</div>
+</body>
+
+<script src="/templates/js/util.js"></script>
+
+<script>
+	$(document).ready(function() {
+		$('#clientTimezone').val(get_timezone_id());
+		
+		//var div= $('.login');
+		//div.css("top", ($(window).height() - div.height())/2  + 'px');
+		
+		// TODO: Why?
+		if(supportsHtml5Storage()) {
+			var email = localStorage.getItem("user_email");
+			if(email != null) {
+				$('#email').val(email);
+			}
+			
+			$('#loginBtn').click(function() {
+				var email = $('#email').val();
+				localStorage.setItem("user_email", email);
+			});
+		}
+	});
+</script>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Users"}
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="users"}
+
+<div class="container users-container">
+	
+	<div class="users-header">
+		<h4 class="pull-left">App Users</h4>
+		
+		<div class="pull-right">
+			<div class="checkbox form-input show-removed-check-wrap">
+				<label>
+					<input type="checkbox" id="show-removed-check"> Show removed users
+				</label>
+			</div>
+		</div>
+	</div>
+	
+	<div class="clear"></div>
+	
+	<div class="table-scroll">
+		<table class="table table-condensed">
+			<thead>
+				<tr>
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'last_name-desc'}
+							<a href="?&sort=last_name-asc">Name<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'last_name-asc'}
+							<a href="?&sort=last_name-desc">Name<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{elseif !isset($smarty.get.sort)}
+							<a href="?&sort=last_name-desc">Name<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{else}
+							<a href="?&sort=last_name-desc">Name</a>
+						{/if}
+					</th>
+					
+					{*<th>Email</th>*}
+					
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'company_name-desc'}
+							<a href="?&sort=company_name-asc">Company Name<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'company_name-asc'}
+							<a href="?&sort=company_name-desc">Company Name<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=company_name-desc">Company Name</a>
+						{/if}
+					</th>
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'cell_phone-desc'}
+							<a href="?&sort=cell_phone-asc">Phone #<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'cell_phone-asc'}
+							<a href="?&sort=cell_phone-desc">Phone #<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=cell_phone-desc">Phone #</a>
+						{/if}
+					</th>
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'account_num-desc'}
+							<a href="?&sort=account_num-asc">Account #<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'account_num-asc'}
+							<a href="?&sort=account_num-desc">Account #<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=account_num-desc">Account #</a>
+						{/if}
+					</th>
+
+				
+					<th>Branch</th>
+					
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'show_pricing-desc'}
+							<a href="?&sort=show_pricing-asc">Pricing<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'show_pricing-asc'}
+							<a href="?&sort=show_pricing-desc">Pricing<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=show_pricing-desc">Pricing</a>
+						{/if}
+					</th>
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'status-desc'}
+							<a href="?&sort=status-asc">Status<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'status-asc'}
+							<a href="?&sort=status-desc">Status<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=status-desc">Status</a>
+						{/if}
+					</th>
+					<th>
+						{if isset($smarty.get.sort) && $smarty.get.sort == 'last_login-desc'}
+							<a href="?&sort=last_login-asc">Last Login<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+						{elseif isset($smarty.get.sort) && $smarty.get.sort == 'last_login-asc'}
+							<a href="?&sort=last_login-desc">Last Login<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+						{else}
+							<a href="?&sort=last_login-desc">Last Login</a>
+						{/if}
+					</th>
+
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				{if count( $users ) == 0}
+				<tr><td colspan="10">No users have registered yet.</td></tr>
+				{/if}
+				
+				{assign var=lastUserStatus value=-1}
+				{foreach $users as $user}
+					<tr class="base-row user-row show-hover {if $lastUserStatus != -1 && $lastUserStatus != $user['status']}users-list-separator{/if} {if $user['removed'] == 1}user-row-removed{/if}">
+					{assign var=lastUserStatus value=$user['status']}
+						<td id="name_{$user['id']}" style="white-space:nowrap;"><a href="mailto:{$user['email']}">{$user['first_name']} {$user['last_name']}</a></td>
+						{*<td id="email_{$user['id']}" style="white-space:nowrap;"><a href="mailto:{$user['email']}">{$user['email']}</a></td>*}
+						<td id="company_{$user['id']}" style="white-space:nowrap;">{$user['company_name']}</td>
+						<td id="cell_phone_{$user['id']}" style="white-space:nowrap;">{$user['cell_phone']}</td>
+						<td id="account_num_{$user['id']}" style="white-space:nowrap;">{$user['account_num']}</td>
+						<td id="branch_{$user['id']}" style="white-space:nowrap;">{if isset($user['branch'])}{$user['branch']['name']}{/if}</td>
+						<td id="show_pricing_{$user['id']}" style="white-space:nowrap;">{if $user['show_pricing'] == 1}Yes{else}No{/if}</td>
+						<td id="status_{$user['id']}" style="white-space:nowrap;">{if $user[ 'status' ] == 1}Active{elseif $user[ 'status' ] == 3}New{else}Disabled{/if}</td>
+						<td style="white-space:nowrap;">{if $user['local_last_login'] != null}{$user['local_last_login']|date_format:"%D %I:%M %p"}{/if}</td>
+						<td style="text-align:right;white-space:nowrap;" class="control-td">
+							<span class="user-row-control user-save-btn">Save<span class="spacer"></span></span>
+							<a href="/admin/orders?filters[user_id]={$user['id']}" class="user-row-control user-orders-btn">Orders<span class="spacer"></span></a>
+							<span class="user-row-control user-edit-btn" data-id="{$user['id']}">Edit<span class="spacer"></span></span>
+							{if $user['removed'] == 1}
+								<span class="user-row-control user-restore-btn" data-id="{$user['id']}">Restore</span>
+							{else}
+								<span class="user-row-control user-remove-btn" data-id="{$user['id']}">Remove</span>
+							{/if}
+						</td>
+					</tr>
+					<tr class="users-details-row" data-id="{$user['id']}">
+						<td colspan="10">
+							<form id="userDetailsTable" class="form-horizontal">
+								<input type="hidden" name="id" id="user_id_{$user@index}" value="{$user['id']}">
+								<div class="row">
+									<div class="col-md-6">
+										<div class="col-md-6">
+											<label class="" for="first_name">First Name</label>
+											<input type="email" class="form-control inline" name="first_name" placeholder="First Name" value="{$user['first_name']}">
+										</div>
+										<div class="col-md-6">
+											<label class="" for="last_name">Last Name</label>
+											<input type="text" class="form-control inline" name="last_name" placeholder="Last Name" value="{$user['last_name']}">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="col-md-6">
+											<label class="" for="account_num">Account Number</label>
+											<input type="text" class="form-control inline" name="account_num" placeholder="Account Number" value="{$user['account_num']}">
+										</div>
+										<div class="col-md-6">
+											<label class="" for="company_name">Company Name</label>
+											<input type="text" class="form-control inline" name="company_name" placeholder="Company Name" value="{$user['company_name']}">
+										</div>
+									</div>
+								</div>
+		
+								<div class="row">
+									<div class="col-md-6">
+										<div class="col-md-6">
+											<label class="" for="email">Email</label>
+											<input type="email" class="form-control inline" name="email" placeholder="Email" value="{$user['email']}">
+										</div>
+										<div class="col-md-6">
+											<label class="" for="cell_phone">Cell Phone</label>
+											<input type="text" class="form-control inline" name="cell_phone" placeholder="Cell Phone" value="{$user['cell_phone']}">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="col-md-4" style="width: 25%;">
+											<label style="display:block" for="account_num">Show Pricing</label>
+											<select class="form-control inline show-pricing-select" name="show_pricing">
+												<option value="0" {if $user['show_pricing'] == 0}selected="selected"{/if}>No</option>
+												<option value="1" {if $user['show_pricing'] == 1}selected="selected"{/if}>Yes</option>
+											</select>
+										</div>
+										<div class="col-md-4" style="width: 25%;">
+											<label style="display:block" for="status_{$user@index}">Status</label>
+											<select name="status" class="form-control inline user-status-select">
+												{if $user['status'] == 3}
+													<option value="3" selected="selected"></option>
+												{/if}
+												<option value="1" {if $user[ 'status' ] == 1}selected="selected"{/if}>Active</option>
+												<option value="0" {if $user[ 'status' ] == 0}selected="selected"{/if}>Disabled</option>
+											</select>
+										</div>
+										<div class="col-md-4" style="width: 50%;">
+											{if !isset($branch)}
+											<label style="display:block" for="branch_{$user@index}">Branch</label>
+											<select name="branch_id" class="form-control inline branch-select">
+												<option value="0"></option>
+												{foreach $branches as $b}
+													<option value="{$b.id}" {if isset($user['branch']) && $user['branch']['id'] == $b.id}selected="selected"{/if}>{$b.name}</option>
+												{/foreach}
+											</select>
+											{/if}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6">
+										<div class="col-md-6">
+											<label style="display:block" for="status_emails_{$user@index}">Send email on order status changes</label>
+											<select class="form-control inline status-emails-select" name="status_emails">
+												<option value="1" {if $user['status_emails'] == 1}selected="selected"{/if}>Yes</option>
+												<option value="0" {if $user['status_emails'] == 0}selected="selected"{/if}>No</option>
+											</select>
+										</div>
+										<div class="col-md-6">
+											<label style="display:block" for="set_password_{$user@index}">Set password</label>
+											<input type="password" class="form-control inline password" name="password" placeholder="New Password" value="">
+										</div>
+									</div>
+									<div class="col-md-6">
+										
+									</div>
+								</div>
+							</form>
+						</td>
+					</tr>
+				{/foreach}
+			</tbody>
+		</table>
+	</div>
+
+
+
+</div>
+
+
+<script>
+$(document).ready(function() {
+	$(":input").addClass("control");
+	$('#show-removed-check').removeClass("control");
+	
+	$('#show-removed-check').change(function() {
+		if(this.checked) {
+			$('.user-row-removed').show();
+		}
+		else {
+			$('.user-row-removed').hide();
+		}
+	});
+
+	var unsavedChanges = false;
+	window.onbeforeunload = function() {
+		if( unsavedChanges ) {
+			return "You have unsaved changes, are you sure you want to leave?";
+		}
+	};
+
+	$(".control").each(function() {
+		$(this).bind("change keypress", function(evt) {
+			var el = $($(this).closest('.users-details-row')[0])[0];
+			var baseRow = $(el).prev()[0];
+			var btn = $(baseRow).find(".user-save-btn");
+			btn.show();
+
+			$(".save-all-btn-box").show();
+			unsavedChanges = true;
+		});
+	});
+
+	$(".user-edit-btn").each(function() {
+		$(this).click(function(e) {
+			e.preventDefault();
+			var userId = $(this).attr("data-id");
+			var tr = $(".users-details-row[data-id=" + userId + "]");
+			if( tr.is(":hidden") ) {
+				tr.find('#userDetailsTable').hide();
+				tr.show();
+				tr.find('#userDetailsTable').slideDown(50);
+			}
+			else {
+				tr.find('#userDetailsTable').slideUp(50, 'swing', function() {
+					tr.hide();
+				});
+			}
+		});
+	});
+	
+	var initRemoveBtn = function(removeBtn) {
+		removeBtn.off('click');
+		removeBtn.click(function() {
+			var btn = $(this);
+			var id = btn.attr('data-id');
+			var name = $("#name_" + id).text();
+			
+			if(confirm("Are you sure you want to remove the user " + name + "?")) {
+				
+				var data = {
+						'action': 'remove_user_ajax',
+						'id': id
+				};
+				
+				$.post('/admin/users', data, function() {
+					var tr = btn.closest('tr');
+					tr.addClass('user-row-removed');
+					btn.removeClass('user-remove-btn').addClass('user-restore-btn').text('Restore');
+					if($('#show-removed-check').is(':checked')) {
+						tr.show();
+					}
+					initRestoreBtn(btn);
+				});
+			}
+		});
+	};
+	
+	$(".user-remove-btn").each(function() {
+		initRemoveBtn($(this));
+	});
+	
+	var initRestoreBtn = function(restoreBtn) {
+		restoreBtn.off('click');
+		restoreBtn.click(function() {
+			var btn = $(this);
+			var id = btn.attr('data-id');
+			var data = {
+					'action': 'restore_user_ajax',
+					'id': id
+			};
+			
+			$.post('/admin/users', data, function() {
+				var tr = btn.closest('tr');
+				tr.removeClass('user-row-removed');
+				btn.removeClass('user-restore-btn').addClass('user-remove-btn').text('Remove');
+				initRemoveBtn(btn);
+			});
+		});
+	};
+	
+	$(".user-restore-btn").each(function() {
+		initRestoreBtn($(this));
+	});
+
+	$(".user-save-btn").each(function() {
+		$(this).click(function() {
+			var btn = $(this);
+			var row = btn.closest('tr');
+			var detailRow = row.next();
+			var userId = detailRow.attr('data-id');
+			
+			var data = {};
+			data.action = 'save_user_ajax';
+			
+			showMsg("info", "Saving user...");
+			
+			var inputs = $(row).next().find(':input');
+			$(inputs).each(function(){
+				data[this.name] = this.value;
+			});
+			
+			btn.hide();
+
+			$.ajax({
+				url: "/admin/users",
+				type: "POST",
+				data: data,
+				success: function(result){
+					try {
+						var result = JSON.parse(result);
+					}
+					catch(e) {
+						showMsg('danger', e + ': ' + result );
+						return;
+					}
+					
+					if (result.success == "true") {
+						detailRow.find('.password').val('');
+						
+						delete data.action;
+						
+						items = row.find("td");
+						$.each(items, function(i,td){
+							td = $(td);
+							if(td.hasClass('control-td')) {
+								return;
+							}
+							
+							var id = td.attr('id');
+							prefix = id.substring(0, id.lastIndexOf("_"));
+
+							switch(prefix){
+								case "name":
+									td.html(data.first_name + " " + data.last_name);
+									break;
+								case "email":
+									td.html('<a href="mailto:'+data.email+'">'+data.email+'</a>');
+									break;
+								case "company":
+								     td.html(data.company_name);
+								     break;
+								case "cell_phone":
+									td.html(data.cell_phone);
+									break;
+								case "account_num":
+									td.html(data.account_num);
+									break;
+								case "branch":
+									var sel = detailRow.find('select.branch-select');
+									var opt = sel.find('option[value="' + data.branch_id + '"]');
+									td.html(opt.text());
+									break;
+								case "status":
+									var sel = detailRow.find('select.user-status-select');
+									var opt = sel.find('option[value="' + data.status + '"]');
+									td.html(opt.text());
+									break;
+								case "show_pricing": {
+									var sel = detailRow.find('select.show-pricing-select');
+									var opt = sel.find('option[value="' + data.show_pricing + '"]');
+									td.html(opt.text());
+									break;
+								}
+								case "status_emails": {
+									var sel = detailRow.find('select.status-emails-select');
+									var opt = sel.find('option[value="' + data.status_emails + '"]');
+									td.html(opt.text());
+									break;
+								}
+							}
+
+
+						});
+
+	                    showMsg('success', "User Saved");
+						unsavedChanges = false;
+						detailRow.hide();
+					}
+					else {
+						btn.show();
+						showMsg('danger', result.errorMsg);
+					}
+				}
+			});
+		});
+	});
+
+	$('.user-save-all-btn').click(function() {
+		// Itterate all rows looking for visible price buttons
+		// to gather all the products to save
+		// and pass them to the post
+		alert('TODO');
+	});
+});
+</script>
+
+
+</body>
+</html>

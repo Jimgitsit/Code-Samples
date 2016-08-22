@@ -1,0 +1,43 @@
+{include file='templates/header.tpl' pageTitle='Dashboard'}
+
+<article id="signup" class="signin">
+	<div class="container">
+		<h1>Influencer Sign Up</h1>
+		<p>
+			Here at Instafluence, we have run campaigns with thousands of
+			different influencers to promote hundreds of great brands. Please
+			join our network to become eligible to earn money with your
+			influence.
+		</p>
+		<form id="signup-form">
+			<input type="text" placeholder="First Name">
+			<input type="text" placeholder="Last Name">
+
+			<input type="email" name="email" id="signup_email" placeholder="Email">
+
+			<input type="password" name="password" id="signup_password" placeholder="Password">
+			<input type="password" name="password_again" id="signup_password_again" placeholder="Retype Password">
+
+			<button class="btn-blue">Sign Up</button>
+
+			<p>Already have an account? <a href="#">Login</a></p>
+		</form>
+	</div>
+</article>
+
+{include file='templates/contact_modal.tpl'}
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/static.js"></script>
+
+{literal}<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->{/literal}
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+/**************************************************
+				Tablet
+***************************************************/
+@media (max-width: 800px) {
+	header ul { display: none; }
+	#social-networks img.app { display: block; margin: 0 auto; float: none; display: block; }
+	#social-networks .text { float:none; margin: 0 auto; }
+	#social-networks h2 { text-align: center; }
+	#social-networks p { text-align: center;}
+	#social-networks .text img { margin:34px; }
+	#app-marketing .downloads img { float: none; margin:0 auto: }
+}
+
+/**************************************************
+			SmartPhone
+***************************************************/
+@media (max-width: 540px) {
+	#social-networks .text img { margin:13px; }
+	#social-networks img.app { width:100%; margin: 0; }
+	#social-networks h2 { text-align: center; }
+	#how-instafluence-works .pic-lab img { display: block; margin: 0 auto; float:none; }
+	#how-instafluence-works .pic-lab .text { float:none; margin:15px auto; text-align: center; }
+	#how-instafluence-works .influencers { display: none; }
+	#app-marketing .downloads img { width:100%; height:auto; }
+	#app-marketing h2 { text-align: center; margin-top: 15px; }
+	footer { display: none; }
+	#app-marketing .followers .text { padding:0; text-align: center; }
+	#app-marketing .followers .text h2 { padding-top: 20px; }
+	#app-marketing .followers img { width:100%; height:auto; margin:15px 0; }
+	#app-marketing .downloads { padding-bottom: 20px; }
+	#instfluence-client-quotes { background-size: cover; }
+	#instfluence-client-quotes h2 { font-size: 30px; padding-top: 80px; }
+}
+ 
+
+
+
+

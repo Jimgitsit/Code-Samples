@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Pickup Locations"}
+</head>
+<body class="locationspage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="PICKUP LOCATIONS"}
+		
+		<div class="screen">
+		
+			<div class="container with-nav">
+				
+				{foreach $locations as $location}	
+					<div class="location-info">
+						<p><strong>{$location['name']}</strong>&nbsp;<a class="map-link" href="http://maps.google.com/?q={$location['address1']},+{$location['city']},+{$location['state']}+{$location['zip']}"><img src="templates/img/map-icon-16.png"></a></p>
+						<p>{$location['address1']}</p>
+						<p>{$location['city']}, {$location['state']} {$location['zip']}</p>
+						{if $location['phone']}
+							<p>{$location['phone']}&nbsp;&nbsp;<a href="tel:{$location['phone']}"><img src="templates/img/phone-icon-16.png"></a></p>
+						{/if}
+						<br/>
+						<form action="/locations" method="POST" id="preferredForm">
+							<div class="preferred-checkbox {if $location['id'] == $preferred}checked{/if}" id="{$location['id']}" data-preferred="{if $location['id'] == $preferred}true{else}false{/if}"><span class="pref-text">Preferred</span></div>
+						</form>
+					</div>
+				{/foreach}
+				
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/locations.js"></script>
+<script src="/templates/js/util.js"></script>
+
+{literal}
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+<script>
+$(document).ready(function() {
+	if (mobilecheck() == false) {
+		$(".map-link").each(function() {
+			$(this).attr("target", "_blank");
+		});
+	}
+	
+	$('.preferred-checkbox').click(function(){
+		if( !$(this).hasClass('checked') ){
+			// Uncheck others
+			$('.preferred-checkbox').each(function() {
+				$(this).removeClass('checked');
+			});
+			
+			// Check this one
+			$(this).addClass('checked');
+			
+			// Save the cahnge
+			var data = {action: 'save_preferred_ajax', preferred: $(this).attr('id')};
+			$.post("/locations", data);
+		}
+	});
+});
+	
+</script>
+{/literal}
+
+
+
+
+
+
+
+

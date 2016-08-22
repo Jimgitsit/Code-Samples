@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html>
+{include file='templates/head.tpl' pageTitle='Influencers' useCache=false}
+<body class="no-scroll">
+
+{include file='templates/header.tpl'}
+{include file='templates/new_influencer_modal.tpl'}
+{include file='templates/new_influencer_done_modal.tpl'}
+{include file='templates/export_influencers_modal.tpl'}
+
+<section id="filter-list">
+	<div class="container">
+
+		<div id="filters-container">
+			<div id="top">
+				<div id="title">
+					<h3>Filters</h3>
+				</div>
+				<div id="count">
+					<div id="totalInfluencers" class="influencers"></div>
+					<div id="totalReach" class="reach"></div>
+				</div>
+				<br class="clear"/>
+				<form id="filterForm">
+					<dl class="accordion">
+
+						<dt><a href="">Basic Info</a></dt>
+						<dd id="panel1">
+							<label>Results</label><br />
+							<div class="min-max-input">Limit:<input id="filter-limit" class="form-control input-sm followers-input-min" type="text" value="{if isset($filters['limit'])}{$filters['limit']}{else}500{/if}" /></div>
+							<div class="min-max-input">Offset:<input id="filter-offset" class="form-control input-sm followers-input-min" type="text" value="{if isset($filters['offset'])}{$filters['offset']}{else}0{/if}" /></div>
+							<br /> <br />
+
+							<!-- <input type="text" id="filter-limit" value="{if isset($filters['limit'])}{$filters['limit']}{else}500{/if}" class="form-control input-sm" />
+							<br /> <br />
+
+							<label>Result Offset</label>
+							<input type="text" id="filter-offset" value="{if isset($filters['offset'])}{$filters['offset']}{else}0{/if}" class="form-control input-sm" />
+							<br /> <br /> -->
+
+							<label>Tier</label>
+							<select name="tier" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option value="1" {if isset($filters.profileFilters.tier) && 1|in_array:$filters.profileFilters.tier}selected{/if}>Tier 1</option>
+								<option value="2" {if isset($filters.profileFilters.tier) && 2|in_array:$filters.profileFilters.tier}selected{/if}>Tier 2</option>
+								<option value="3" {if isset($filters.profileFilters.tier) && 3|in_array:$filters.profileFilters.tier}selected{/if}>Tier 3</option>
+								<option value="4" {if isset($filters.profileFilters.tier) && 4|in_array:$filters.profileFilters.tier}selected{/if}>Tier 4</option>
+							</select>
+							<br/><br/>
+
+							<label>Tags</label>
+							<select name="tags" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								{foreach $allTags as $tag}
+									<option value="{$tag}" {if isset($filters.profileFilters.tags) && $tag|in_array:$filters.profileFilters.tags}selected{/if}>{$tag}</option>
+								{/foreach}
+							</select>
+							<br/><br/>
+
+							<label class="input-label">Number of Followers</label>
+							<!--<div class="pull-right"><span id="followersMin">1</span> - <span id="followersMax">10000000</span></div>-->
+							<br/>
+							<div class="min-max-input">Min:<input id="followers-min" name="followers" data-input-type="range_manual" data-filter-type="profile" class="form-control input-sm followers-input-min" type="text" value="0" /></div>
+							<div class="min-max-input">Max:<input id="followers-max" data-input-type="range_manual" class="form-control input-sm followers-input-max" type="text" value="100000000" /></div>
+							<!--
+							<input id="followersSlider" name="total_followers" data-filter-type="profile" type="text" class="span2" value=""
+							       data-slider-min="1"
+							       data-slider-max="10000000"
+							       data-slider-step="100000"
+							       data-slider-value="[1,10000000]"
+							       data-slider-orientation="horizontal"
+							       data-slider-selection="after"
+							       data-slider-tooltip="hide">
+							-->
+							<br/><br/>
+
+							<label>Country</label>
+							<select name="country" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								{foreach $countries as $value => $display}
+									<option value="{$value}" {if $value == '-'}disabled{/if} {if isset($filters.profileFilters.country) && ($value|in_array:$filters.profileFilters.country || $display|in_array:$filters.profileFilters.country)}selected{/if}>{$display}</option>
+								{/foreach}
+							</select>
+							<br/><br/>
+
+							<label>State</label>
+							<select name="state" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								{foreach $states as $value => $display}
+									<option value="{$value}" {if $value == '-'}disabled{/if} {if isset($filters.profileFilters.state) && ($value|in_array:$filters.profileFilters.state || $display|in_array:$filters.profileFilters.state)}selected{/if}>{$display}</option>
+								{/foreach}
+							</select>
+							<br/><br/>
+
+							<label class="input-label">Zip Code (separate with commas)</label>
+							<input name="zip" id="zip" data-filter-type="profile" class="form-control input-sm" type="text" style="width: 100%;" value="{if isset($filters.profileFilters.zip)}{$filters.profileFilters.zip}{/if}"/>
+							<br/><br/>
+
+							<div class="slide-wrapper">
+								<label>Age</label>
+								<div class="pull-right">
+									{if isset($filters.profileFilters.age.min) && isset($filters.profileFilters.age.max)}
+										{assign "min" {$filters.profileFilters.age.min}}
+										{assign "max" {$filters.profileFilters.age.max}}
+										{assign "value" "{$filters.profileFilters.age.min},{$filters.profileFilters.age.max}"}
+										{assign "dataValue" "[{$filters.profileFilters.age.min},{$filters.profileFilters.age.max}]"}
+									{else}
+										{assign "min" "1"}
+										{assign "max" "99"}
+										{assign "value" ""}
+										{assign "dataValue" "[1,99]"}
+									{/if}
+									<span id="ageMin" class="range-text-min">{$min}</span> - <span id="ageMax"  class="range-text-max">{$max}</span></div>
+								<br/>
+								<input id="ageSlider" name="age" data-filter-type="profile" data-input-type="range" type="text" class="span2" value="{$value}"
+								       data-slider-min="1"
+								       data-slider-max="99"
+								       data-slider-step="1"
+								       data-slider-value="{$dataValue}"
+								       data-slider-orientation="horizontal"
+								       data-slider-selection="after"
+								       data-slider-tooltip="hide">
+								<br/><br/>
+							</div>
+
+							<label>Gender:</label><br />
+							<div class="pull-right">
+								Male&nbsp;<input id="gender_a" class="gender-check" type="checkbox" value="1" {if isset($filters.profileFilters.gender) && 1|in_array:$filters.profileFilters.gender}checked{/if} />&nbsp;&nbsp;
+								Female&nbsp;<input id="gender_b" class="gender-check" type="checkbox" value="0" {if isset($filters.profileFilters.gender) && 0|in_array:$filters.profileFilters.gender}checked{/if} />&nbsp;&nbsp;
+								<!-- Other&nbsp;<input id="gender_c" class="gender-check" type="checkbox" value="2" {if isset($filters.profileFilters.gender) && 2|in_array:$filters.profileFilters.gender}checked{/if} />&nbsp;&nbsp; -->
+								<input type="hidden" name="gender" data-filter-type="profile" data-input-type="ab" />
+							</div>
+							<br/><br/>
+
+							<label>Ethnicity</label>
+							<select name="ethnicity" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.ethnicity) && "Caucasian"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Caucasian</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "African American/Black"|in_array:$filters.profileFilters.ethnicity}selected{/if}>African American/Black</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Hispanic/Latino"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Hispanic/Latino</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Asian"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Asian</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Middle Eastern"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Middle Eastern</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Pacific Islander"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Pacific Islander</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Native American/Alaskan"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Native American/Alaskan</option>
+								<option {if isset($filters.profileFilters.ethnicity) && "Other"|in_array:$filters.profileFilters.ethnicity}selected{/if}>Other</option>
+							</select>
+							<br/><br/>
+
+							<label>Eye Color</label>
+							<select name="eye_color" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.eye_color) && "Amber"|in_array:$filters.profileFilters.eye_color}selected{/if}>Amber</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Blue"|in_array:$filters.profileFilters.eye_color}selected{/if}>Blue</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Brown"|in_array:$filters.profileFilters.eye_color}selected{/if}>Brown</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Green"|in_array:$filters.profileFilters.eye_color}selected{/if}>Green</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Gray"|in_array:$filters.profileFilters.eye_color}selected{/if}>Gray</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Hazel"|in_array:$filters.profileFilters.eye_color}selected{/if}>Hazel</option>
+								<option {if isset($filters.profileFilters.eye_color) && "Red and Violet"|in_array:$filters.profileFilters.eye_color}selected{/if}>Red and Violet</option>
+							</select>
+							<br/><br/>
+
+							<label>Hair Color</label>
+							<select name="hair_color" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.hair_color) && "Black"|in_array:$filters.profileFilters.hair_color}selected{/if}>Black</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Brown"|in_array:$filters.profileFilters.hair_color}selected{/if}>Brown</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Blond"|in_array:$filters.profileFilters.hair_color}selected{/if}>Blond</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Auburn"|in_array:$filters.profileFilters.hair_color}selected{/if}>Auburn</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Chestnet"|in_array:$filters.profileFilters.hair_color}selected{/if}>Chestnet</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Red"|in_array:$filters.profileFilters.hair_color}selected{/if}>Red</option>
+								<option {if isset($filters.profileFilters.hair_color) && "Gray / White"|in_array:$filters.profileFilters.hair_color}selected{/if}>Gray / White</option>
+							</select>
+							<br/><br/>
+
+							<label>Education Level</label>
+							<select name="education" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.education) && "Some High School"|in_array:$filters.profileFilters.education}selected{/if}>Some High School</option>
+								<option {if isset($filters.profileFilters.education) && "High School Graduate or Equivalent"|in_array:$filters.profileFilters.education}selected{/if}>High School Graduate or Equivalent</option>
+								<option {if isset($filters.profileFilters.education) && "Trade or Vocational Degree"|in_array:$filters.profileFilters.education}selected{/if}>Trade or Vocational Degree</option>
+								<option {if isset($filters.profileFilters.education) && "Some College"|in_array:$filters.profileFilters.education}selected{/if}>Some College</option>
+								<option {if isset($filters.profileFilters.education) && "Associate Degree"|in_array:$filters.profileFilters.education}selected{/if}>Associate Degree</option>
+								<option {if isset($filters.profileFilters.education) && "Bachelor's Degree"|in_array:$filters.profileFilters.education}selected{/if}>Bachelor's Degree</option>
+								<option {if isset($filters.profileFilters.education) && "Graduate or Professional Degree"|in_array:$filters.profileFilters.education}selected{/if}>Graduate or Professional Degree</option>
+								<option {if isset($filters.profileFilters.education) && "Prefer not to answer"|in_array:$filters.profileFilters.education}selected{/if}>Prefer not to answer</option>
+							</select>
+							<br/><br/>
+
+							<label>Content Rating</label>
+							<select name="content_rating" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.content_rating) && "G"|in_array:$filters.profileFilters.content_rating}selected{/if}>G</option>
+								<option {if isset($filters.profileFilters.content_rating) && "PG"|in_array:$filters.profileFilters.content_rating}selected{/if}>PG</option>
+								<option {if isset($filters.profileFilters.content_rating) && "PG-13"|in_array:$filters.profileFilters.content_rating}selected{/if}>PG-13</option>
+								<option {if isset($filters.profileFilters.content_rating) && "R"|in_array:$filters.profileFilters.content_rating}selected{/if}>R</option>
+							</select>
+						</dd>
+
+						<dt><a href="">Social Networks</a></dt>
+						<dd id="panel2">
+							<label></label>
+							<div class="pull-right">
+								<span id="socialCheckText">All</span>&nbsp;<input id="socialCheckAll" type="checkbox" />
+							</div>
+							<br/><br/>
+							<label>Facebook:</label>
+							<div class="pull-right">
+								<input name="facebook" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.facebook)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Twitter:</label>
+							<div class="pull-right">
+								<input name="twitter" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.twitter)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Instagram:</label>
+							<div class="pull-right">
+								<!-- <input name="instagram_price" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.instagram_price)}checked{/if} /> -->
+								<input name="instagram" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.instagram)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Vine:</label>
+							<div class="pull-right">
+								<input name="vine" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.vine)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>YouTube:</label>
+							<div class="pull-right">
+								<input name="youtube" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.youtube)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Google+:</label>
+							<div class="pull-right">
+								<input name="googleplus" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.googleplus)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>LinkedIn:</label>
+							<div class="pull-right">
+								<input name="linkedin" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.linkedin)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Tumblr:</label>
+							<div class="pull-right">
+								<input name="tumblr" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.tumblr)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>WordPress:</label>
+							<div class="pull-right">
+								<input name="wordpress" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.wordpress)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Foursquare:</label>
+							<div class="pull-right">
+								<input name="foursquare" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.foursquare)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Pinterest:</label>
+							<div class="pull-right">
+								<input name="pinterest" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.pinterest)}checked{/if} />
+							</div>
+							<br/><br/>
+							<label>Snapchat:</label>
+							<div class="pull-right">
+								<input name="snapchat" data-filter-type="social" type="checkbox" {if isset($filters.socialFilters.snapchat)}checked{/if} />
+							</div>
+							<br/><br/>
+							<br/><br/>
+
+							<label>Only show influencers that have<br/>prices for the selected networks:</label>
+							<div class="pull-right">
+								<input id="onlyWithPrice" type="checkbox" {if isset($filters.onlyWithPrice) && $filters.onlyWithPrice == 'true'}checked{/if} />
+							</div>
+							<br/><br/>
+
+							<label>Only show reach for the<br/>selected networks:</label>
+							<div class="pull-right">
+								<input id="onlySelectedAccountFollowers" type="checkbox" {if isset($filters.onlySelectedAccountFollowers) && $filters.onlySelectedAccountFollowers == 'true'}checked{/if} />
+							</div>
+							<br/><br/>
+
+						</dd>
+
+						<dt><a href="">Sizes</a></dt>
+						<dd id="panel3">
+							<div class="slide-wrapper">
+								<label>Height</label>
+								<div class="pull-right">
+									{if isset($filters.profileFilters.height.min) && isset($filters.profileFilters.height.max)}
+										{math equation="floor(x/12)" x={$filters.profileFilters.height.min} assign=minFt}
+										{assign "minIn" {$filters.profileFilters.height.min} % 12}
+										{assign "min" "{$minFt}' {$minIn}\""}
+										{math equation="floor(x/12)" x={$filters.profileFilters.height.max} assign=maxFt}
+										{assign "maxIn" {$filters.profileFilters.height.max} % 12}
+										{assign "max" "{$maxFt}' {$maxIn}\""}
+										{assign "value" "{$filters.profileFilters.height.min},{$filters.profileFilters.height.max}"}
+										{assign "dataValue" "[{$filters.profileFilters.height.min},{$filters.profileFilters.height.max}]"}
+									{else}
+										{assign "min" "3' 0\""}
+										{assign "max" "9' 0\""}
+										{assign "value" ""}
+										{assign "dataValue" "[36,108]"}
+									{/if}
+									<span id="heightMin" class="range-text-min">{$min}</span> - <span id="heightMax"  class="range-text-max">{$max}</span></div>
+								<br/>
+								<!-- TODO: add data-filter-type="profile" once heights are in inches in the db -->
+								<input id="heightSlider" name="height" data-input-type="range" type="text" class="span2" value="{$value}"
+								       data-slider-min="36"
+								       data-slider-max="108"
+								       data-slider-step="1"
+								       data-slider-value="{$dataValue}"
+								       data-slider-orientation="horizontal"
+								       data-slider-selection="after"
+								       data-slider-tooltip="hide">
+							</div>
+							<br/><br/>
+
+							<div class="slide-wrapper">
+								<label>Shoe Size</label>
+								<div class="pull-right">
+									{if isset($filters.profileFilters.shoe_size.min) && isset($filters.profileFilters.shoe_size.max)}
+										{assign "min" {$filters.profileFilters.shoe_size.min}}
+										{assign "max" {$filters.profileFilters.shoe_size.max}}
+										{assign "value" "{$filters.profileFilters.shoe_size.min},{$filters.profileFilters.shoe_size.max}"}
+										{assign "dataValue" "[{$filters.profileFilters.shoe_size.min},{$filters.profileFilters.shoe_size.max}]"}
+									{else}
+										{assign "min" "4.0"}
+										{assign "max" "16.0"}
+										{assign "value" ""}
+										{assign "dataValue" "[4,16]"}
+									{/if}
+									<span id="shoeSizeMin" class="range-text-min">{$min}</span> - <span id="shoeSizeMax" class="range-text-max">{$max}</span></div>
+								<br/>
+								<input id="shoeSizeSlider" name="shoe_size" data-filter-type="profile" data-input-type="range" type="text" class="span2" value="{$value}"
+								       data-slider-min="4"
+								       data-slider-max="16"
+								       data-slider-step="0.5"
+								       data-slider-value="{$dataValue}"
+								       data-slider-orientation="horizontal"
+								       data-slider-selection="after"
+								       data-slider-tooltip="hide">
+							</div>
+							<br/><br/>
+
+							<div class="slide-wrapper">
+								<label>Pant Waist</label>
+								<div class="pull-right">
+									{if isset($filters.profileFilters.pant_waist.min) && isset($filters.profileFilters.pant_waist.max)}
+										{assign "min" {$filters.profileFilters.pant_waist.min}}
+										{assign "max" {$filters.profileFilters.pant_waist.max}}
+										{assign "value" "{$filters.profileFilters.pant_waist.min},{$filters.profileFilters.pant_waist.max}"}
+										{assign "dataValue" "[{$filters.profileFilters.pant_waist.min},{$filters.profileFilters.pant_waist.max}]"}
+									{else}
+										{assign "min" "15"}
+										{assign "max" "46"}
+										{assign "value" ""}
+										{assign "dataValue" "[15,46]"}
+									{/if}
+									<span id="pantWaistMin" class="range-text-min">{$min}</span> - <span id="pantWaistMax" class="range-text-max">{$max}</span></div>
+								<br/>
+								<input id="pantWaist" name="pant_waist" data-filter-type="profile" data-input-type="range" type="text" class="span2" value="{$value}"
+								       data-slider-min="15"
+								       data-slider-max="46"
+								       data-slider-step="1"
+								       data-slider-value="{$dataValue}"
+								       data-slider-orientation="horizontal"
+								       data-slider-selection="after"
+								       data-slider-tooltip="hide">
+							</div>
+							<br/><br/>
+
+							<div class="slide-wrapper">
+								<label>Pant Length</label>
+								<div class="pull-right">
+									{if isset($filters.profileFilters.pant_length.min) && isset($filters.profileFilters.pant_length.max)}
+										{assign "min" {$filters.profileFilters.pant_length.min}}
+										{assign "max" {$filters.profileFilters.pant_length.max}}
+										{assign "value" "{$filters.profileFilters.pant_length.min},{$filters.profileFilters.pant_length.max}"}
+										{assign "dataValue" "[{$filters.profileFilters.pant_length.min},{$filters.profileFilters.pant_length.max}]"}
+									{else}
+										{assign "min" "28"}
+										{assign "max" "36"}
+										{assign "value" ""}
+										{assign "dataValue" "[28,36]"}
+									{/if}
+									<span id="pantLengthMin" class="range-text-min">{$min}</span> - <span id="pantLengthMax" class="range-text-max">{$max}</span></div>
+								<br/>
+								<input id="pantLength" name="pant_length" data-filter-type="profile" data-input-type="range" type="text" class="span2" value="{$value}"
+								       data-slider-min="30"
+								       data-slider-max="36"
+								       data-slider-step="1"
+								       data-slider-value="{$dataValue}"
+								       data-slider-orientation="horizontal"
+								       data-slider-selection="after"
+								       data-slider-tooltip="hide">
+							</div>
+							<br/><br/>
+
+							<label>Shirt Size</label>
+							<br/>
+							<select name="shirt_size" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.shirt_size) && "XXS"|in_array:$filters.profileFilters.shirt_size}selected{/if}>XXS</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "XS"|in_array:$filters.profileFilters.shirt_size}selected{/if}>XS</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "S"|in_array:$filters.profileFilters.shirt_size}selected{/if}>S</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "M"|in_array:$filters.profileFilters.shirt_size}selected{/if}>M</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "L"|in_array:$filters.profileFilters.shirt_size}selected{/if}>L</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "XL"|in_array:$filters.profileFilters.shirt_size}selected{/if}>XL</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "2XL"|in_array:$filters.profileFilters.shirt_size}selected{/if}>2XL</option>
+								<option {if isset($filters.profileFilters.shirt_size) && "3XL"|in_array:$filters.profileFilters.shirt_size}selected{/if}>3XL</option>
+							</select>
+							<br/><br/>
+						</dd>
+
+						<dt><a href="">Other</a></dt>
+						<dd id="panel4">
+							<!-- CHECK -->
+							<label>Glasses:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="glasses_yes" value="true" {if isset($filters.profileFilters.glasses) && "true"|in_array:$filters.profileFilters.glasses}checked{/if} />
+								No&nbsp;<input type="checkbox" id="glasses_no" value="false" {if isset($filters.profileFilters.glasses) && "false"|in_array:$filters.profileFilters.glasses}checked{/if} />
+								<input type="hidden" name="glasses" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Drink:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="drink_yes" value="true" {if isset($filters.profileFilters.drink) && "true"|in_array:$filters.profileFilters.drink}checked{/if} />
+								No&nbsp;<input type="checkbox" id="drink_no" value="false" {if isset($filters.profileFilters.drink) && "false"|in_array:$filters.profileFilters.drink}checked{/if} />
+								<input type="hidden" name="drink" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Will Travel:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="travel_yes" value="true" {if isset($filters.profileFilters.travel) && "true"|in_array:$filters.profileFilters.travel}checked{/if} />
+								No&nbsp;<input type="checkbox" id="travel_no" value="false" {if isset($filters.profileFilters.travel) && "false"|in_array:$filters.profileFilters.travel}checked{/if} />
+								<input type="hidden" name="travel" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Have Passport:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="passport_yes" value="true" {if isset($filters.profileFilters.passport) && "true"|in_array:$filters.profileFilters.passport}checked{/if} />
+								No&nbsp;<input type="checkbox" id="passport_no" value="false" {if isset($filters.profileFilters.passport) && "false"|in_array:$filters.profileFilters.passport}checked{/if} />
+								<input type="hidden" name="passport" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Valid Driver's License:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="drivers_license_yes" value="true" {if isset($filters.profileFilters.drivers_license) && "true"|in_array:$filters.profileFilters.drivers_license}checked{/if} />
+								No&nbsp;<input type="checkbox" id="drivers_license_no" value="false" {if isset($filters.profileFilters.drivers_license) && "false"|in_array:$filters.profileFilters.drivers_license}checked{/if} />
+								<input type="hidden" name="drivers_license" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Married:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="married_yes" value="true" {if isset($filters.profileFilters.married) && "true"|in_array:$filters.profileFilters.married}checked{/if} />
+								No&nbsp;<input type="checkbox" id="married_no" value="false" {if isset($filters.profileFilters.married) && "false"|in_array:$filters.profileFilters.married}checked{/if} />
+								<input type="hidden" name="married" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Children:</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="children_yes" value="true" {if isset($filters.profileFilters.children) && "true"|in_array:$filters.profileFilters.children}checked{/if} />
+								No&nbsp;<input type="checkbox" id="children_no" value="false" {if isset($filters.profileFilters.children) && "false"|in_array:$filters.profileFilters.children}checked{/if} />
+								<input type="hidden" name="children" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Pet(s):</label>
+							<div class="pull-right">
+								Yes&nbsp;<input type="checkbox" id="pet_yes" value="true" {if isset($filters.profileFilters.pet) && "true"|in_array:$filters.profileFilters.pet}checked{/if} />
+								No&nbsp;<input type="checkbox" id="pet_no" value="false" {if isset($filters.profileFilters.pet) && "false"|in_array:$filters.profileFilters.pet}checked{/if} />
+								<input type="hidden" name="pet" data-filter-type="profile" data-input-type="yesno" />
+							</div>
+							<br/><br/>
+							<label>Type of Pets</label>
+							<select name="pet_type" data-filter-type="profile" data-input-type="multi" class="select2" multiple style="width: 100%;">
+								<option value="dog" {if isset($filters.profileFilters.pet_type) && "dog"|array_key_exists:$filters.profileFilters.pet_type}selected{/if}>Dog</option>
+								<option value="cat" {if isset($filters.profileFilters.pet_type) && "cat"|array_key_exists:$filters.profileFilters.pet_type}selected{/if}>Cat</option>
+								<option value="other" {if isset($filters.profileFilters.pet_type) && "other"|array_key_exists:$filters.profileFilters.pet_type}selected{/if}>Other</option>
+							</select>
+							<br/><br/>
+							<label>Type of Phone</label>
+							<select name="phone_type" data-filter-type="profile" class="select2" multiple style="width: 100%;">
+								<option {if isset($filters.profileFilters.phone_type) && "iPhone"|in_array:$filters.profileFilters.phone_type}selected{/if}>iPhone</option>
+								<option {if isset($filters.profileFilters.phone_type) && "Android"|in_array:$filters.profileFilters.phone_type}selected{/if}>Android</option>
+								<option {if isset($filters.profileFilters.phone_type) && "Windows"|in_array:$filters.profileFilters.phone_type}selected{/if}>Windows</option>
+								<option {if isset($filters.profileFilters.phone_type) && "Other"|in_array:$filters.profileFilters.phone_type}selected{/if}>Other</option>
+							</select>
+							<br/><br/>
+							<label>Music Genre</label>
+							<select name="music_genre" data-filter-type="profile" data-input-type="multi" class="select2" multiple style="width: 100%;">
+								<option value="pop" {if isset($filters.profileFilters.music_genre) && "pop"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Pop</option>
+								<option value="rap" {if isset($filters.profileFilters.music_genre) && "rap"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Rap</option>
+								<option value="rock" {if isset($filters.profileFilters.music_genre) && "rock"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Rock</option>
+								<option value="country" {if isset($filters.profileFilters.music_genre) && "country"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Country</option>
+								<option value="dance" {if isset($filters.profileFilters.music_genre) && "dance"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Dance</option>
+								<option value="indie" {if isset($filters.profileFilters.music_genre) && "indie"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Indie</option>
+								<option value="alternative" {if isset($filters.profileFilters.music_genre) && "alternative"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Alternative</option>
+								<option value="classical" {if isset($filters.profileFilters.music_genre) && "classical"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Classical</option>
+								<option value="electronic" {if isset($filters.profileFilters.music_genre) && "electronic"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Electronic</option>
+								<option value="greatest_hits" {if isset($filters.profileFilters.music_genre) && "greatest_hits"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Greatest Hits</option>
+								<option value="metal" {if isset($filters.profileFilters.music_genre) && "metal"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Metal</option>
+								<option value="jazz" {if isset($filters.profileFilters.music_genre) && "jazz"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Jazz</option>
+								<option value="rb" {if isset($filters.profileFilters.music_genre) && "rb"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>R&B</option>
+								<option value="reggae" {if isset($filters.profileFilters.music_genre) && "reggae"|array_key_exists:$filters.profileFilters.music_genre}selected{/if}>Reggae</option>
+							</select>
+							<br/><br/>
+							<label>Promotional Interests</label>
+							<select name="promoting" data-filter-type="profile" data-input-type="multi" class="select2" multiple style="width: 100%;">
+								<option value="entertainment" {if isset($filters.profileFilters.promoting) && "entertainment"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Entertainment / Events</option>
+								<option value="movies" {if isset($filters.profileFilters.promoting) && "movies"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Movies</option>
+								<option value="food" {if isset($filters.profileFilters.promoting) && "food"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Food</option>
+								<option value="electronics" {if isset($filters.profileFilters.promoting) && "electronics"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Electronics / Technology</option>
+								<option value="animals" {if isset($filters.profileFilters.promoting) && "animals"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Pets / Animals</option>
+								<option value="clothing" {if isset($filters.profileFilters.promoting) && "clothing"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Clothing / Fashon</option>
+								<option value="sports" {if isset($filters.profileFilters.promoting) && "sports"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Sports / Fitness</option>
+								<option value="apps" {if isset($filters.profileFilters.promoting) && "apps"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Games / Apps</option>
+								<option value="beauty" {if isset($filters.profileFilters.promoting) && "beauty"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Beauty Products</option>
+								<option value="travel" {if isset($filters.profileFilters.promoting) && "travel"|array_key_exists:$filters.profileFilters.promoting}selected{/if}>Travel</option>
+							</select>
+							<br/><br/>
+							<label>Interests / Hobbies</label>
+							<select name="hobbies" data-filter-type="profile" data-input-type="multi" class="select2" multiple style="width: 100%;">
+								<option value="art" {if isset($filters.profileFilters.hobbies) && "art"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Art</option>
+								<option value="movies" {if isset($filters.profileFilters.hobbies) && "movies"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Movies</option>
+								<option value="individual_sports" {if isset($filters.profileFilters.hobbies) && "individual_sports"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Individual Sports (Tennis, Golf, etc.)</option>
+								<option value="fitness" {if isset($filters.profileFilters.hobbies) && "fitness"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Fitness</option>
+								<option value="cooking" {if isset($filters.profileFilters.hobbies) && "cooking"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Cooking</option>
+								<option value="photography" {if isset($filters.profileFilters.hobbies) && "photography"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Photography</option>
+								<option value="tv" {if isset($filters.profileFilters.hobbies) && "tv"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Watching TV</option>
+								<option value="writing" {if isset($filters.profileFilters.hobbies) && "writing"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Writing</option>
+								<option value="hunting" {if isset($filters.profileFilters.hobbies) && "hunting"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Hunting / Fishing</option>
+								<option value="clothing" {if isset($filters.profileFilters.hobbies) && "clothing"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Clothing / Fashion</option>
+								<option value="team_sports" {if isset($filters.profileFilters.hobbies) && "team_sports"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Team Sports (Basketball, Football, etc.)</option>
+								<option value="extreme_sports" {if isset($filters.profileFilters.hobbies) && "extreme_sports"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Extreme Sports (Skateboarding, Snowboarding, etc.)</option>
+								<option value="travel" {if isset($filters.profileFilters.hobbies) && "travel"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Travel</option>
+								<option value="reading" {if isset($filters.profileFilters.hobbies) && "reading"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Reading</option>
+								<option value="dancing" {if isset($filters.profileFilters.hobbies) && "dancing"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Dancing</option>
+								<option value="crafts" {if isset($filters.profileFilters.hobbies) && "crafts"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Crafts</option>
+								<option value="outdoor_recreation" {if isset($filters.profileFilters.hobbies) && "outdoor_recreation"|array_key_exists:$filters.profileFilters.hobbies}selected{/if}>Outdoor Recreation (Hiking, Rock Climbing, etc.)</option>
+							</select>
+						</dd>
+
+					</dl>
+				</form>
+				<br class="clear">
+				<button class="btn pull-left" id="resetFilters">Reset</button>
+				<button class="btn pull-right" id="applyFilters">Apply</button>
+			</div>
+		</div>
+
+		<div id="table-container">
+			<div id="top">
+				<div id="title">
+					<div class="influencers">Influencers</div>
+					<div class="reach">Reach</div>
+				</div>
+				<div id="table-controls">
+
+					<div class="filter-saving-text">saving...</div>
+
+					<!-- EXPORT FEATURE -->
+					<button id="exportInfluencersBtn" class="btn btn-default pull-right">Export</button>
+
+					<button id="addInfluencerBtn" class="btn btn-default pull-right">Add Influencer</button>
+
+					<input id="search" type="text" class="form-control pull-right" placeholder="search within result">
+
+					<div id="savedFilters" class="filter-group input-group pull-right">
+						<div class="input-group-btn">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Saved Filters <span class="caret"></span></button>
+							<ul class="dropdown-menu" role="menu">
+								<li data-id=""><a href="/influencers/">[clear]</a></li>
+								{foreach $savedFilterNames as $filter}
+									<li data-id="{$filter._id}">
+										<a href="/influencers/?f={$filter.name|escape:'url'}">{$filter.name}</a>
+									</li>
+								{/foreach}
+							</ul>
+						</div>
+						<input id="filter-input" type="text" class="form-control" value="{$currentSavedFilter}">
+
+						<div class="input-group-btn">
+							<button id="filterSaveBtn" class="btn btn-default" type="button">Save</button>
+						</div>
+					</div>
+
+				</div>
+				<br class="clear"/>
+				<div id="table-wrap">
+					<table id="influencers-table" class="display" cellspacing="0" width="100%">
+				        <thead>
+				            <tr>
+					            <th>Email</th>
+				                <th>Name</th>
+					            <th>Rating</th>
+					            <th>Reach</th>
+					            <th style="white-space: nowrap;">Growth</th>
+					            <!--<th style="white-space: nowrap;">&Delta; % Posts</th>-->
+					            <!--
+				                <th>Following</th>
+				                <th>Daily</th>
+				                <th>Monthly</th>
+				                <th>Posts</th>
+					            -->
+					            <th>Added</th>
+				            </tr>
+				        </thead>
+				    </table>
+				</div>
+			</div>
+		</div>
+
+		<br class="clear">
+	</div>
+</section>
+
+<script type="text/javascript" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/fixedheader/2.1.1/js/dataTables.fixedHeader.min.js"></script>
+<!--<script type="text/javascript" src="//cdn.datatables.net/plug-ins/a5734b29083/pagination/scrolling.js"></script>-->
+<!--<script type="text/javascript" src="//cdn.datatables.net/scroller/1.2.2/js/dataTables.scroller.min.js"></script>-->
+
+<script type="text/javascript" src="/lib/slider/dist/bootstrap-slider.min.js"></script>
+<script type="text/javascript" src="/lib/select2/select2.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap-rating-input.min.js"></script>
+<script type="text/javascript" src="/lib/validation/jquery.validate.min.js"></script>
+
+<script type="text/javascript" src="/js/influencers.js"></script>
+
+</body>
+
+</html>

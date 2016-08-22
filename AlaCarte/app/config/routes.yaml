@@ -1,0 +1,109 @@
+#### API Endpoints ####
+docs:
+    method: "GET"
+    route: "/api/docs"
+    controller: "AlaCarteAPI"
+    action: "docs"
+
+authorize:
+    method: "GET|POST"
+    route: "/api/authorize"
+    controller: "AlaCarteAPI"
+    action: "getOAuth2Token"
+
+get_content:
+    method: "GET|POST"
+    route: "/api/nodes/get/content"
+    controller: "AlaCarteAPI"
+    action: "getContent"
+    
+add_content:
+    method: "POST"
+    route: "/api/node/[*:alacarteId]/content/add"
+    controller: "AlaCarteAPI"
+    action: "addContent"
+    
+save_content:
+    method: "POST"
+    route: "/api/node/content/[*:contentId]/save"
+    controller: "AlaCarteAPI"
+    action: "saveContent"
+    
+delete_content:
+    method: "POST"
+    route: "/api/node/content/[*:contentId]/delete"
+    controller: "AlaCarteAPI"
+    action: "deleteContent"
+    
+get_node:
+    method: "GET"
+    route: "/api/node/[*:alacarteId]/get"
+    controller: "AlaCarteAPI"
+    action: "getNode"
+
+upload_banner:
+    method: "POST"
+    route: "/api/banner/upload"
+    controller: "AlaCarteAPI"
+    action: "uploadBannerFile"
+
+check_ff_update:
+    method: "GET"
+    route: "/api/getffaddon"
+    controller: "AlaCarteAPI"
+    action: "checkFFNewVersion"
+
+api_login:
+    method: "GET|POST"
+    route: "/api/login"
+    controller: "AlaCarteAPI"
+    action: "login"
+
+api_setpassword:
+    method: "POST"
+    route: "/api/setpassword"
+    controller: "AlaCarteAPI"
+    action: "setPassword"
+
+get_trigger_defs:
+    method: "GET"
+    route: "/api/triggerdefs/[*:group]/get"
+    controller: "AlaCarteAPI"
+    action: "getTriggerDefs"
+
+get_group_from_domain:
+    method: "POST"
+    route: "/api/group/get"
+    controller: "AlaCarteAPI"
+    action: "getGroupFromDomain"
+    
+#### Page Controllers ####
+default:
+    method: "GET"
+    route: "/"
+    controller: "UsersPage"
+    action: "init"
+
+login:
+    method: "GET|POST"
+    route: "/login"
+    controller: "LoginPage"
+    action: "init"
+
+logout:
+    method: "GET|POST"
+    route: "/logout"
+    controller: "BasePage"
+    action: "logOut"
+
+users:
+    method: "GET|POST"
+    route: "/users"
+    controller: "UsersPage"
+    action: "init"
+    
+apiadmin:
+    method: GET|POST
+    route: "/apiadmin"
+    controller: "ApiAdminPage"
+    action: "init"

@@ -1,0 +1,57 @@
+{include file='templates/header.tpl' pageTitle='Sign Up'}
+
+<article id="signup" class="signin">
+	<div class="container">
+		<h1>Influencer Sign Up</h1>
+		<p>
+			Here at Instafluence, we have run campaigns with thousands of
+			different influencers to promote hundreds of great brands. Please
+			join our network to become eligible to earn money with your
+			influence.
+		</p>
+		<form id="signup-form" action="/signup/" method="POST" name="signup">
+			<div class="form-group">
+				<input type="text" name="first_name" class="form-control" placeholder="First Name" value="{if isset($post.first_name)}{$post.first_name}{/if}" autofocus>
+			</div>
+			<div class="form-group">
+				<input type="text" name="last_name" class="form-control" placeholder="Last Name" value="{if isset($post.last_name)}{$post.last_name}{/if}">
+			</div>
+			<div class="form-group">
+				<input type="email" name="email" class="form-control" placeholder="Email" value="{if isset($post.email)}{$post.email}{/if}">
+			</div>
+			<div class="form-group">
+				<input type="password" name="password" class="form-control" placeholder="Password" value="">
+			</div>
+			<div class="form-group">
+				<input type="password" name="password_confirm" class="form-control" placeholder="Retype Password" value="">
+			</div>
+			
+			<div class="signup-errors">
+				{validation_errors()}
+			</div>
+			
+			<button type="submit" class="btn-blue">Sign Up</button>
+
+			<p>Already have an account? <a href="/login/">Login</a></p>
+		</form>
+	</div>
+</article>
+
+{include file='templates/contact_modal.tpl'}
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/bootstrapValidator.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/static.js"></script>
+<script src="/js/instafluencer_portal.js"></script>
+
+{literal}<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->{/literal}
+
+</body>
+</html>

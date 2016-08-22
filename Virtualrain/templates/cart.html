@@ -1,0 +1,101 @@
+<div id="cart">
+	<div class="cart-container">	
+		<h4>SHOPPING CART</h4>
+		
+		<ul>
+		{foreach $cartItems as $index => $item}
+			<li class="cart-item" data-index="{$index}">
+				<input type="checkbox" class="item-checkbox"/>
+				<img class="product-image-cart" src="{$item[ 'product' ][ 'image' ]}"/>
+				<div class="left">
+					<span>{$item[ 'product' ][ 'title' ]}<br/><p>{if $showPNInsteadOfSKU}{$item[ 'product' ][ 'part_num' ]}{else}{$item[ 'product' ][ 'sku' ]}{/if}</p></span>
+				</div>
+				<div class="right">
+					<p><input type="number" class="side-cart-qty" value="{$item[ 'quantity' ]}"/></p>
+					<div class="item-price">
+					{if $showPricing}
+						<span>${$item['style']['price']|number_format:2}</span>
+					{/if}
+					{if $showUnits && isset($item['style']['unit'])}
+						<span class="item-units">{if $showPricing}/{/if}{$item['style']['unit']|upper}</span>
+					{/if}
+					</div>
+				</div>
+				<br class="clear"/>
+			</li>
+		{/foreach}
+		</ul>
+		<div class="total">
+		{if count( $cartItems ) > 0 }
+			{if $showPricing}
+				<table id="totalTable">
+					<tr>
+						<td>SUB TOTAL:</td>
+						<td class="bold total-price-with-tax">${$cartSubtotal|number_format:2}</td>
+					</tr>
+				</table>
+			{/if}
+			<div class="update-qty-btn">UPDATE QUANTITIES</div>
+			<a href="/finalize">	
+				<button class="finalize-btn">CHECK OUT</button>
+			</a>
+			<div class="clear-items-btn">CLEAR SELECTED ITEMS</div>
+			<div class="clear-cart-btn">CLEAR CART</div>
+			<br class="clear"/>
+		{/if}
+		</div>
+		<div class="message">
+			<p>No items in cart</p>
+		</div>
+		<div class="close-cart-btn">CLOSE CART</div>
+		<input type="hidden" id="active-btns" value="0"/>
+	</div>
+</div>
+
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	checkImages($('img.product-image-cart'));
+	
+	$('.item-checkbox').click(function() {
+		if($('.item-checkbox:checked').length > 0) {
+			$('.clear-items-btn').show();
+		}
+		else {
+			$('.clear-items-btn').hide();
+		}
+	});
+	
+	$('.finalize-item-checkbox').click(function() {
+		var finalizeCartItem = $(this).closest('li');
+		var index = finalizeCartItem.attr('data-index');
+		
+		var cartItem = $('#cart').find('li[data-index="' + index + '"]');
+		cartItem.find('.item-checkbox').prop('checked', $(this).is(':checked'));
+	});
+	
+	$('.side-cart-qty').on('change keyup', function() {
+		$('#totalTable').hide();
+		$('.update-qty-btn').show();
+	});
+	
+	// If a qty changes on the finalize page we want to reflect that change in the side cart
+	$('.finalize-cart-qty').on('change keyup', function() {
+		$('#totalTable').hide();
+		$('.update-qty-btn').show();
+		
+		var finalizeCartItem = $(this).closest('li');
+		var index = finalizeCartItem.attr('data-index');
+		var newQty = $(this).val();
+		var cartItem = $('#cart').find('li[data-index="' + index + '"]');
+		var qtyInput = cartItem.find('.side-cart-qty');
+		qtyInput.val(newQty);
+	});
+});
+</script>
+
+
+
+
+
+

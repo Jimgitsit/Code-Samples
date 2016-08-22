@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Orders"}
+<link rel="stylesheet" href="/templates/js/chosen/chosen.css"/>
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="orders"}
+
+<div class="container order-container">
+	<button class="btn btn-default" id="backBtn" onclick="window.history.back();">Back</button>
+	<table class="table table-condensed table-bordered table-responsive order-table">
+		<tr class="order-details-row" data-id="{$order.id}">
+			<td colspan="9">
+				<div class="anim-div">
+					<div id="order-location">
+						<h3>Order: {"%06d"|sprintf:$order[ 'id' ]}</h3>
+						
+						<p>Date: <strong>{$order.local_order_date|date_format:"%b %d, %Y %I:%M %p"}</strong></p>
+						<p>Branch: <strong>{$order.branch.name}</strong></p>
+						<p>User: <strong>{$order.user.first_name} {$order.user.last_name}</strong></p>
+						<p>Company: <strong>{$order.user.company_name}</strong></p>
+						<p>Acc #: <strong>{$order.user.account_num}</strong></p>
+						<p>PO #: <strong>{$order.po_num}</strong></p>
+						<p>Status: <strong>{$order.status}</strong></p>
+						
+						{if $order['pickup_location'] != null && $order['pickup_location'] != 0 }
+							<h3>Pickup Location:</h3>
+						{else if $order['shipping_location'] != null && $order['shipping_location'] != 0 }
+							<h3>Shipping Location:</h3>
+						{/if}
+						<p>{$order['address']['address1']} {$order['address']['address2']}</p>
+						<p>{$order['address']['city']}, {$order['address']['state']} {$order['address']['zip']}</p>
+						<p>{$order['address']['phone']}</p>
+						{if $order['order_comment'] != ''}
+							<h3>Comments:</h3>
+							<p>{$order['order_comment']}</p>
+						{/if}
+						<a id="orderExportLink" href="order_export?id={$order[ 'id' ]}">Export</a>
+						<a id="orderPrintLink" href="order_print?id={$order[ 'id' ]}" target="_blank">Print</a>
+					</div>
+					<table class="order-items-table">
+						<thead>
+							<tr>
+								<th>Item</th>
+								{if $showSKU}<th>SKU</th>{/if}
+								{if $showStyle}<th>Style</th>{/if}
+								{if $showPN}<th>Part #</th>{/if}
+								<th class="qty">Qty</th>
+								{if $showUnits}<th>Unit</th>{/if}
+								{if $order['user']['show_pricing']}<th class="list-price">List Price</th>{/if}
+							</tr>
+						</thead>
+						<tbody>
+							{foreach $order.cart as $item}
+							<tr>
+								<td>
+									<div class="product-list-title-wrap">
+										<div class="product-list-title">
+											{$item.product.title}
+										</div>
+										<div class="product-list-manufacturer">
+											{$item.product.manufacturer}
+										</div>
+									</div>
+								</td>
+								{if $showSKU}<td>{$item.product.sku}</td>{/if}
+								{if $showStyle}<td>{$item['style']['style_num']}</td>{/if}
+								{if $showPN}<td>{$item.product.part_num}</td>{/if}
+								<td class="qty">{$item.quantity}</td>
+								{if $showUnits}
+									<td>{if isset($item['style']['unit'])}{$item['style']['unit']|upper}{else}EACH{/if}</td>
+								{/if}
+								{if $order['user']['show_pricing']}
+									<td class="list-price">${$item['style']['price']|number_format:2}</td>
+								{/if}
+							</tr>
+							{/foreach}
+						</tbody>
+					</table>
+					{if $order['user']['show_pricing']}<div class="sub-total-wrap"><span>SUB TOTAL</span><span class="sub-total">${$order['sub_total']|number_format:2}</span></div>{/if}
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+</body>
+</html>

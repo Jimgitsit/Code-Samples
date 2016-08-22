@@ -1,0 +1,220 @@
+// ****************************
+//  Influencer Dashboard Page
+// ****************************
+#influencer-dashboard {
+    @extend %proxima;
+    background-color: $whitegray;
+
+    h1, h2 {
+        display: inline-block;
+        font-weight: bold;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+        margin-left: 20px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .outline-green {
+        color: $green;
+        padding: 4px 15px;
+        border: 1px solid $green;
+        border-radius: 50px;
+        margin-top: 5px;
+        margin-right: 10px;
+    }
+
+    #user-line {
+        margin: 30px auto 20px auto;
+
+        p {
+            text-align: center;
+            margin-top: 10px;
+        }
+    }
+
+    #overview-numbers {
+        @extend %clearfix;
+
+        li {
+            width: 50%;
+            display: inline-block;
+            background-color: $white;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 16px;
+            float: left;
+            border-right: 1px solid $whitegray;
+
+            &:last-child {
+                border-left: 1px solid $whitegray;
+            }
+        }
+
+        p {
+            font-weight: bold;
+            font-size: 16px;
+        }
+    }
+
+    #message-center {
+        margin-top: 20px;
+
+        li {
+            background-color: $white;
+            padding: 20px 12px 12px 45px;
+            margin-bottom: 1px;
+            position: relative;
+
+            .float-right {
+                font-size: 16px;
+                margin-top: 4px;
+            }
+
+            p {
+                color: $gray;
+                font-size: 14px;
+            }
+
+            .icon-oval-filled {
+                position: absolute;
+                top: 42%;
+                left: 14px;
+                color: $green;
+            }
+        }
+
+        button {
+            width: 100%;
+            padding: 25px 0;
+            margin-top: 15px;
+        }
+    }
+
+    #analytics {
+        margin-top: 25px;
+
+
+        .circle-graphs {
+            text-align: center;
+            background-color: $white;
+            padding: 20px 0;
+            height: 230px;
+        }
+
+        .highcharts-button, highcharts-legend, highcharts-legend-item {
+            display: none;
+        }
+
+        .highcharts-container {
+
+        }
+
+        h3 {
+            display: inline-block;
+            font-size: 18px;
+            margin: 0 10px;
+        }
+
+        ul {
+            margin-top: 10px;
+        }
+        li {
+            display: inline-block;
+            width: 32%;
+            position: relative;
+
+            p {
+                position: absolute;
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        .circlestat {
+            display: inline-block;
+            margin: 0 auto;
+        }
+    }
+
+    #active-campaigns {
+        margin-top: 15px;
+        @extend %clearfix;
+
+        .media {
+            background-color: $white;
+            margin-top: 4px;
+        }
+        .media-body {
+            height: 65px;
+        }
+        .media-heading {
+            @include vertical-align;
+            font-weight: bold;
+            font-size: 18px;
+            display: inline-block;
+        }
+
+        .active-campaigns-time {
+            float: right;
+            margin-right: 20px;
+            text-align: center;
+            @include vertical-align;
+
+            li {
+                display: inline-block;
+                margin: auto 4px;
+            }
+        }
+    }
+
+    #payments {
+        margin-top: 20px;
+        font-size: 18px;
+
+        ul {
+            padding: 0 20px;
+
+            li {
+                margin: 20px auto;
+            }
+        }
+
+        .icon {
+            color: $green;
+            font-size: 14px;
+        }
+
+        .payment-amount {
+            float: right;
+            color: $blue;
+            @extend .txt-semibold;
+            @include vertical-align;
+        }
+
+        .txt-graylight {
+            font-size: 14px;
+        }
+    }
+
+    #contacts {
+        margin-top: 15px;
+        padding-bottom: 50px;
+
+        ul {
+            padding: 0 20px;
+
+            li {
+                margin: 10px auto;
+            }
+        }
+        .txt-graylight {
+            font-size: 14px;
+        }
+    }
+}

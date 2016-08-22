@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>AlaCarte - {{ pageTitle }}</title>
+
+	{{ include('css.twig') }}
+
+	<link href="js/jquery-pulsewait/pulseWait.css" rel="stylesheet">
+</head>
+<body>
+{{ include('nav.twig') }}
+
+<div class="container">
+
+{{ include('alerts.twig') }}
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-3">
+			<div class="page-title">Trigger Definitions<span id="triggersDefsLoading"></span></div>
+		</div>
+		<div class="col-xs-12 col-sm-3">
+			<div class="filters">
+				{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+					<div class="filter-label">Filter by:</div>
+					<select id="filterGroup" class="select2-filter" data-prefix="Group">
+						<option value="all">All</option>
+						{% for group in groups %}
+							<option value="{{ group.name }}">{{ group.name }}</option>
+						{% endfor %}
+					</select>
+				{% endif %}
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-1">
+			<button class="btn btn-default btn-sm top-button pull-right" id="addtriggerDefBtn">Add</button>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-7">
+			<div class="table-responsive">
+				<table id="triggerDefsTable" class="table table-condensed table-hover">
+					<thead>
+					<tr>
+						<th>Name</th>
+						{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+						<th>Group</th>
+						{% endif %}
+						<th>Type</th>
+					</tr>
+					</thead>
+					<tbody>
+						{% for def in triggerDefs %}
+							<tr class="table-def-row" data-id="{{ def.id }}">
+								<td>{{ def.name }} <span class="triggerdef-machine-name">[{{ def.machineName }}]</span></td>
+								{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+								<td>{{ def.group.name }}</td>
+								{% endif %}
+								<td>
+									{% if def.type == 'text' %}Text{% endif %}
+									{% if def.type == 'numeric' %}Numeric{% endif %}
+									{% if def.type == 'yesNo' %}Yes/No{% endif %}
+									{% if def.type == 'staticOpts' %}List{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<div id="addEdittriggerDefModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">New Trigger Definition</h4>
+			</div>
+			<div class="modal-body">
+				<form id="savetriggerDefForm" method="POST">
+					<div class="form-group">
+						<label for="triggerDefName">Trigger Name</label>
+						<!-- TODO: only allow a-z 0-9 space -->
+						<input id="triggerDefName" name="triggerDefName" class="form-control" type="text" minlength="2" maxlength="100" value="{{ post.triggerDefName }}" required/>
+						<div id="machineNameWrap" class="machine_name">Machine name: <div id="machineName">[{{ post.machineName }}]</div></div>
+						<input type="hidden" id="machineNameInput" name="machineName" value="{{ post.machineName }}"/>
+					</div>
+					<div class="form-group" id="triggerDefGroupSelect">
+						<label for="triggerDefGroup">Group</label>
+						<select id="triggerDefGroup" name="triggerDefGroup" class="form-control select2">
+							{% for group in groups %}
+								<option value="{{ group.name }}" {% if post.triggerDefGroup == group.name %}selected{% endif %}>{{ group.name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Type</label>
+						<label for="triggerDefType" class="error" style="display:none;">Please choose one.</label>
+						
+						<!-- TEXT -->
+						<div class="radio">
+							<label><input type="radio" class="trigger-def-type" name="triggerDefType" value="text" required>Text</label>
+						</div>
+						<div id="textEdit" class="trigger-def-edit">
+							<div class="form-inline">
+								Min length: <input type="number" id="textMinLength" name="textMinLength" class="num-input-sm form-control input-sm" value="1"/>
+								Max length: <input type="number" id="textMaxLength" name="textMaxLength" class="num-input-sm form-control input-sm" value="100"/>
+							</div>
+						</div>
+						
+						<!-- NUMERIC -->
+						<div class="radio">
+							<label><input type="radio" class="trigger-def-type" name="triggerDefType" value="numeric">Numeric</label>
+						</div>
+						<div id="numericEdit" class="trigger-def-edit">
+							<div class="form-inline">
+								Min value: <input type="number" id="numericMin" name="numericMin" class="num-input-sm form-control input-sm" value=""/>
+								Max value: <input type="number" id="numericMax" name="numericMax" class="num-input-sm form-control input-sm" value=""/>
+								<span> *leave blank for no limits</span>
+							</div>
+						</div>
+						
+						<!-- YES/NO -->
+						<div class="radio">
+							<label><input type="radio" class="trigger-def-type" name="triggerDefType" value="yesNo">Yes/No</label>
+						</div>
+						<div id="yesNoEdit" class="trigger-def-edit">
+							<div class="row">
+								<div class="col-sm-6">
+									<label>Yes</label>
+									<div class="form-group">
+										<label class="normal" for="">Display Value</label>
+										<!-- TODO: only allow a-z 0-9 space -->
+										<input id="yesDisplayValue" name="yesDisplayValue" class="form-control input-sm" type="text" minlength="1" maxlength="100" value="Yes" required/>
+									</div>
+									<div class="form-group">
+										<label class="normal" for="">Actual Value</label>
+										<!-- TODO: only allow a-z 0-9 space -->
+										<input id="yesActualValue" name="yesActualValue" class="form-control input-sm" type="text" minlength="1" maxlength="100" value="Y" required/>
+									</div>
+								</div>
+								<div class="col-sm-6">
+									<label>No</label>
+									<div class="form-group">
+										<label class="normal" for="">Display Value</label>
+										<!-- TODO: only allow a-z 0-9 space -->
+										<input id="noDisplayValue" name="noDisplayValue" class="form-control input-sm" type="text" minlength="1" maxlength="100" value="No" required/>
+									</div>
+									<div class="form-group">
+										<label class="normal" for="">Actual Value</label>
+										<!-- TODO: only allow a-z 0-9 space -->
+										<input id="noActualValue" name="noActualValue" class="form-control input-sm" type="text" minlength="1" maxlength="100" value="N" required/>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- STATIC OPTS -->
+						<div class="radio">
+							<label><input type="radio" class="trigger-def-type" name="triggerDefType" value="staticOpts">List</label>
+						</div>
+						<div id="staticOptsEdit" class="trigger-def-edit">
+							<label>Items</label>
+							<div class="table-responsive">
+								<table id="optionsTable" class="table table-condensed table-hover">
+									<thead>
+										<tr>
+											<th>Display Value</th>
+											<th>Actual Value</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										
+									</tbody>
+									<tfoot>
+										<tr id="addOptionRow">
+											<td><input type="text" class="form-control" id="staticOptionDisplay"/></td>
+											<td><input type="text" class="form-control" id="staticOptionValue"/></td>
+											<td>
+												<div id="addOptionBtn" class="btn btn-primary btn-sm">Add</div>
+											</td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+					</div>
+					
+					<input type="hidden" name="action" value="saveTriggerDef"/>
+					<input id="triggerDefMode" type="hidden" name="mode" value="new"/>
+					<input id="triggerDefId" type="hidden" name="triggerDefId" value=""/>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<div class="modal-buttons">
+					<button id="delTriggerDefBtn" type="button" class="btn btn-sm btn-danger pull-left">Delete</button>
+					<button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cancel</button>
+					<button id="savetriggerDefBtn" type="button" class="btn btn-sm btn-primary">Save</button>
+				</div>
+				<div class="modal-buttons-confirm-delete" style="display: none;">
+					<span>Are you sure you want to permanently delete this trigger def?</span>
+					<button id="deleteConfirmYesBtn" type="button" class="btn btn-sm btn-primary btn-danger">Yes</button>
+					<button id="deleteConfirmNoBtn" type="button" class="btn btn-sm btn-primary">No</button>
+				</div>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+{{ include('js.twig') }}
+{{ include('password_modal.twig') }}
+
+<script src="js/select2-filter.js"></script>
+<script src="js/query_string.js"></script>
+<script src="js/jquery-pulsewait/jquery.pulsewait.js"></script>
+
+<script type="text/javascript">
+	
+function toMachineName(name) {
+	//var exp = escapeRegExp(/ /g);
+	var mname = name.toString().toLowerCase();
+	mname = mname.replace(/ /g, "_");
+	mname = mname.replace(/[^a-zA-Z_\d]/g, "-");
+	return mname;
+}
+
+function escapeRegExp(string) {
+	return string.toString().replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+}
+
+function addStaticOptRow(display, value) {
+	var tr = $('<tr>').addClass('static-option-row');
+
+	var tdd = $('<td>').addClass('static-option-display')
+			.text(display)
+			.append('<input type="hidden" name="staticOptionDisplay[]" value="' + display + '"/>');
+	tr.append(tdd);
+
+	var tdv = $('<td>').addClass('static-option-value')
+			.text(value)
+			.append('<input type="hidden" name="staticOptionValue[]" value="' + value + '"/>');
+	tr.append(tdv);
+
+	var tdi = $('<td class="text-right"><img class="remove-icon" src="img/remove.png"></td>');
+	tr.append(tdi);
+
+	tdi.click(function() {
+		var tr = $(this).closest('tr');
+		tr.remove();
+	});
+
+	$('#optionsTable').find('tbody').append(tr);
+}
+
+$(document).ready(function() {
+	// Selects in modals
+	$(".form-control.select2").select2({
+		width: "100%",
+		minimumResultsForSearch: Infinity
+	});
+	
+	$("#addtriggerDefBtn").click(function() {
+		var modal = $("#addEdittriggerDefModal");
+		modal.find(".modal-title").text("New Trigger Definition");
+		modal.find("#triggerDefMode").val('new');
+		modal.find("#triggerDefId").val('');
+		modal.find("#triggerDefName").val('');
+		modal.find("#machineName").text('');
+		modal.find("#machineNameInput").val('');
+		modal.find('#textMinLength').val('1');
+		modal.find('#textMaxLength').val('100');
+		modal.find('#numericMin').val('');
+		modal.find('#numericMax').val('');
+		modal.find('#yesDisplayValue').val('Yes');
+		modal.find('#yesActualValue').val('Y');
+		modal.find('#noDisplayValue').val('No');
+		modal.find('#noActualValue').val('N');
+		modal.find('#optionsTable').find('tbody').empty();
+		modal.find('#delTriggerDefBtn').hide();
+
+		$(".trigger-def-edit").hide();
+		$('.trigger-def-type').prop("checked", false).parent().css("font-weight", "normal");;
+		
+		//modal.find("#triggerDefName").focus();
+		modal.on('shown.bs.modal', function () {
+			$('#triggerDefName').focus();
+		});
+		modal.modal();
+	});
+
+	$('[name="triggerDefType"]').click(function() {
+		$(".trigger-def-edit").hide();
+		var val = $(this).val();
+		$("#" + val + "Edit").show();
+		
+		$(".radio label").css("font-weight", "normal");
+		$(this).parent().css("font-weight", "bold");
+	});
+	
+	$("#triggerDefName").on("change keyup", function() {
+		var mname = toMachineName($(this).val());
+		$("#machineName").text(mname);
+		$("#machineNameInput").val(mname);
+	});
+	
+	var savetriggerDefForm = $("#savetriggerDefForm");
+	savetriggerDefForm.validate();
+	$("#savetriggerDefBtn").click(function() {
+		if (savetriggerDefForm.valid()) {
+			savetriggerDefForm.submit();
+		}
+	});
+
+	$('#delTriggerDefBtn').click(function() {
+		var modal = $("#addEdittriggerDefModal");
+		var triggerDefId = modal.find("#triggerDefId").val();
+		var triggerName = modal.find("#triggerDefName").val();
+		
+		modal.find('.modal-buttons').hide();
+		modal.find('.modal-buttons-confirm-delete').show();
+		
+		$('#deleteConfirmYesBtn').off('click').click(function() {
+			$.ajax({
+				method: 'POST',
+				url: '/apiadmin',
+				data: {
+					action: 'deleteTriggerDefAjax',
+					id: triggerDefId
+				}
+			}).done(function(triggerDef) {
+				location.reload();
+			}, 'json');
+		});
+
+		$('#deleteConfirmNoBtn').off('click').click(function() {
+			modal.find('.modal-buttons').show();
+			modal.find('.modal-buttons-confirm-delete').hide();
+		});
+	});
+	
+	$("#triggersDefsLoading").pulseWait();
+	$(".table-def-row").click(function() {
+		$("#triggersDefsLoading").pulseWait("show");
+
+		var triggerDefId = $(this).attr('data-id');
+		$.ajax({
+			method: 'POST',
+			url: '/apiadmin',
+			data: {
+				action: 'getTriggerDefAjax',
+				id: triggerDefId
+			}
+		}).done(function(triggerDef) {
+			console.log('triggerDef:', triggerDef);
+			var modal = $("#addEdittriggerDefModal");
+			modal.find(".modal-title").text("Edit Trigger Definition");
+			modal.find("#triggerDefMode").val("edit");
+			modal.find("#triggerDefId").val(triggerDef.id);
+			modal.find('#delTriggerDefBtn').show();
+			modal.find("#triggerDefName").val(triggerDef.name);
+			modal.find("#machineName").text(triggerDef.machineName);
+			modal.find("#machineNameInput").val(triggerDef.machineName);
+			modal.find("#triggerDefGroup").val(triggerDef.group.name).change();
+			
+			$('.trigger-def-type[value="' + triggerDef.type + '"]').prop("checked", true).click();
+			switch (triggerDef.type) {
+				case "text": {
+					$('input[name="textMinLength"]').val(triggerDef.options.minLength);
+					$('input[name="textMaxLength"]').val(triggerDef.options.maxLength);
+					break;
+				}
+				case 'numeric': {
+					$('input[name="numericMin"]').val(triggerDef.options.numericMin);
+					$('input[name="numericMax"]').val(triggerDef.options.numericMax);
+					break;
+				}
+				case 'yesNo': {
+					$('input[name="yesDisplayValue"]').val(triggerDef.options.yesDisplayValue);
+					$('input[name="yesActualValue"]').val(triggerDef.options.yesActualValue);
+					$('input[name="noDisplayValue"]').val(triggerDef.options.noDisplayValue);
+					$('input[name="noActualValue"]').val(triggerDef.options.noActualValue);
+					break;
+				}
+				case 'staticOpts': {
+					$('#optionsTable').find('tbody').empty();
+					for (var i in triggerDef.options.staticOptions) {
+						//console.log(triggerDef.options.staticOptions[i]);
+						addStaticOptRow(triggerDef.options.staticOptions[i].display, triggerDef.options.staticOptions[i].value);
+					}
+					break;
+				}
+			}
+
+			{% if curUser.level != constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+				$("#triggerDefGroupSelect").hide();
+			{% endif %}
+			
+			modal.modal();
+
+			$("#triggersDefsLoading").pulseWait("hide");
+		}, 'json');
+	});
+	
+	$('#addOptionBtn').click(function() {
+		var display = $('#staticOptionDisplay');
+		var value = $('#staticOptionValue');
+		
+		addStaticOptRow(display.val(), value.val());
+		
+		display.val('');
+		value.val('');
+	});
+
+	{% if curUser.level == constant('USER_LEVEL_GLOBAL_ADMIN', curUser) %}
+		var filterGroup = $("#filterGroup");
+		// Get group filter from query string
+		var filterGroupVal = $.QueryString['group'];
+		if (filterGroupVal != null) {
+			filterGroup.select2("val", filterGroupVal);
+		}
+	
+		filterGroup.change(function() {
+			var url = UpdateQueryString("group", encodeURIComponent($(this).val()));
+			window.location = url;
+		});
+	{% endif %}
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+<div class="container" id="profile_page4" style="display: none">
+	<div class="row">
+		<div class="col-md-12 title">
+			<h3>More About YOU</h3>
+			<p>We want to match brands and products with your personality and interests!</p>
+		</div>
+	</div>
+	
+	<div class="form-wrapper">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="form-group">
+				<span class="group-label">Would you be willing to travel for promotional campaigns?</span>
+	
+				<input type="radio" name="travel" id="travel-yes" value="true" {if isset($profile.travel) && $profile.travel == true}checked{/if} />
+				<label for="travel-yes">Yes</label><br />
+	
+				<input type="radio" name="travel" id="travel-no" value="false" {if isset($profile.travel) && $profile.travel == false}checked{/if} />
+				<label for="travel-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you have a valid passport?</span>
+	
+				<input type="radio" name="passport" id="passport-yes" value="true" {if isset($profile.passport) && $profile.passport == true}checked{/if} />
+				<label for="passport-yes">Yes</label><br />
+	
+				<input type="radio" name="passport" id="passport-no" value="false" {if isset($profile.passport) && $profile.passport == false}checked{/if} />
+				<label for="passport-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you have a valid driver's license?</span>
+	
+				<input type="radio" name="drivers_license" id="driverslicense-yes" value="true" {if isset($profile.drivers_license) && $profile.drivers_license == true}checked{/if} />
+				<label for="driverslicense-yes">Yes</label><br />
+	
+				<input type="radio" name="drivers_license" id="driverslicense-no" value="false" {if isset($profile.drivers_license) && $profile.drivers_license == false}checked{/if} />
+				<label for="driverslicense-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Are you married?</span>
+	
+				<input type="radio" name="married" id="married-yes" value="true" {if isset($profile.married) && $profile.married == true}checked{/if} />
+				<label for="married-yes">Yes</label><br />
+	
+				<input type="radio" name="married" id="married-no" value="false" {if isset($profile.married) && $profile.married == false}checked{/if} />
+				<label for="married-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you have any children?</span>
+	
+				<input type="radio" name="children" id="children-yes" value="true" {if isset($profile.children) && $profile.children == true}checked{/if} />
+				<label for="children-yes">Yes</label><br />
+	
+				<input type="radio" name="children" id="children-no" value="false" {if isset($profile.children) && $profile.children == false}checked{/if} />
+				<label for="children-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<label for="phone_type" class="group-label">Phone Type</label>
+				<select id="phone_type" name="phone_type" class="form-control input-sm">
+					<option></option>
+					{foreach $phoneTypes as $value => $display}
+						<option value="{$value}" {if isset($profile.phone_type) && $profile.phone_type == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">What music genre do you prefer?</span>
+				{foreach $musicGenres as $value => $display}
+					<input type="checkbox" name="music_genre[{$value}]" id="music-{$value}" {if isset($profile.music_genre[$value]) && $profile.music_genre[$value] == true}checked{/if} />
+					<label for="music-{$value}">{$display}</label><br />
+				{/foreach}
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you have a pet?</span>
+	
+				<input type="radio" name="pet" id="pet-yes" value="true" {if isset($profile.pet) && $profile.pet == true}checked{/if} />
+				<label for="pet-yes">Yes</label><br />
+	
+				<input type="radio" name="pet" id="pet-no" value="false" {if isset($profile.pet) && $profile.pet == false}checked{/if} />
+				<label for="pet-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">What kind of pet do you have?</span>
+				{foreach $petTypes as $value => $display}
+					<input type="checkbox" name="pet_type[{$value}]" id="pet-type-{$value}" {if isset($profile.pet_type[$value]) && $profile.pet_type[$value] == true}checked{/if} />
+					<label for="pet-type-{$value}">{$display}</label><br />
+				{/foreach}
+			</div>
+	
+			<div class="form-group">
+				<label for="education" class="group-label">Education</label>
+				<select id="education" name="education" class="form-control input-sm">
+					<option></option>
+					{foreach $educationTypes as $value => $display}
+						<option {if isset($profile.education) && $profile.education == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you drink?</span>
+	
+				<input type="radio" name="drink" id="drink-yes" value="true" {if isset($profile.drink) && $profile.drink == true}checked{/if} />
+				<label for="drink-yes">Yes</label><br />
+	
+				<input type="radio" name="drink" id="drink-no" value="false" {if isset($profile.drink) && $profile.drink == false}checked{/if} />
+				<label for="drink-no">No</label>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">What would you be interested in promoting?</span>
+				{foreach $promotionTypes as $value => $display}
+					<input type="checkbox" name="promoting[{$value}]" id="promoting-{$value}" {if isset($profile.promoting[$value]) && $profile.promoting[$value] == true}checked{/if} />
+					<label for="promoting-{$value}">{$display}</label><br />
+				{/foreach}
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">What are your hobbies/interests?</span>
+				{foreach $hobbies as $value => $display}
+					<input type="checkbox" name="hobbies[{$value}]" id="hobbies-{$value}" {if isset($profile.hobbies[$value]) && $profile.hobbies[$value] == true}checked{/if} />
+					<label for="hobbies-{$value}">{$display}</label><br />
+				{/foreach}
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">How would you rate your content?</span>
+				{foreach $contentRatings as $value => $display}
+					<input type="radio" name="content_rating" id="rating-{$value}" value="{$value}" {if isset($profile.content_rating) && $profile.content_rating == $value}checked{/if} />
+					<label for="rating-{$value}">{$display}</label><br />
+				{/foreach}
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">What are some brands you would like to promote?</span>
+				<textarea class="form-control" name="brands">{if isset($profile.brands)}{$profile.brands}{/if}</textarea>
+			</div>
+
+			<div class="form-group text-center">
+				<button type="button" class="btn btn-default cyan-outline-btn save-profile-btn" data-type="finish">Save</button>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jQuery Waiting Plugin Examples</title>
+  <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" type="text/css" href="../dist/waiting.css">
+
+  <style type="text/css">
+    body {
+      margin: 0 50px 50px 50px;
+    }
+    .content {
+      margin-bottom: 50px;
+      max-width: 500px;
+    }
+    button.waiting-done {
+      display: none;
+    }
+  </style>
+
+
+  <!--script src="../libs/jquery/jquery.js"></script-->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="../dist/jquery.waiting.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      var content = $('.content').first().html();
+      $('button').on('click', function () {
+        $(this).toggle().siblings('button').toggle();
+
+        if ($(this).hasClass('waiting-done')) {
+          $(this).siblings('.content').waiting('done')
+              .html(content.substring(0,Math.random() * content.length) + '...');
+        }
+      });
+    });
+  </script>
+</head>
+
+<body>
+<div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="http://www.jqueryscript.net/loading/jQuery-Animated-Loading-Indication-Plugin-Waiting.html">Download This Plugin</a></li>
+<li><a href="http://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul>
+<div class="jquery-script-ads"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+<h1 style="margin-top:150px;">jQuery Waiting Plugin Examples</h1>
+  <div id="demo-basic">
+  <button type="button" class="waiting">► start waiting</button>
+    <button type="button" class="waiting-done">■ waiting done</button>
+    <pre>
+// Default behaviour is a loading spinner positioned absolute, centered and with an overlay.
+
+$('#demo-basic .content').waiting();
+    </pre>
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#demo-basic button.waiting').on('click', function () {
+      $(this).siblings('.content').waiting();
+    });
+  </script>
+
+  <div id="demo-position">
+    <button type="button" class="waiting">► start waiting</button>
+    <button type="button" class="waiting-done">■ waiting done</button>
+    <pre>
+// You can position the indicator/spinner by setting position to one of the following values:
+// 'center',
+// 'top left', 'top center', 'top right',
+// 'center left', 'center right',
+// 'bottom left', 'bottom center' or 'bottom right'
+// If you don't want to use the predefined CSS classes you can set position to 'custom',
+// in that case you have to take care of the CSS yourself.
+
+$('#demo-position .content').waiting({ position: 'top left' });
+    </pre>
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#demo-position button.waiting').on('click', function () {
+      $(this).siblings('.content').waiting({ position: 'top left' });
+    });
+  </script>
+
+
+  <div id="demo-overlay-false">
+    <button type="button" class="waiting">► start waiting</button>
+    <button type="button" class="waiting-done">■ waiting done</button>
+    <pre>
+// You can simply append the indicator by setting overlay to false
+
+$('#demo-overlay-false .content').waiting({ overlay: false });
+    </pre>
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#demo-overlay-false button.waiting').on('click', function () {
+      $(this).siblings('.content').waiting({ overlay: false });
+    });
+  </script>
+
+
+  <div id="demo-fixed">
+    <button type="button" class="waiting">► start waiting</button>
+    <button type="button" class="waiting-done">■ waiting done</button>
+    <pre>
+// By setting fixed to true you can expand the overlay over the whole page
+
+$('#demo-overlay-false .content').waiting({ fixed: true });
+    </pre>
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+      consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+      cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+      proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </div>
+  </div>
+  <script type="text/javascript">
+    $('#demo-fixed button.waiting').on('click', function () {
+      var that = this;
+      $(this).siblings('.content').waiting({ fixed: true });
+      setTimeout(function() {
+        $(that).siblings('button').click();
+      }, 3000);
+    });
+  </script>
+</body>
+</html>

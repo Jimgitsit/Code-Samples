@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Thank you"}
+</head>
+<body class="thankyoupage">
+	
+	<div class="screen-overflow">
+		
+		{include file="top-nav.html" hideBackButton=true pageTitle="ORDER COMPLETE"}
+		
+		<div class="screen">
+			
+			<div class="container">
+
+				<div id="thankyou">
+					<h3>THANK YOU</h3>
+					<p>YOU WILL BE NOTIFIED WHEN YOUR ORDER HAS BEEN SHIPPED</p>
+				</div>
+
+			</div>
+			
+		</div>
+		
+		{include file="account.html"}
+		{include file="footer.html" viewTypeActive="no"}
+		{include file="cart.html" cartItems=$cartItems}
+		
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script>
+	$(document).ready(function(){
+		var div= $('#thankyou');
+		div.css("margin-top", (($(window).height() - div.height()) / 2) - (div.height() / 2)  + 'px');
+	})
+</script>
+<script src="/templates/js/util.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	$('#thankyou').show();
+});
+</script>

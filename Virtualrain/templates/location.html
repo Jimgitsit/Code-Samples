@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+</head>
+<body class="locationspage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="PICKUP LOCATIONS"}
+		
+		<div class="screen">
+			
+			<div class="container with-nav">
+				{if !empty($errorMsg) }
+					<p class="error">{$errorMsg}</p>
+				{/if}
+				<form action="/location" method="POST">
+					{foreach $locations as $location}
+						<div class="location-info">
+							<p><strong>{$location['name']}</strong></p>
+							<p>{$location['address1']}</p>
+							<p>{$location['city']}, {$location['state']} {$location['zip']}</p>
+							<p>{$location['phone']}</p>
+							<div class="preferred-checkbox {if $location['id'] == $preferred}checked{/if}" id="{$location['id']}" data-preferred="{if $location['id'] == $preferred}true{else}false{/if}"><span class="pref-text">Select</span></div>
+							
+						</div>
+					{/foreach}
+					<input type="hidden" id="preferred" name="preferred" value="{$preferred}" />
+					<textarea rows="5" name="comment" placeholder="pickup comments"></textarea>
+					<button type="submit" name="action" value="create_order" class="finalize-btn">PLACE ORDER</button>
+				</form>
+				
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+
+{literal}
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+<script>
+	
+$(document).ready(function() {	
+	$('.preferred-checkbox').click(function(){
+		if( !$(this).hasClass('checked') ){
+			// Uncheck others
+			$('.preferred-checkbox').each(function() {
+				$(this).removeClass('checked');
+			});
+			
+			// Check this one
+			$(this).addClass('checked');
+			
+			// Save the cahnge
+			$('#preferred').val($(this).attr('id'));
+		}
+	});
+});
+	
+</script>
+{/literal}
+
+
+
+
+
+
+
+

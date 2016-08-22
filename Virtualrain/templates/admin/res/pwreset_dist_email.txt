@@ -1,0 +1,5 @@
+Your password has been reset for Virtualrain's mobile administration site.
+
+Click the following link to set a new password.
+
+{link}

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+
+	<link rel="stylesheet" type="text/css" media="screen" href="http://cdnjs.cloudflare.com/ajax/libs/fancybox/1.3.4/jquery.fancybox-1.3.4.css" />
+	
+</head>
+<body class="itempage">
+
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton}
+		
+		<div class="screen">
+			<div class="container with-nav">
+				<!-- UPDATE TEXT -->
+				{if isset( $showCartUpdate ) && $showCartUpdate == true}
+					<div class="updateText">
+						<h4>This item has been added to your cart</h4>
+					</div>
+				{/if}
+				
+				<div class="item-content">
+					<!--<img class="product-image fancybox" src="{$product[ 'image' ]}" {if isset($product['image_large']) && $product['image_large'] != null}data-big="{$product['image_large']}"{/if}/>-->
+					<a class="fancybox" rel="group" href="{$product[ 'image' ]}"><img src="{$product[ 'image' ]}" alt=""></a>
+					
+					<div class="top">
+						<span class="title">{$product[ 'title' ]}</span>
+					</div>
+					<div class="bottom">
+						<div class="bottom-left">
+							<span class="part-num">{if $showPnInstead}{$product[ 'part_num' ]}{else}{$product[ 'sku' ]}{/if}</span>
+							<span class="manufacturer">{$product[ 'manufacturer' ]}</span>
+						</div>
+					</div>
+				</div>
+				
+				<div class="item-info">
+					<!-- STYLES -->
+					{if isset( $styles ) && count( $styles ) > 1 }	
+						<select id="style-select">
+							{foreach $styles as $style }
+								{if isset($currentlySelected)}
+									{if $currentlySelected == $style['id']}
+										<option data-style-num="{$style['style_num']}" value="{$style['id']}" selected>{$style['style_description']} {if $showPricing}${$style[ 'price' ]|number_format:2}{/if} </option>
+									{else}
+										<option data-style-num="{$style['style_num']}" value="{$style['id']}">{$style['style_description']} {if $showPricing}${$style[ 'price' ]|number_format:2}{/if} </option>
+									{/if}
+								{else}
+									<option data-style-num="{$style['style_num']}" value="{$style['id']}">{$style['style_description']} {if $showPricing}${$style[ 'price' ]|number_format:2}{/if} </option>
+								{/if}
+							{/foreach}
+						</select>
+						<br class="clear"/>
+					{elseif count( $styles ) == 1}
+						{if $showPricing}
+							<div>
+							<span class="list-price-text">LIST PRICE</span>
+						{/if}
+						{if $styles[0]['style_description'] == 'Default' || $styles[0]['style_description'] == ''}
+							{if $showPricing}
+								<p id="solo-style">${$styles[0][ 'price' ]|number_format:2}</p>
+								</div>
+							{/if}
+							{if $showUnits}
+								<div class="unit-text-wrap">
+									<div class="unit-text">{if isset($styles[0]['unit'])}{$styles[0]['unit']|upper}{/if}</div>
+								</div>
+							{/if}
+						{else}
+							<p id="solo-style">{$styles[0]['style_description']} {if $showPricing}<strong>${$styles[0][ 'price' ]|number_format:2}</strong>{/if}</p>
+						{/if}
+					{/if}
+					<br class="clear"/>
+					{if $product[ 'title' ] != $product[ 'manufacturer_description' ]}
+						<div class="item-description"><p>{$product[ 'manufacturer_description' ]}</p></div>
+					{/if}
+					
+					<div class="item-block">
+						<div class="add-box">
+							<form action="" method="POST">
+								<input type="hidden" id="productId" name="product_id" value="{$product[ 'id' ]}" />
+								<input type="hidden" id="productStyle" name="style_id" value="{$styles[0]['id']}" id="style-hidden" />
+								
+								<div class="qty-wrap">
+									<div class="qty">QTY</div>
+									<input id="qty" type="tel" name="quantity" min="1" max="99999" maxlength="5" value="" class="number-input" />
+								</div>
+								<button id="addBtn" name="action" value="add_to_cart" class="add-btn">ADD</button>
+							</form>
+							
+							{if $product[ 'favorite' ] == false}
+							<div id="favoriteBtnBlock">
+								<form action="" method="POST">
+									<input type="hidden" name="sku" value="{$product[ 'sku' ]}" />
+									<input type="hidden" id="favProductStyle" name="style_num" value="{$styles[0]['style_num']}" />
+									<button name="action" value="add_to_favorites">ADD TO FAVORITES</button>
+								</form>
+							</div>
+							{/if}
+						</div>
+					</div>
+					
+					
+					
+					<!-- MANUAL LINK -->
+					<!--
+{if $product[ 'show_manual' ] == 1}
+						<div class="manual">
+							<img src="templates/img/drawer.png"/>
+							<p>MANUAL</p>
+							<br class="clear"/>
+						</div>
+					{/if}
+-->
+					<!-- SPECS LINK -->
+					<!--
+{if $product[ 'show_specs' ] == 1}
+						<div class="specs">
+							<img src="templates/img/drawer.png"/>
+							<p>SPECS</p>
+							<br class="clear"/>
+						</div>
+					{/if}
+-->
+					<!-- VIDEO LINK -->
+					<!--
+{if $product[ 'show_video' ] == 1}
+						<div class="video">
+							<img src="templates/img/drawer.png"/>
+							<p>VIDEO</p>
+							<br class="clear"/>
+						</div>
+					{/if}
+-->
+					<br class="clear"/>
+				</div>
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script src="/templates/js/numeric.js"></script>
+<script src="/templates/js/util.js"></script>
+<script type="text/javascript" src="/templates/js/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+
+<script>
+$(document).ready(function() {
+	checkImages($('img.product-image'));
+
+	$(".fancybox").fancybox({
+		padding : 0,
+		closeBtn: false,
+		closeClick: true
+	});
+	
+	$('.numeric').numeric();
+	
+	$('#style-select').change(function(){
+		 $('#productStyle').val( $('#style-select').val() );
+		 $('#favProductStyle').val( $('#style-select:selected').attr('data-style-num') );
+	});
+	
+	$('#qty').keypress(function(e) {
+		if(e.keyCode == 13) {
+			$('#addBtn').click();
+		}
+	});
+
+	// Scroll the element up on focus
+	$('#qty').focus(function() {
+		// Select all text on focus
+		this.select();
+
+		// Scroll
+		$('.screen').animate({
+			scrollTop: ($('.screen').scrollTop() + $(this).offset().top) - ($('.top-nav').height() + 40)
+		}, 500);
+	});
+	$('#qty').mouseup(function() {
+		return false;
+	});
+})
+</script>
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Reset Password"}
+</head>
+<body class="forgot">
+	<div class="screen-overflow">
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="RESET PASSWORD"}
+
+		<div class="screen">
+			<div class="container with-nav">
+				<div class="center">
+				
+					{if isset($success)}
+						<p>{$success}</p>
+						<button id="back-btn" data-loc="{if $smarty.const.LEGACY_HOST_NAME}/login?dist_id={$distId}{else}/login{/if}">BACK TO LOGIN</button>
+					{else}
+						<form action="" method="POST">
+							{if isset($error)}
+								<p>{$error}</p>
+							{/if}
+							
+							<p>Please enter the email address you used to register your account. An email will be sent with instructions on reseting your password</p>
+							<input type="text" name="email" placeholder="Email"/>
+							<button type="submit" name="action" value="reset_pw">SEND EMAIL</button>
+						</form>
+					{/if}
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script src="/templates/js/util.js"></script>
+
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	
+	$('#back-btn').click(function() {
+		window.location = $(this).attr('data-loc');
+	});
+});
+</script>

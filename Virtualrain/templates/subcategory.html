@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Sub Category"}
+</head>
+<body class="subcategorypage">
+	<div class="screen-overflow">	
+		
+		{include file="account.html"}
+		
+		<div class="screen">
+		
+			<div class="top-nav">
+				<h3>{$catTitle|truncate:16}</h3>
+				<img class="line" src="templates/img/line.png"/>
+				<a href="{$prev_request}">	
+					<img class="back" src="templates/img/back-btn.png"/>
+				</a>
+			</div>
+			
+			<!-- PAGE CONTENT -->
+			<div class="container subcategory">
+				<ul>
+					{foreach $subCategories as $cat}
+					<a href="/list?sub_cat_id={$cat[ 'id' ]}">
+						<li>
+							<h4>{$cat[ 'name' ]|truncate:18}</h4>
+							<div class="amount"><p>{$cat[ 'product_count' ]}</p></div>
+							<br class="clear"/>
+						</li>
+					</a>
+					{/foreach}
+				</ul>
+			</div>
+			<!-- END PAGE CONTENT -->
+			
+		</div>
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="templates/js/jquery.slimscroll.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+
+
+
+
+
+
+
+

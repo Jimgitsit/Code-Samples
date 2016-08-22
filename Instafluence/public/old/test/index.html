@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Instafluence | The Most Effective Form of Instagram Marketing</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="description" content="">
+	
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+	
+	<!-- fonts, favicon, and touch icons -->
+	<link rel="shortcut icon" href="img/favicon.png">
+	<script type="text/javascript" src="//use.typekit.net/aiq0qnk.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+	
+	<!-- styles -->
+	<link rel="stylesheet" href="css/reset.css">
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/responsive.css">
+</head> 
+<body id="home">
+
+
+
+
+<section class="call-to-action">
+	<div class="container">
+		<img src="img/logo.png" class="logo" alt="Instafluence" />
+		<h2>The most effective form of Instagram marketing. We connect brands with influencers for tasteful, genuine Instagram ads.</h2>
+		<div class="btns">
+			<a href="#brands" class="btn red scrollPage">I have a brand.</a>
+			<a href="#influencers" class="btn blue scrollPage">I'm an influencer.</a>
+		</div>
+		<a href="#brands" class="down-arrow scrollPage"><img src="img/down-arrow.png" /></a>
+	</div>
+</section>
+<section class="insta-screenshots"></section>
+
+
+<div class="bg-1"></div>
+
+
+<section id="brands">
+	<div class="container">
+		<h3>FOR BRANDS:</h3>
+		<h1>Expose Your Brand With Instagram</h1>
+		<h2>Influencers get your message out faster and wider to consumers that genuinely care about your brand.</h2>
+		<a href="#contact" class="lets-talk-link scrollPage">Let's Talk <img src="img/blue-arrow.png" /></a>
+	</div>
+</section>
+
+
+<div class="bg-2"></div>
+
+
+<section id="influencers">
+	<div class="container">
+		<h3>FOR INFLUENCERS:</h3>
+		<h1>Earn Income From Brands You Love</h1>
+		<h2>Have a following on Instagram? Earn some extra income by placing tasteful Instagram ads for brands you already love.</h2>
+		<a href="#contact" class="lets-talk-link scrollPage">Get Started <img src="img/blue-arrow.png" /></a>
+	</div>
+</section>
+
+
+<div class="bg-3"></div>
+
+
+<section id="contact">
+	<div class="container">
+		<h1>Let's Talk.</h1>
+		<h2>Get in touch at <a href="tel:8017351518">801-735-1518</a>, email us at <a href="mailto:chris@instafluence.com">chris@instafluence.com</a> , or use our form: </h2>
+		
+		<form action="emailer/emailer.php" method="POST" enctype="multipart/form-data" id="email-form">
+			<input type="text" placeholder="Name" class="text-input" name="name" />
+			<input type="email" placeholder="Email" class="text-input" name="email" />
+			<input type="phone" placeholder="Phone" class="text-input" name="phone" />
+			<textarea placeholder="Message" name="message"></textarea>
+			<input type="radio" name="have" value="I have a brand" class="radio" checked/><span>I have a brand</span><br>
+			<input type="radio" name="have" value="I'm an influencer" class="radio" /><span>I'm an influencer</span><br>
+			<button type="submit" class="btn blue">Send</button>
+		</form>
+		
+	</div>
+</section>
+
+
+<footer>
+	<p><script language="JavaScript"> document.write('&copy;&nbsp;' + (new Date()).getFullYear()); </script> Instafluence&nbsp;&nbsp;-&nbsp;&nbsp;<a href="#brands" class="scrollPage">Brands</a>&nbsp;&nbsp;-&nbsp;&nbsp;<a href="#influencers" class="scrollPage">Influencers</a>&nbsp;&nbsp;-&nbsp;&nbsp;<a href="#contact" class="scrollPage">Contact</a>&nbsp;&nbsp;-&nbsp;&nbsp;<a href="mailto:chris@instafluence.com">Terms</a>&nbsp;&nbsp;-&nbsp;&nbsp;<a href="mailto:chris@instafluence.com">Press</a></p>
+</footer>
+
+
+
+
+<!-- scripts & modals below -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="js/parallax.js"></script>
+<script src="js/scrollpage.js"></script>
+<script src="js/jquery.validate.min.js"></script>
+<script>
+	$('#email-form').validate({
+	    rules: {
+	      name: {
+	        minlength: 2,
+	        required: true
+	      },
+	      email: {
+	        required: true,
+	        email: true
+	      },
+	      phone: {
+	      	minlength: 2,
+	        required: true
+	      },
+	      message: {
+	        minlength: 2,
+	        required: true
+	      },
+	      have: {
+	        required: true
+	      }
+	    }
+	  });
+</script>
+
+<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->
+
+<!-- Google Analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-39996489-1', 'builtbyhq.com');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html> 

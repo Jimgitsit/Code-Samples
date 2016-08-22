@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+</head>
+<body class="shippingpage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="SHIPPING LOCATIONS"}
+		
+		<div class="screen">
+		
+			<div class="container with-nav">
+				
+				<div class="shipping-locations">
+					{foreach $locations as $location}
+						<div class="location-info">
+							
+							<div class="saved-info" data-id="{$location['id']}">	
+								<p><strong>{$location['name']}</strong></p>
+								<p>{$location['address1']}</p>
+								<p>{$location['city']}, {$location['state']} {$location['zip']}</p>
+								<p>{$location['phone']}</p>
+							</div>
+							
+							<form action="" method="POST" id="preferredForm">
+								<div class="preferred-checkbox {if $location['id'] == $preferred}checked{/if}" id="{$location['id']}" data-preferred="{if $location['id'] == $preferred}true{else}false{/if}"><span class="pref-text">Preferred</span></div>
+							</form>
+							
+							<div class="buttons">	
+								<form action="" method="POST" id="deleteForm">
+									<div class="delete-btn" id="{$location['id']}">Delete</div>
+								</form>
+								<div class="edit-btn" id="{$location['id']}">Edit</div>
+							</div>
+							
+							<form class="edit-info edit-info-form" data-id="{$location['id']}" action="/shipping" method="POST">
+								<div>
+									<input type="text" name="name" value="{$location['name']}" placeholder="name"/>
+									<input type="text" name="address1" value="{$location['address1']}" placeholder="address 1"/>
+									<input type="text" name="address2" value="{$location['address2']}" placeholder="address 2"/>
+									<input type="text" name="city" value="{$location['city']}" placeholder="city"/>
+									<input type="text" name="state" value="{$location['state']}" placeholder="state"/>
+									<input type="text" name="zip" value="{$location['zip']}" placeholder="zip"/>
+									<input type="text" name="phone" value="{$location['phone']}" placeholder="phone"/>
+									<input type="hidden" name="id" value="{$location['id']}"/>
+									<div class="error-msg edit-error-msg"></div>
+									<br class="clear"/>
+									<button type="submit" class="save-btn">Save</button>
+								</div>
+							</form>
+						</div>
+					{/foreach}
+					<div class="location-info new-location-box">
+						<div>New Shipping Location</div>
+						<form action="/shipping" method="POST" id="newLocationForm">
+							<input type="text" name="name" placeholder="name"/>
+							<input type="text" name="address1" placeholder="address 1"/>
+							<input type="text" name="address2" placeholder="address 2"/>
+							<input type="text" name="city" placeholder="city"/>
+							<input type="text" name="state" placeholder="state"/>
+							<input type="text" name="zip" placeholder="zip"/>
+							<input type="text" name="phone" placeholder="phone"/>
+							<div class="error-msg new-error-msg"></div>
+							<button type="submit" name="action" value="save_new_location_ajax" class="save-btn">Save</button>
+							<br class="clear"/>
+						</form>
+						<br class="clear">
+					</div>
+				</div>
+			
+				<div class="location-info new-location"><p>Add New Location</p></div>
+				
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+
+{literal}
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+<script>
+$(document).ready(function() {
+	$('.preferred-checkbox').click(function(){
+		if( !$(this).hasClass('checked') ){
+			// Uncheck others
+			$('.preferred-checkbox').each(function() {
+				$(this).removeClass('checked');
+			});
+			
+			// Check this one
+			$(this).addClass('checked');
+			
+			// Save the cahnge
+			var data = {action: 'save_preferred_ajax', preferred: $(this).attr('id')};
+			$.post("/shipping", data);
+		}
+	});
+	
+	$('.edit-btn').click(function(){
+		var id = $(this).attr('id');
+		
+		$('.saved-info').show();
+		$('.edit-info').hide();
+		
+		$('.saved-info[data-id="' + id + '"]').hide();
+		$('.edit-info[data-id="' + id + '"]').show();
+		var container = $('.screen');
+		var scrollTo = $(this).closest('.location-info');
+		container.animate({
+	        scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+	    }, 500);		
+	});
+	
+	$('.new-location').click(function(){
+		$('.new-location-box').show();
+		$('.new-location').hide();
+		var container = $('.screen');
+		var scrollTo = $(".new-location-box");
+		container.animate({
+	        scrollTop: scrollTo.offset().top - container.offset().top + container.scrollTop()
+	    }, 500);
+	});
+	
+	$('.edit-info-form').submit(function(e) {
+		var form = $(this);
+		e.preventDefault();
+		var data = form.serialize();
+		data += "&action=update_location_ajax";
+		form.find('.save-btn').hide();
+		$('.edit-error-msg').hide();
+		$.post('/shipping', data, function(response) {
+			if(response.success) {
+				window.location = '/shipping';
+			}
+			else {
+				$('.edit-error-msg').text(response.msg);
+				$('.edit-error-msg').show();
+				form.find('.save-btn').show();
+			}
+		}, 'json');
+	});
+	
+	$('#newLocationForm').submit(function(e) {
+		e.preventDefault();
+		var data = $(this).serialize();
+		data += "&action=save_new_location_ajax";
+		$('.save-btn').hide();
+		$('.new-error-msg').hide();
+		$.post('/shipping', data, function(response) {
+			if(response.success) {
+				window.location = '/shipping';
+			}
+			else {
+				$('.new-error-msg').text(response.msg);
+				$('.new-error-msg').show();
+				$('.save-btn').show();
+			}
+		}, 'json');
+	});
+	
+	$('.delete-btn').click(function(){
+		var shippingId = $(this).attr('id');
+		var data = {action:'delete_shipping_location_ajax', id: $(this).attr('id')};
+		$.post("/shipping", data, function(){
+			window.location = '/shipping';
+		});
+	});
+});
+	
+</script>
+{/literal}
+
+
+
+
+
+
+
+

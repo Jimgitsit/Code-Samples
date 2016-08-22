@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Splash"}
+</head>
+<body class="splashpage">
+	<div class="container">
+		<a href="/login">	
+			<img id="logo" src="img/logo.png"/>
+		</a>
+	</div>
+</body>
+
+<script>
+	$(document).ready(function(){
+		var div= $('#logo');
+		div.css("top", ($(window).height() - div.height())/2  + 'px');
+	})
+</script>

@@ -1,0 +1,143 @@
+{include file='templates/header.tpl' pageTitle='Influencer'}
+
+<div class="container">
+	<section id="account">
+		
+		{if isset($msg)}
+			<div class="row">
+				<div class="col-md-12 text-center">
+					<div id="msgTop">{$msg}</div>
+				</div>
+			</div>
+		{/if}
+		
+		<div id="titleSection">
+			<div class="row">
+				<div class="col-md-5 text-right left-col">
+					{if isset($social.facebook.profile.picture.url)}
+						<img class="profile-img" src="{$social.facebook.profile.picture.url}">
+					{else}
+						<img class="profile-img" src="/img/profile_placeholder.png">
+					{/if}
+				</div>
+
+				<div class="col-md-7 right-col">
+					<h2>{$user.name}</h2>
+					<a id="email" target="_blank" href="mailto:{$profile.email}">{$profile.email}</a>
+				</div>
+			</div>
+		</div>
+
+		<!--
+		{if !(isset($profile.cpp) && is_numeric($profile.cpp) && $profile.cpp > 0) || !(isset($profile.cpe) && is_numeric($profile.cpe) && $profile.cpe > 0) || !(isset($profile.cpm) && is_numeric($profile.cpm) && $profile.cpm > 0)}
+		<div class="row">
+			<div class="col-md-offset-2 col-md-8 text-center">
+				<div id="msgStats">We are evaluating your profile and will update these numbers soon. Please check back in a little while or feel free to contact your account manager shown below.</div>
+			</div>
+		</div>
+		{/if}
+		-->
+
+		<!--
+		<div class="row stats-row">
+			<div class="col-md-4 text-center">
+				<div class="stat-wrapper">
+					<div class="number-bg">
+						{if isset($profile.cpp) && is_numeric($profile.cpp) && $profile.cpp > 0}<span class="symbol">$</span>{$profile.cpp|number_format:0:".":","}{else}?{/if}
+					</div>
+					<div class="title">
+						Cost per Post (CPP)
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4 text-center">
+				<div class="stat-wrapper">
+					<div class="number-bg">
+						{if isset($profile.cpe) && is_numeric($profile.cpe) && $profile.cpe > 0}<span class="symbol">$</span>{$profile.cpe|number_format:2:".":","}{else}?{/if}
+					</div>
+					<div class="title">
+						Cost per Engagment (CPE)
+					</div>
+				</div>
+			</div>
+
+			<div class="col-md-4 text-center">
+				<div class="stat-wrapper">
+					<div class="number-bg">
+						{if isset($profile.cpm) && is_numeric($profile.cpm) && $profile.cpm > 0}<span class="symbol">$</span>{$profile.cpm|number_format:2:".":","}{else}?{/if}
+					</div>
+					<div class="title">
+						Cost per Thousands (CPM)
+					</div>
+				</div>
+			</div>
+		</div>
+		-->
+
+		<div id="analyticsRow" class="row analytics-row">
+			<h3>Analytics</h3>
+			<div class="analytics-wrapper">
+				<div class="col-md-12 text-center">
+					<p class="coming-soon">COMING SOON!</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="campaignsRow" class="row analytics-row">
+			<h3>Active Campaigns</h3>
+			<div class="analytics-wrapper">
+				<div class="col-md-12 text-center">
+					<p class="coming-soon">COMING SOON!</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="paymentsRow" class="row analytics-row">
+			<h3>Payments</h3>
+			<div class="analytics-wrapper">
+				<div class="col-md-12 text-center">
+					<p class="coming-soon">COMING SOON!</p>
+				</div>
+			</div>
+		</div>
+
+		<div id="contractsRow" class="row analytics-row">
+			<h3>Contracts</h3>
+			<div class="analytics-wrapper">
+				<div class="col-md-12 text-center">
+					<p class="coming-soon">COMING SOON!</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12 text-center">
+				<span>To discuss your pricing and other opportunities please contact:</span>
+				<br/><br/>
+			</div>
+		</div>
+
+		<div id="managerRow" class="row">
+			<div class="img-col col-md-offset-3 col-md-2 text-right">
+				<img class="profile-img" src="/img/about-austin.jpg">
+			</div>
+
+			<div class="txt-col col-md-7">
+				<div id="msgContact">
+					<p class="name">Austin Emery</p>
+					<p class="title">Director of Influencer Relations</p>
+					<p>(813) 326-8350</p>
+					<p><a href="mailto:austin@instafluence.com">austin@instafluence.com</a></p>
+				</div>
+			</div>
+
+			<div class="clearfix"></div>
+		</div>
+		
+	</section>
+</div>
+
+<script type="text/javascript" src="/js/account.js"></script>
+
+{include file='templates/footer.tpl'}

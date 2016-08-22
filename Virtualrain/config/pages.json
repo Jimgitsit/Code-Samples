@@ -1,0 +1,209 @@
+[
+	{
+		"url": "/login",
+		"controller": "LoginPage.php",
+		"template": "login.html"
+	},
+	{
+		"url": "/register",
+		"controller": "RegisterPage.php",
+		"template": "register.html"
+	},
+	{
+		"url": "/forgot",
+		"controller": "ForgotPasswordPage.php",
+		"template": "forgot.html"
+	},
+	{
+		"url": "/categories",
+		"controller": "CategoriesPage.php",
+		"template": "categories.html"
+	},
+	{
+		"url": "/subcategory",
+		"controller": "SubCategoryPage.php",
+		"template": "subcategory.html"
+	},
+	{
+		"url": "/list",
+		"controller": "ListPage.php",
+		"template": "listview.html"
+	},
+	{
+		"url": "/searchresults",
+		"controller": "SearchResultsPage.php",
+		"template": "searchresults.html"
+	},
+	{
+		"url": "/grid",
+		"controller": "GridPage.php",
+		"template": "gridview.html"
+	},
+	{
+		"url": "/item",
+		"controller": "ItemPage.php",
+		"template": "item.html"
+	},
+	{
+		"url": "/finalize",
+		"controller": "FinalizePage.php",
+		"template": "finalize.html"
+	},
+	{
+		"url": "/thankyou",
+		"controller": "ThankyouPage.php",
+		"template": "thankyou.html"
+	},
+	{
+		"url": "/thankyou-shipping",
+		"controller": "ThankyouShippingPage.php",
+		"template": "thankyou-shipping.html"
+	},
+    {
+        "url": "/admin/orders",
+        "controller": "admin/OrdersPage.php",
+        "template": "admin/orders.html"
+    },
+    {
+        "url": "/admin/order_print",
+        "controller": "admin/OrderPrintPage.php",
+        "template": "admin/order_print.html"
+    },
+    {
+        "url": "/admin/order_export",
+        "controller": "admin/OrderExportPage.php"
+    },
+    {
+        "url": "/admin/reports",
+        "controller": "admin/ReportsPage.php",
+        "template": "admin/reports.html"
+    },
+    {
+        "url": "/admin/products",
+        "controller": "admin/ProductsPage.php",
+        "template": "admin/products.html"
+    },
+    {
+        "url": "/admin/users",
+        "controller": "admin/UsersPage.php",
+        "template": "admin/users.html"
+    },
+    {
+        "url": "/admin/notifications",
+        "controller": "admin/NotificationsPage.php",
+        "template": "admin/notifications.html"
+    },
+    {
+		"url": "/admin/locations",
+		"controller": "admin/LocationsPage.php",
+		"template": "admin/locations.html"
+    },
+    {
+		"url": "/admin/branches",
+		"controller": "admin/BranchesPage.php",
+		"template": "admin/branches.html"
+    },
+    {
+		"url": "/admin/branchedit",
+		"controller": "admin/BranchEditPage.php",
+		"template": "admin/branchedit.html"
+    },
+    {
+        "url": "/admin/login",
+        "controller": "admin/AdminLoginPage.php",
+        "template": "admin/admin_login.html"
+    },
+    {
+        "url": "/admin/adminusers",
+        "controller": "admin/AdminUsersPage.php",
+        "template": "admin/admin_users.html"
+    },
+    {
+        "url": "/admin/dataadmin",
+        "controller": "admin/AdminDataPage.php",
+		"template": "admin/data_admin.html"
+    },
+    {
+        "url": "/admin/data",
+        "controller": "admin/DataPage.php",
+		"template": "admin/data.html"
+    },
+    {
+        "url": "/admin/distprefs",
+        "controller": "admin/DistPrefsPage.php",
+		"template": "admin/distprefs.html"
+    },
+    {
+        "url": "/admin",
+        "redirect": "/admin/login"
+	},
+	{
+        "url": "/logout",
+        "controller": "LogoutPage.php",
+        "template": "logout.html"
+    },
+    {
+        "url": "/admin/distributers",
+        "controller": "admin/DistributersPage.php",
+        "template": "admin/distributers.html"
+    },
+    {
+        "url": "/admin/distributers/edit",
+        "controller": "admin/DistributersEditPage.php",
+        "template": "admin/distributers_edit.html"
+    },
+    {
+        "url": "/admin/order",
+        "controller": "admin/OrderPage.php",
+        "template": "admin/order.html"
+    },
+    {
+        "url": "/api/test",
+        "controller": "api.php"
+    },
+    {
+        "url": "/location",
+        "controller": "LocationPage.php",
+		"template": "location.html"
+    },
+    {
+        "url": "/notifications",
+        "controller": "NotificationsPage.php",
+		"template": "notifications.html"
+    },
+    {
+        "url": "/account",
+        "controller": "AccountPage.php",
+		"template": "account-info.html"
+    },
+    {
+        "url": "/order",
+        "controller": "OrderPage.php",
+		"template": "order.html"
+    },
+    {
+        "url": "/locations",
+        "controller": "LocationsPage.php",
+		"template": "locations.html"
+    },
+    {
+        "url": "/reorder",
+        "controller": "ReorderPage.php",
+		"template": "reorder.html"
+    },
+    {
+        "url": "/shipping",
+        "controller": "ShippingLocationsPage.php",
+		"template": "shipping.html"
+    },
+    {
+        "url": "/shipping-locations",
+        "controller": "ShippingPage.php",
+		"template": "shipping-locations.html"
+    },
+    {
+        "url": "/favorites",
+        "controller": "FavoritesPage.php",
+		"template": "favorites.html"
+    }
+]

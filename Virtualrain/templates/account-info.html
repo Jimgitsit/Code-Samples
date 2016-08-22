@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Account Info"}
+</head>
+<body class="accountpage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="ACCOUNT INFO"}
+		
+		<div class="screen">
+			
+			<div class="container with-nav">
+				
+				<form action="" method="POST">
+					<div class="account-info">
+						{if isset( $errMsg )}
+							<div class="err-msg">{$errMsg}</div>
+						{/if}
+						<p>Company Name</p>
+						<input type="text" name="company_name" value="{$account_info['company_name']}" />
+						<p>First Name</p>
+						<input type="text" name="first_name" value="{$account_info['first_name']}" />
+						<p>Last Name</p>
+						<input type="text" name="last_name" value="{$account_info['last_name']}" />
+						<p>Email</p>
+						<input type="text" name="email" value="{$account_info['email']}" />
+						<p>Phone Number</p>
+						<input type="text" name="cell_phone" value="{$account_info['cell_phone']}" />
+						<p>Password</p>
+						<input type="password" name="password" value="7DVX9lFUC3" />
+						<p>Repeat Password</p>
+						<input type="password" name="password2" value="7DVX9lFUC3" />
+						<input type="checkbox" name="status_emails"	{if $account_info['status_emails'] == 1}checked{/if} />&nbsp;Send emails on order status changes
+					</div>
+					<button type="submit" name="action" value="save" id="save-btn">Save</button>
+				</form>
+				
+				{if isset($saved) }
+					<div class="saved-box">
+						<p>&#x2713; Saved!</p>
+					</div>
+					<script>
+						var hideSaved = function(){
+							$('.saved-box').animate({
+								opacity:0
+							},1500,function(){
+								$('.saved-box').css('display','none');
+							})
+						}
+						setTimeout(hideSaved, 500);
+					</script>
+				{/if}
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+
+
+
+
+
+
+
+
+

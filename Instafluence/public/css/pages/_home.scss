@@ -1,0 +1,251 @@
+// ************
+//  Home Page
+// ************
+
+.form .confirmation-field {
+    display: none;
+}
+// #login, #signup, #profile, #account {
+// 	.black-outline-btn {
+// 		display: block; max-width: 300px; height: 40px; margin: auto;
+// 	}
+// }
+
+#profile, #account {
+    .black-outline-btn {
+        display: block; max-width: 300px; height: 40px; margin: auto;
+    }
+}
+// #login, #signup {
+// 	max-width: 400px;
+// 	margin: 0px auto;
+//
+// 	h1 {
+// 		text-align: center;
+// 		margin-bottom: 14px;
+// 	}
+// 	label {
+// 		font-weight: 600;
+// 	}
+// 	.auth-error, .signup-error {
+// 		color: red;
+// 	}
+// 	.btn {
+// 		width: 100%;
+// 	}
+// 	.signup-text {
+// 		text-align: center; margin-top: 15px;
+// 	}
+// }
+// #login {
+// 	margin: 150px auto 0 auto;
+// }
+// #signup {
+// 	max-width: 500px;
+// }
+
+footer { background:#252525; padding:60px 0; color:white;
+    img { float:left; }
+    ul { float:right; position:relative; top:14px; }
+    li { float:left; margin-right:40px; }
+}
+
+nav.static { background:#252525; color:white; position:fixed; top:79px; z-index:9; width:100%; height: 35px;
+    ul {  margin:0 auto; width:760px; }
+    li { padding:8px 15px; margin:0 82px; float:left; }
+    li.active { border-bottom:3px solid #ff5d5f; }
+    li#app-trigger { border-color:#ff5d5f !important; }
+    li#brand-trigger { border-color:#5dc7d6 !important; }
+    li#influencer-trigger { border-color:#0ec5a4 !important; }
+}
+
+#stripe { width:100%; position:fixed; top:0px; height:5px; background:url('/img/color-bar.jpg') no-repeat; background-size:100%; z-index:30; }
+
+#gateway { width:100%; position:fixed; top:0px; left:0px; z-index:10; background:white; margin-top: 79px;
+    li { width:33.33%; float:left; text-align:center; padding-top:130px; cursor:pointer; opacity:.8; position: relative; }
+    li:hover { opacity:1; }
+    li.app { background:url('/img/app.png') no-repeat white bottom center; color:#252525; }
+    li.brand { background:url('/img/brand.png') no-repeat #d1d2d3 bottom center; background-size:100%; color:#252525;  }
+    li.influencer { background:url('/img/influencers.png') no-repeat #4d4d4d bottom center; background-size:100%; color:white; }
+    a { display: block; position: absolute; top: 79px; bottom: 0; left: 0; right: 0; }
+}
+#gateway.close { overflow:hidden; height:0px !important; opacity:1; }
+
+/* Brands Tab */
+#use-social-networks {  height:545px; background:url('/img/bg-brand.png') no-repeat center; padding:190px 0 120px; color:#252525;
+    h2 { font-size:42px; line-height:1.4em; padding-bottom:30px }
+    p { color:#636363; font-size:20px; line-height:1.6em; padding-bottom:30px; }
+    button { width:230px; height:50px; }
+}
+#influencing-through-social-networks {  padding:55px 0; background:white;
+    h2 { text-align:center; padding-bottom:30px; font-size:48px; }
+    h3 { text-align:center; max-width:600px; margin:0 auto; color:#7d7d7d; line-height:1.8em; padding-bottom:30px; font-size:20px; }
+    img { display:block; margin:0 auto; }
+    img.icons { padding-bottom:30px; }
+    ul { margin:0 auto; width:910px; }
+    li { width:130px; float:left; margin:0 25px;
+        img.networks { width:100%; }
+        .network { background:#7acfe1; border-bottom-left-radius:8px;  border-bottom-right-radius:8px; }
+        .network img { margin:0 auto; display:block; padding:3px 0; }
+        p { font-size:18px; color:#636363; text-align:center; padding:5px 0 3px; }
+        span { text-align:center; font-size:14px; color:#898989; display:block; }
+    }
+}
+#influencer-campaigns {  background:url('/img/bg-network.png') no-repeat; padding:120px 0 110px; background-position:center center; color:white;
+    h3 { font-size:36px; }
+    ul { padding-left:90px; padding-top:80px; }
+    li { position:relative; margin-bottom:55px;
+        img { position:absolute; top:5px; left:-50px; }
+        p { font-size:30px; }
+        span { font-size:20px; }
+    }
+}
+#followers { padding:110px 0 0; background:white;
+    img.phone { padding-right:30px; float:left; }
+    article { max-width:380px; float:left; position:relative; top:125px;
+        h2 { font-size:48px; color:#6fd5e4;
+            img { padding-right:10px; }
+        }
+        p { font-family:24px; color:#7d7d7d; line-height:1.6em; }
+    }
+}
+#reinforcing-your-brand {  background:#6fd5e4; color:white; padding:100px 0; text-align:center;
+    h2 { font-size:48px; }
+    p { font-size:22px; padding:30px 0 50px; max-width:440px; margin:0 auto; line-height:1.8em; }
+    button { width:230px; height:50px; margin:0 auto; }
+}
+
+/* App Tab */
+#achieving-social-media-influence { background:#e9e9e9; padding:190px 0 0;
+    article { max-width:500px; float:left; padding-right:80px;  position:relative; top:20px;
+        h2 { font-size:42px; color:black; padding:40px 0; }
+        p { font-size:22px; color:#7a7c80; padding:30px 0; }
+        img {  }
+    }
+    img { float:left; }
+}
+#going-viral { padding:100px 0 50px; background:white;
+    h2 { text-align:center; font-size:42px; }
+    p { text-align:center; max-width:500px; margin:0 auto; color:#7a7c80; padding:30px 0; line-height:1.6em; }
+    article { margin:0 auto; display:block; width:440px;
+        img { float:left; }
+        p { max-width:250px; float:left; font-size:14px; color:#898989; text-align:left; line-height:1.5em; }
+    }
+    h3 { text-align:center; color:#ff5d5f; font-style:italic; padding:60px 0 20px; }
+    ul { margin:0 auto; width:910px; }
+    li { width:130px; float:left; margin:0 25px;
+        img.networks { width:100%; }
+        .network { background:rgb(255, 93, 95); border-bottom-left-radius:8px;  border-bottom-right-radius:8px; position:relative; top:-2px; }
+        .network img { margin:0 auto; display:block; padding:3px 0; }
+        p { font-size:18px; color:#636363; text-align:center; padding:5px 0 3px; }
+        span { text-align:center; font-size:14px; color:#898989; display:block; }
+    }
+}
+#app-exposure { height:685px; background:url('/img/exposure.jpg') no-repeat center; }
+#downloads { background:white; padding:70px 0 0; text-align:center;
+    h2 { font-size:48px; }
+    p { font-size:24px; max-width:600px; margin:0 auto; line-height:1.6em; padding:30px 0 60px; }
+    img { display:block; margin:0 auto; }
+    img.downloads { padding-right:80px; position:relative; top:60px; }
+}
+#app-followers { background:#ff5d5f; padding:90px 0 0; color:white;
+    article { max-width:400px; padding:0 60px 0; float:left; position:relative; top:40px;
+        h3 { font-size:48px; }
+        p { font-size:20px; line-height:1.6em; padding:15px 0 0; }
+    }
+    img { float:left; }
+}
+#quote{ padding:185px 0 125px; background:url('/img/bg-quote.png') no-repeat center; color:white; text-align:center; background-size:cover !important;
+    h3 { font-size:32px; line-height:1.6em; max-width:680px; margin:0 auto; }
+    p { font-size:24px; line-height:1.6em; padding-top:40px; }
+}
+#lets-talk { background:white; text-align:center; padding:70px 0 120px;
+    h2 { font-size:42px; }
+    p { color:#4e4d4d; font-size:20px; line-height:1.6em; padding:30px 0; max-width:650px; margin:0 auto; }
+    button { width:230px; height:50px; margin:0 auto; }
+}
+
+/* Influencers Tab */
+#influencer-tab {
+    #quote {  background:url('/img/bg-quote2.jpg') no-repeat center; }
+}
+#influence-for-brands-and-apps { background:#e9e9e9; padding:190px 0 40px; text-align:center;
+    .container { max-width:650px; }
+    h1 { font-size:48px; }
+    p { font-size:24px; color:#7a7c80; max-width:460px; margin:0 auto; padding:40px 0 50px; line-height:1.6em; }
+    button { width:230px; height:50px; margin-bottom:60px; }
+    img { display:block; margin:0 auto; }
+}
+#brand-connection { padding:60px 0;
+    ul { width:915px; margin:0 auto 110px; }
+    ul:nth-child(2) { margin:0 auto; }
+    li { float:left; width:50%; }
+    h2 { font-size:48px; padding-bottom:15px; }
+    p { color:#7a7c80; line-height:1.8em; }
+    img { display:block; margin:0 auto; }
+}
+
+#forgotPw {
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#forgotPwMsg {
+    font-size: 14px;
+}
+
+/* About */
+#about #banner { width:100%; background:url('/img/banner.jpg') no-repeat; background-size:cover; color:white; padding:215px 0 105px; }
+#about #banner h1 { color:white; font-size:48px; text-align:center; padding-bottom:20px; line-height:1.5em; }
+#about #banner h2 { font-size:24px; text-align:center; padding-bottom:25px; line-height:1.5em; font-family:"adelle-sans"; }
+#about #banner img { display:block; margin:0 auto; }
+
+#belief { padding:90px 0; }
+#belief h1 { font-size:48px; text-align:center; line-height:1.4em; padding-bottom:30px; }
+#belief p { font-size:18px; color:#545965; line-height:1.6em; opacity:.7; text-align:center; max-width:700px; margin:0px auto; display:block; }
+
+#team { padding:90px 0; background:#3d414b; }
+#team ul { max-width: 949px; margin: 0 auto; }
+#team ul li { float:left; width:135px; height:175px; padding:20px 20px 0 20px; cursor:pointer; }
+#team li img:first-child { width:100%; border-radius:50px; }
+#team li .arrow { display:block; margin:0 auto; padding-top:7px; width:22px; opacity:0; }
+#team .active .arrow { opacity:1; }
+#team li h4 { color:white; text-align:center; padding-top:10px; line-height:1.5em; }
+#team .drawers { background:white; }
+#team .drawers h4 { color:#5dc7d6; font-size:18px; padding-bottom:20px }
+#team .drawers p { line-height:26px; font-weight:100; font-style:italic; }
+#team .drawers .left { float:left; max-width:410px; margin-right:55px; }
+#team .drawers .right { float:left; max-width:410px; }
+#team .drawer { padding:40px; }
+
+#history { padding:50px 0; }
+#history img { float:left; width:480px; }
+#history .text { width:400px; float:left; padding:22px; }
+#history p { font-size:18px; color:#545965; line-height:1.6em; opacity:.7; text-align:left; max-width:700px; margin:0 auto; padding:10px; }
+#history h2 { font-size:48px; font-family:"arvo", georgia, serif; margin-bottom:30px; line-height:0;text-align:center; line-height:1.4em; padding-bottom:30px; }
+#history h4 { text-align:center; position:relative; top:-46px; font-size:25px; max-width:700px; margin:0 auto; line-height:1.5em; }
+
+#contact select[multiple] { width:100%; border:1px solid #ddd; font-size:18px; color:#555; border-radius:4px; margin-bottom:12px; height:134px; }
+#contact select:not([multiple]) { width:100%; border:1px solid #ddd; background:white; -webkit-appearance:none; margin-bottom:12px; padding:7px; border-radius:3px; font-size:16px; color:#555; }
+#contact label { display:block; margin-bottom:5px; line-height:1.3em; }
+#contact input[type=submit] { width:100%; background:#ff5d5f; color:white; padding:12px 0; }
+#contact p { color:black; font-size:11px; margin-bottom:5px; }
+#contact .brand-form, #contact .influencer-form { margin-top:20px; }
+#contact .radios { max-width:430px; margin:0 auto; }
+#contact .radios li { padding:12px 34px; background:#ddd; border-radius:3px; float:left; width:auto; color:white; margin:12px 12px 12px 0; }
+#contact .radios .active { background:#5dc7d6 }
+#contact li a { color:inherit; }
+
+#side-bar { width:270px; height:100%; background:#111; position:fixed; z-index:4; left:-300px; }
+#side-bar img { position:absolute; top:95px; right:35px; }
+#side-bar ul { width:100%; position:relative; top:220px; }
+#side-bar li { max-width:100%; text-align:right; padding:20px 35px; margin-bottom:25px; color:white;  }
+#side-bar li:hover { background:#ff5d5f; }
+#side-bar a { color:inherit; text-decoration:none; }
+
+.main { position:relative; left:0px; }
+.screen { width:100%; overflow:hidden; position:relative; }
+
+.confirmation-page .container { margin-top: 25px; padding:70px; text-align:center; }
+.confirmation-page h1 { line-height:1.3em; }
+.confirmation-page a { font-size:18px; line-height:1.5em; }

@@ -1,0 +1,283 @@
+<div class="current-price-cat-wrap">
+	<span>Current Price Category:&nbsp;</span>
+	<select id="priceCategorySelect">
+		{foreach $priceCategories as $priceCat}
+			{if isset( $currPriceCat ) && $currPriceCat.id == $priceCat.id}
+				<option value="{$priceCat.id}" selected>{$priceCat.name}{if $priceCat.default == 1} (default){/if}</option>
+			{else}
+				<option value="{$priceCat.id}">{$priceCat.name}{if $priceCat.default == 1} (default){/if}</option>
+			{/if}
+		{/foreach}
+	</select>
+	<div class="price-cat-users">assigned to {$userCount} user{if $userCount != 1}s{/if}</div>
+</div>
+
+<div class="price-cat-btn-wrap">
+	<button id="creeatePriceCatBtn" class="btn btn-small btn-default price-cat-btn">Create New Price Category</button>
+	{if $currPriceCat.default == 0}
+	<button id="setDefaultPriceCatBtn" class="btn btn-small btn-default price-cat-btn">Set As Default</button>
+	{/if}
+	<button id="renamePriceCatBtn" class="btn btn-small btn-default price-cat-btn">Rename</button>
+	<button id="deletePriceCatBtn" class="btn btn-small btn-default price-cat-btn">Delete</button>
+</div>
+
+<div class="hide-pricing-wrap pull-right">
+	<input id="hidePricing" type="checkbox" {if !$currPriceCat.show_prices}checked{/if} /> <label for="hidePricing">Hide all pricing for this category</label>
+</div>
+
+<div class="modal fade" id="newPriceCatModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Create a New Price Category</h3>
+			</div>
+			<div class="modal-body">
+				<p>Enter a name for the new price category.</p>
+				<p id="newPriceCatMsg"></p>
+				<form id="newPriceCatForm" method="POST" action="products?{$query}">
+					<input type="hidden" name="action" value="create_price_cat" />
+					<input type="text" id="newPriceCatName" name="new_price_cat_name" maxlength="26" />
+					<br><br>
+					<p>Copy from an existing price category.</p>
+					<select id="priceCategoryCopySelect" name="price_category_copy">
+						<option value="-1"></option>
+						{foreach $priceCategories as $priceCat}
+							<option value="{$priceCat.id}">{$priceCat.name}{if $priceCat.default == 1} (default){/if}</option>
+						{/foreach}
+					</select>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<a id="newPriceCatCancelBtn" class="btn" data-dismiss="modal">Cancel</a>
+				<a id="newPriceCatBtn" class="btn btn-default">Create Price Category</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="renamePriceCatModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Rename Price Category</h3>
+			</div>
+			<div class="modal-body">
+				<p>Enter a new name for the price category.</p>
+				<input type="text" id="renamePriceCatName" name="new_price_cat_name" maxlength="26" />
+			</div>
+			<div class="modal-footer">
+				<a id="renamePriceCatCancelBtn" class="btn rename-control" data-dismiss="modal">Cancel</a>
+				<a id="renamePriceCatModalBtn" class="btn btn-default rename-control">Rename Price Category</a>
+				<span style="display: none" id="renamingMsg">Renaming price category...</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="deletePriceCatModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Delete Price Category</h3>
+			</div>
+			<div class="modal-body">
+				<p>Are you sure you want to delete the "<span id="deletePriceCatName"></span>" price category?<br/><br/><span style="color: red">This can not be undone!</span><br/><br/>{$userCount} user{if $userCount != 1}s{/if} currently assigned to this price category will be reassigned to the default price category.</p>
+			</div>
+			<div class="modal-footer">
+				<a id="deletePriceCatCancelBtn" class="btn delete-control" data-dismiss="modal">Cancel</a>
+				<a id="deletePriceCatModalBtn" class="btn btn-default delete-control">Delete</a>
+				<span style="display: none" id="deletingMsg">Deleting price category...</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="cantDeletePriceCatModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Delete Price Category</h3>
+			</div>
+			<div class="modal-body">
+				<p>You can not delete the default price category.</p>
+			</div>
+			<div class="modal-footer">
+				<a id="deletePriceCatModalBtn" class="btn btn-default" data-dismiss="modal">Cancel</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+var disablePriceCatBtns = function() {
+	$('.price-cat-btn').prop('disabled', true);
+};
+
+var enablePriceCatBtns = function() {
+	$('.price-cat-btn').prop('disabled', false);
+};
+
+$(document).ready(function() {
+	$('#newPriceCatCancelBtn, .close').click(function() {
+		enablePriceCatBtns();
+	});
+
+	$('#creeatePriceCatBtn').click(function() {
+		disablePriceCatBtns();
+
+		$('#newPriceCatName').val('');
+		$('#newPriceCatMsg').text('');
+		$('#newPriceCatModal').modal("show");
+
+		$('#newPriceCatModal').on('shown.bs.modal', function () {
+		    $('#newPriceCatName').focus();
+		});
+	});
+
+	$('#newPriceCatBtn').click(function() {
+		disablePriceCatBtns();
+
+		var name = $('#newPriceCatName').val().trim();
+
+		if( name.length < 2 || name.length > 26 ) {
+			$('#newPriceCatMsg').text("Name must be between 2 and 30 chars.");
+			return;
+		}
+
+		var reg = /^[a-zA-Z][a-zA-Z0-9.' ]+$/;
+		if(!reg.test(name)) {
+			$('#newPriceCatMsg').text("Name must be alphanumeric and not start with number.");
+			return;
+		}
+
+		$('#newPriceCatModal').modal("hide");
+		$('#newPriceCatForm').submit();
+	});
+
+	var isDefault = false;
+	$('#renamePriceCatBtn').click(function() {
+		var catName = $('#priceCategorySelect option[selected]').text();
+		if( catName.indexOf('(default)') != -1 ) {
+			catName = catName.substring(0, catName.indexOf('(default)') - 1);
+			isDefault = true;
+		}
+		$('#renamePriceCatName').val(catName);
+		$('#renamePriceCatModal').modal('show');
+	});
+
+	$('#renamePriceCatModalBtn').click(function() {
+		$('.rename-control').hide();
+		$('#renamingMsg').show();
+
+		var data = {
+			"action": "rename_price_cat_ajax",
+			"price_cat_id": $('#priceCategorySelect').val(),
+			"new_price_cat_name": $('#renamePriceCatName').val()
+		};
+
+		$('.delete-control').hide();
+		$('#deletingMsg').show();
+
+		$.post(window.location.href,data,function() {
+			var name = $('#renamePriceCatName').val();
+			if( isDefault ) {
+				name += ' (default)';
+				isDefault = false;
+			}
+			$('#priceCategorySelect option[selected]').text(name);
+			$("#renamePriceCatModal").modal('hide');
+			$('.rename-control').show();
+			$('#renamingMsg').hide();
+		});
+	});
+
+	$('#setDefaultPriceCatBtn').click(function() {
+		var options = $('#priceCategorySelect').children();
+		for( var i = 0; i < options.length; i++ ) {
+			if( $(options[ i ]).text().indexOf('(default)') != -1 ) {
+				var noDefault = $(options[ i ]).text().replace('(default)', '');
+				$(options[ i ]).text(noDefault);
+			}
+		}
+
+		var catName = $('#priceCategorySelect option[selected]').text();
+		catName += ' (default)';
+		$('#priceCategorySelect option[selected]').text(catName);
+		$('#setDefaultPriceCatBtn').hide();
+
+		var data = {
+			"action": "set_defalt_price_cat_ajax",
+			"price_cat_id": $('#priceCategorySelect option[selected]').val()
+		};
+		$.post(window.location.href,data);
+	});
+
+	$('#deletePriceCatBtn').click(function() {
+		var catName = $('#priceCategorySelect option[selected]').text();
+		if( catName.indexOf('(default)') != -1 ) {
+			$('#cantDeletePriceCatModal').modal('show');
+			return;
+		}
+
+		var catName = $('#priceCategorySelect option[selected]').text();
+		$("#deletePriceCatName").html(catName);
+		$("#deletePriceCatModal").modal('show');
+	});
+
+	$('#deletePriceCatModalBtn').click(function() {
+		var data = {
+			"action": "delete_price_cat_ajax",
+			"price_cat_id": $('#priceCategorySelect').val()
+		};
+
+		$('.delete-control').hide();
+		$('#deletingMsg').show();
+
+		$.post(window.location.href,data,function() {
+			$("#deletePriceCatModal").modal('hide');
+			$('#priceCategorySelect').val(0);
+			$('#priceCategorySelect').change();
+		});
+	});
+
+	$('#priceCategorySelect').change(function() {
+		disablePriceCatBtns();
+
+		var query = "{$query}";
+		var index = query.indexOf("&pc=");
+		if( index != -1 ) {
+			query = query.substring(0, index);
+		}
+
+		var catId = $('#priceCategorySelect').val();
+		window.location = "products?" + query + "&pc=" + catId;
+	});
+
+	$('#hidePricing').change(function() {
+		var showPrices = !$(this).is(':checked');
+		var data = {
+			action: 'set_hide_prices_ajax',
+			price_cat_id: $('#priceCategorySelect option[selected]').val(),
+			show_prices: showPrices
+		}
+
+		$.post(window.location.href, data, function(ret) {
+			if(ret == 1) {
+				if( !showPrices ) {
+					showMsg('info', 'Prices will be hidden for pricing category "' + $('#priceCategorySelect option[selected]').text() + '"' );
+				}
+				else {
+					showMsg('info', 'Prices will be shown for pricing category "' + $('#priceCategorySelect option[selected]').text() + '"' );
+				}
+			}
+			else {
+				showMsg('error', 'An error occured. Please try again or contact the site administrator.' );
+			}
+		});
+	});
+});
+</script>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Search Results"}
+</head>
+<body class="listpage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="SEARCH RESULTS"}
+		
+		<div class="screen">
+			
+			<div class="container list with-nav">
+				{if $resultCount > 1}
+					<div class="search-result-count">{$resultCount} results</div>
+				{/if}
+				<ul id="productList">
+					{foreach $listItems as $item}
+						{$item}
+					{/foreach}
+				</ul>
+				<div id="loadingDiv">Loading more...</div>
+				{if isset( $searchTerm ) && count( $products ) == 0}
+					<div class="message2"><p>No products found that match your search</p></div>
+				{/if}
+			</div>
+			
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="yes"}
+	</div>
+</body>
+
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+
+{literal}
+<script>
+
+$(document).ready(function() {
+	setTimeout(function() {
+		setScreenHeight();
+		
+		var queryVars = getUrlVars();
+		//console.log(queryVars);
+		if(queryVars['item_index']) {
+			var itemTop = $("a[data-index='" + queryVars['item_index'] + "']").offset().top - 90;
+			$('.screen').animate({scrollTop: itemTop}, 0);
+		}
+	},500);
+	
+	checkImages($('img.product-image'));
+	
+	var scrollRefresh = {
+		atBottom: function(callback) {
+			var viewPortHeight = $('.screen').height();
+			var scrollTop = $('.screen').scrollTop();
+			var scrollBottom = viewPortHeight + scrollTop;
+			var listHieght = $('.list').height();
+			//console.log('scrollBottom: ' + scrollBottom);
+			//console.log('listHieght: ' + listHieght);
+			//console.log('viewPortHeight: ' + viewPortHeight);
+			//console.log('scrollTop: ' + scrollTop);
+			
+			if(scrollBottom >= listHieght - $('.item').height()) {
+				//console.log( 'at bottom' );
+				callback();
+				this.pastBottom = true;
+			}
+			else {
+				this.pastBottom = false;
+			}
+		}
+	}
+	
+	var loadMore = function() {
+		if (loadingMore) return;
+		if( disable ) return;
+		loadingMore = true;
+		
+		$("#loadingDiv").show();
+		$("html, body").animate({ scrollTop: $(document).height() }, 1);
+		
+		var data = {
+			action : "more_products_ajax",
+			offset : offset
+		};
+		
+		var qParams = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		var qParamsStr = '?';
+		for(var i = 0; i < qParams.length; i++) {
+			if(qParams[i].indexOf('item_index') != 0) {
+				qParamsStr += qParams[i] + '&';
+			}
+		}
+		qParamsStr = qParamsStr.substring(0, qParamsStr.length - 1);
+		var url = 'searchresults' + qParamsStr;// + window.location.href.slice(window.location.href.indexOf('?'));
+		$.post(url, data, function(ret) {
+			if(ret.length == 0) {
+				disable = true;
+			}
+			
+			$.each( ret, function(index, html) {
+				var li = $(html);
+				console.log(li);
+				$("#productList").append(li);
+				
+				checkImages(li.find('img.product-image'));
+			});
+			
+			offset = $('#productList li').length;
+			
+			loadingMore = false;
+			$("#loadingDiv").hide();
+		}, 'json');
+	};
+
+	var loadingMore = false;
+	var offset = $('#productList li').length;
+	var disable = false;
+
+	$('.screen').scroll(function() {
+		//console.log('scrolling');
+		scrollRefresh.atBottom(loadMore);
+	});
+});
+</script>
+{/literal}
+
+
+
+
+
+
+
+

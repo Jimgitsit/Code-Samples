@@ -1,0 +1,27 @@
+// This is a temporary setup;
+// SCSS will be further divide up in the future;
+
+// Partials
+@import "partials/_mixins";
+@import "partials/_fonts";
+@import "partials/_colors";
+
+// Vendors
+@import "vendors/_circliful";
+
+// Globals
+@import "_global";
+@import "_influencer-portal";
+
+// Pages
+@import "pages/_profile";
+@import "pages/_wordpress";
+@import "pages/_home";
+@import "pages/_stories";
+@import "pages/_portfolio";
+@import "pages/_login";
+@import "pages/_signup";
+@import "pages/_influencer-dashboard";
+
+// Responsive
+@import "_responsive";

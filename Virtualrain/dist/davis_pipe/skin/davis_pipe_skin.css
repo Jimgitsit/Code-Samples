@@ -1,0 +1,56 @@
+/* Backgrounds */
+body { background-image: url('bg.png'); background-repeat: repeat; }
+.footer { background-color: #FFFFFF; }
+.top-nav { background-color: #FFFFFF; }
+.side-bar { background-color: #FFFFFF; border-right: 1px solid #FFFFFF; }
+#cart { background-color: #FFFFFF; border-left: 1px solid #FFFFFF; }
+.search-bar { background-color: #FFFFFF; }
+
+/* General elements */
+button { background-color: #EF5D05 !important; }
+
+/* Specific elements */
+.page-logo { background-image: url("../logo_davis_pipe.jpg"); }
+.list h4 { color:#3aabbd; }
+.grid-view h4 {  color:#3aabbd; }
+.updateText h4 {background: none repeat scroll 0 0 #3aabbd;  }
+.manual p, .specs p, .video p {  color: #3aabbd; }
+#cart .total h4 { color:#3aabbd; }
+.finalize-btn { background:#3aabbd; }
+#finalize .right p { /* border: 1px solid #3aabbd; */ /* color: #3aabbd; */}
+#finalize .total h4 { color:#3aabbd;  }
+#thankyou h3 { color:#3aabbd;  }
+.side-bar h4 {  color: #3aabbd;  }
+#save-btn {  background:#3aabbd;  }
+.saved-box p { color:#3aabbd;}
+.view-btn { background:#3aabbd;  }
+.reorder-btn { background:#3aabbd; }
+.save-btn { background-color: #3aabbd; }
+.btn-pressed { background-color: #ff6905 !important; }
+.search-bar input { border-color: #00288A; }
+.clear-search-filter { background-color: #3aabbd; }
+.qty-wrap { border-color: #3aabbd; }
+
+/* Icons */
+.back { background-image: url("back-btn.png"); }
+.favorites-img { background-image:url('favorites.png'); }
+.notification-img { background-image:url('notifications.png'); }
+.history-img { background-image:url('history.png'); }
+.shipping-img { background-image:url('shipping.png'); }
+.location-img { background-image:url('location.png'); }
+.info-img { background-image:url('info.png'); }
+.logout-img { background-image:url('logout.png'); }
+#account { background-image:url('account.png'); }
+.search { background-image:url('search.png'); }
+.search-btn { background-image:url('search.png'); }
+.home { background-image:url('home.png'); }
+.cart { background-image:url('cart.png'); }
+.notifications { background-image:url('notifications.png'); }
+.preferred-checkbox.checked { background-image: url("check.png"); }
+
+
+
+
+
+
+

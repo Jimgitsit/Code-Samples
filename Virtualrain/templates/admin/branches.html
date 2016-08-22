@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Branches"}
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="branches"}
+
+<div class="container branches-container">
+
+<div style="padding:0px 0px 5px;overflow:hidden;">
+	<h4 style="float:left;">Branches</h4>
+	<a class="btn btn-default pull-right" href="/admin/branchedit?id=new">Add a Branch</a>
+</div>
+
+<table class="table table-condensed branches-table">
+	<thead>
+		<tr>
+		    <th>Branch Name</th>
+			<th>Manager</th>
+			<th>Email</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		{if count( $branches ) == 0}
+		<tr>
+			<td colspan="4">No branches have been created.</td>
+		</tr>
+		{else}
+			{foreach $branches as $branch}
+				<tr class="branch-row show-hover" data-id="{$branch.id}">
+					<td class="branch-name">{$branch.name}</td>
+					<td>{$branch.manager_name}</td>
+					<td>{$branch.manager_email}</td>
+					<td><div class="row-controls"><a href="/admin/branchedit?id={$branch.id}">Edit</a><span class="remove-btn" data-toggle="modal" data-target="#confirmRemoveModal" data-id="{$branch.id}">Remove</span></div></td>
+				</tr>
+			{/foreach}
+		{/if}
+	</tbody>
+</table>
+
+</div>
+
+<div id="confirmRemoveModal" data-id="" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-default remove-confirmed" data-dismiss="modal">Yes, Remove It</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$(document).ready(function() {
+	$('.remove-btn').click(function() {
+		var row = $(this).closest('tr');
+		$('#confirmRemoveModal').attr('data-id', row.attr('data-id'));
+		$('#confirmRemoveModal').find('.modal-body').html("Are you sure you want to permanently remove the branch '" + row.find('.branch-name').text() + "'?<br/><br/>This action can not be undone.");
+		$('#confirmRemoveModal').modal();
+	});
+	
+	$('.remove-confirmed').click(function() {
+		var id = $('#confirmRemoveModal').attr('data-id');
+		var row = $('.branch-row[data-id="' + id + '"]');
+		row.hide();
+		var data = {
+			"action": "delete_branch_ajax",
+			"id": id
+		};
+		$.post('/admin/branches', data, function(response) {
+			if(response.success) {
+				row.remove();
+				$('#confirmRemoveModal').modal('hide');
+			}
+			else {
+				console.error(response);
+			}
+		});
+	});
+});
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<div class="alert-wrapper alert-wrapper-info" {if $alertInfo == ''}style="display: none;"{/if}>
+	<div class="alert alert-info">
+		<button type="button" class="close alert-close">&times;</button>
+		<span>{$alertInfo}</span>
+	</div>
+</div>
+
+<div class="alert-wrapper alert-wrapper-danger" {if $alertError == ''}style="display: none;"{/if}>
+	<div class="alert alert-danger">
+		<button type="button" class="close alert-close">&times;</button>
+		<span>{$alertError}</span>
+	</div>
+</div>
+
+<div class="alert-wrapper alert-wrapper-success" {if $alertSuccess == ''}style="display: none;"{/if}>
+	<div class="alert alert-success">
+		<button type="button" class="close alert-close">&times;</button>
+		<span>{$alertSuccess}</span>
+	</div>
+</div>

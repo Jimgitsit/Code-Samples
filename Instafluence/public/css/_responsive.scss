@@ -1,0 +1,236 @@
+
+@media (max-width:1200px) {
+	.empty-list-item { display: none; }
+}
+
+@media (max-width:1023px) {
+	#brand-connection ul { max-width: 100%; }
+}
+
+@media (max-width:996px) {
+	.navbar-header {
+		float: none;
+	}
+	.navbar-toggle {
+		display: block;
+	}
+	.navbar-collapse {
+		border-top: 1px solid transparent;
+		box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+	}
+	.navbar-collapse.collapse {
+		display: none!important;
+	}
+	.navbar-nav {
+		float: none!important;
+		margin: 7.5px -15px;
+	}
+	.navbar-nav>li {
+		float: none;
+	}
+	.navbar-nav>li>a {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	/* since 3.1.0 */
+	.navbar-collapse.collapse.in {
+		display: block!important;
+	}
+	.collapsing {
+		overflow: hidden!important;
+	}
+	
+	nav.static ul { width:320px; }
+	nav.static li { margin: 0 14px; }
+	
+	.navbar {
+		position: inherit !important;
+		width: auto !important;
+		height: auto !important;
+	}
+
+	nav.static {
+		position: inherit !important;
+	}
+
+	nav.static ul {
+		width: 320px;
+	}
+
+	.navbar-nav li {
+		width: 100%;
+		height: 30px;
+	}
+
+	.navbar .nav {
+		margin-top: 0 !important;
+	}
+
+	.nav li a p {
+		font-size: 24px;
+	}
+
+	.navbar-toggle {
+		margin-top: 23px !important;
+		// border: 2px solid white !important;
+		background-color: transparent !important;
+	}
+
+	.navbar-default .navbar-toggle {
+		border: 2px solid white;
+	}
+
+	// #login, #signup {
+	//     margin: 20px auto 0 auto;
+	// }
+
+	.influencer-profile-header, section#account {
+		margin-top: 0 !important;
+	}
+
+	html .navbar .nav li a.active {
+		border: none !important;
+	}
+
+	.navbar-default .navbar-toggle .icon-bar {
+		background-color: white;
+	}
+
+	.navbar-header {
+		padding-bottom: 10px;
+	}
+
+	.navbar-loggedin {
+		.nav-page-title {
+			display: none;
+		}
+
+		.navbar-brand {
+			position: relative;
+			left: auto;
+			top: auto;
+		}
+	}
+	
+	#portfolio-page {
+		#brands {
+			.grid {
+				.block {
+					float: none;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width:800px) {
+	header li { margin-right: 70px; }
+	#brand-connection img { position: relative; top:30px; }
+	footer li { margin-right: 20px; }
+	#influencing-through-social-networks .scroll { width:100%; overflow: scroll; height: 200px; }
+	#going-viral .scroll { width:100%; overflow: scroll; height: 200px; }
+	#followers { padding: 60px 0 0; }
+	#followers img.phone { max-width: 300px; }
+	#followers article { max-width: 380px; top: 85px; }
+	#brand-connection, #quote { padding:60px 0; }
+	#achieving-social-media-influence article { max-width: 370px; padding-right: 0px; top: 20px; }
+	#app-exposure { background-size: contain; }
+	#downloads img.downloads { padding-right: 30px; max-width: 400px; }
+	#app-followers img { max-width: 330px; }
+	#achieving-social-media-influence article h2 { font-size: 37px; }
+	#gateway a { top: 0; }
+}
+
+@media (max-width:767px) {
+	
+
+	footer ul { display: none; }
+
+	#gateway { position: inherit; margin-top: 0; }
+	#gateway li { width:100%; height:auto !important; background: none !important; border-bottom: 1px solid #ddd; padding:30px 0; color:#252525 !important; }
+
+	#achieving-social-media-influence { padding: 0; text-align: center; }
+	#achieving-social-media-influence h2 {  }
+	#achieving-social-media-influence article { padding:0px 0 30px; top:0; }
+	#achieving-social-media-influence img { max-width:100%; }
+
+	#going-viral article { width: 100%; }
+	#going-viral article img { float: none; display: block; margin:0 auto; }
+	#going-viral article p { text-align: center; margin:0 auto; float: none; }
+
+	#downloads img { width: 100%; top:0 !important; margin:0; padding:15px 0 !important; }
+
+	#app-followers article { padding:0; float: none; width: 100%; top:0px; }
+	#app-followers img { float: none; padding:30px 0 0; max-width: 100%; }
+
+	#quote { padding:30px 0; background-size: none; }
+	#quote h3 { font-size: 20px; }
+	#quote p { font-size: 17px; }
+
+	#use-social-networks { height: auto; background: url("../img/bg-brand.png") no-repeat left; text-align: center; }
+	#use-social-networks button { margin:0 auto; }
+
+	#influencing-through-social-networks { padding:50px 0; }
+
+
+	#influencer-campaigns { background-position: center left; background-size: cover; }
+	#influencer-campaigns h3 { text-align: center; }
+
+	#followers { padding:50px 0; }
+	#followers img.phone { padding:0; max-width: 100%; }
+	#followers article { top:20px; float: none; width: 100%; padding:20px 0 0; }
+	#followers article h2 { font-size: 33px; }
+	#followers article p { text-align: center; }
+
+	#influence-for-brands-and-apps img { max-width: 100%; }
+
+	#brand-connection { padding:50px 0; text-align: center; }
+	#brand-connection ul { max-width: 100%; }
+	#brand-connection ul li { width: 100%; }
+	#brand-connection img { display: none; }
+
+	#app-exposure { display: none; }
+	.modal-content { padding:0px; }
+	.modal-content li { padding: 10px 9px; font-size: 14px; }
+	#belief h1 { font-size: 38px; }
+
+	
+
+	#titleSection {
+		padding-top: 25px !important;
+	}
+
+	#titleSection .left-col, #titleSection .right-col {
+		padding: 0;
+		text-align: center;
+	}
+
+    #managerRow .img-col, #managerRow .txt-col {
+	    padding: 0;
+	    text-align: center !important;
+    }
+
+	.profile-container {
+		margin-top: 10px;
+	}
+
+	.profile-pages ul li {
+		padding: 0;
+	}
+
+	.profile-pages .nav > li > a {
+		padding: 2px 5px;
+	}
+}
+
+// Responsive design here is based on mobile-first design
+// With "mobile first" philosophy, we go with min-width instead of max-width
+
+@media (min-width: 401px) {
+	.container { padding-left: 15px; padding-right: 15px;}
+}
+
+@media (min-width: 767px) {
+	.signin, #instafluence-dashboard {margin-top: 79px;}
+	
+}

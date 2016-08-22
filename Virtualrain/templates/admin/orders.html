@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Orders"}
+<link rel="stylesheet" href="/templates/js/chosen/chosen.css"/>
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="orders"}
+
+<div class="container orders-container">
+
+	<div class="order-filters-wrap">
+		<form action="/admin/orders" method="GET" class="form-inline">
+			<div class="row">
+				<div class="form-group">
+					Status:&nbsp;
+					<select name="filters[status]" class="form-control">
+						<option value="" {if isset($smarty.get.filters.status) && $smarty.get.filters.status == ''}selected{/if}>Any</option>
+						{foreach $orderStatuses as $status}
+							<option value="{$status.name}" {if isset($smarty.get.filters.status) && $smarty.get.filters.status == $status.name}selected{/if}>{$status.name}</option>
+						{/foreach}
+					</select>
+				</div>
+				<div class="spacer-25"></div>
+				<div class="form-group">
+					<span>Date Range:</span>
+					<input type='text' name="filters[start_date]" class="form-control inline date" data-provide="datepicker" placeholder="mm/dd/yyyy" value="{$smarty.get.filters.start_date|default:''}" />
+				</div>
+				<div class="form-group">
+					<span>to</span>
+					<input type='text' name="filters[end_date]" class="form-control inline date" data-provide="datepicker" placeholder="mm/dd/yyyy" value="{$smarty.get.filters.end_date|default:''}" />
+				</div>
+				<!-- 
+				<div class="form-group">
+					<a href="/admin/orders"><button type="submit" class="btn btn-default">Clear Filters</button></a>
+				</div>
+				 -->
+			</div>
+			<div class="row">
+				<div class="form-group">
+					<span>
+						Acc #:&nbsp;<input type="text" id="accountNumInput" name="filters[acc_num]" class="form-control inline" value="{$smarty.get.filters.acc_num|default:''}">
+					</span>
+				</div>
+				<div class="spacer-25"></div>
+				<div class="form-group">
+					<span>
+						PO #:&nbsp;<input type="text" id="poNumInput" name="filters[po]" class="form-control inline" value="{$smarty.get.filters.po|default:''}">
+					</span>
+				</div>
+				<div class="spacer-25"></div>
+				<div class="form-group">
+					<span>
+						Company:&nbsp;
+						<select name="filters[company]" class="form-control">
+							<option value="" {if isset($smarty.get.filters.company) && $smarty.get.filters.company == ''}selected{/if}>Any</option>
+							{foreach $companyNames as $name}
+								<option {if isset($smarty.get.filters.company) && $smarty.get.filters.company == $name.company_name}selected{/if}>{$name.company_name}</option>
+							{/foreach}
+						</select>
+					</span>
+				</div>
+				<div class="spacer-25"></div>
+				<div class="form-group">
+					<span>User:&nbsp;
+						<select name="filters[user_id]" class="form-control">
+							<option value="" {if isset($smarty.get.filters.user_id) && $smarty.get.filters.user_id == ''}selected{/if}>Any</option>
+							{foreach $users as $user}
+								<option value="{$user.id}" {if isset($smarty.get.filters.user_id) && $smarty.get.filters.user_id == $user.id}selected{/if}>{$user.first_name} {$user.last_name}</option>
+							{/foreach}
+						</select>
+					</span>
+				</div>
+				<div class="form-group">
+					<button type="submit" class="btn btn-default">Apply Filters</button>
+				</div>
+			</div>
+			
+			{if isset($smarty.get.sort)}
+				<input type="hidden" name="sort" value="{$smarty.get.sort}">
+			{/if}
+		</form>
+	</div>
+	
+	<div class="pull-left order-pager-wrap">
+		<ul class="pager">
+			<li {if $prevPage == 0}class="disabled"{/if}>
+				<a {if $prevPage == 0}href="javascript:void(0)"{else}href="?{$filterQuery}&p={$prevPage}{$showRemoved}"{/if}>Previous</a>
+			</li>
+			<li {if $nextPage == 0}class="disabled"{/if}>
+				<a {if $nextPage == 0}href="javascript:void(0)"{else}href="?{$filterQuery}&p={$nextPage}{$showRemoved}"{/if}>Next</a>
+			</li>
+		</ul>
+		
+		{if $totalOrders > 0}
+		<div class="pager-block">
+			<span class="pager-text">Showing {$pageStart}-{$pageEnd} of {$totalOrders}</span>
+		</div>
+		{/if}
+		
+		<!-- 
+		<div class="pager-count-wrap">
+			<span>Display&nbsp;
+				<select id="displayCount">
+					<option>10</option>
+					<option>25</option>
+					<option>50</option>
+					<option>100</option>
+				</select>&nbsp;per page
+			</span>
+		</div>
+		 -->
+	</div>
+	
+	<div class="pull-right">
+		<label class="show-removed-orders"><input type="checkbox" id="showRemoved" {if isset($smarty.get.removed)}checked{/if}/>&nbsp;Show removed orders</label>
+		{if !isset($branch)}
+		<button class="btn btn-default edit-statuses-btn" data-toggle="modal" data-target="#editStatusesModal">Edit Statuses</button>
+		{/if}
+	</div>
+	
+	<table class="table table-condensed table-bordered table-responsive orders-table">
+		<thead>
+			<tr>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'o.id-desc'}
+						<a href="?{$filterQuery}&sort=o.id-asc">Order ID<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'o.id-asc'}
+						<a href="?{$filterQuery}&sort=o.id-desc">Order ID<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif !isset($smarty.get.sort)}
+						<a href="?{$filterQuery}&sort=o.id-desc">Order ID<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=o.id-desc">Order ID</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'o.order_date-asc'}
+						<a href="?{$filterQuery}&sort=o.order_date-desc">Date<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'o.order_date-desc'}
+						<a href="?{$filterQuery}&sort=o.order_date-asc">Date<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=o.order_date-asc">Date</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'b.name-asc'}
+						<a href="?{$filterQuery}&sort=b.name-desc">Branch<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'b.name-desc'}
+						<a href="?{$filterQuery}&sort=b.name-asc">Branch<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=b.name-asc">Branch</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'u.last_name-asc'}
+						<a href="?{$filterQuery}&sort=u.last_name-desc">User<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'u.last_name-desc'}
+						<a href="?{$filterQuery}&sort=u.last_name-asc">User<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=u.last_name-asc">User</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'u.company_name-asc'}
+						<a href="?{$filterQuery}&sort=u.company_name-desc">Company<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'u.company_name-desc'}
+						<a href="?{$filterQuery}&sort=u.company_name-asc">Company<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=u.company_name-asc">Company</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'u.account_num-asc'}
+						<a href="?{$filterQuery}&sort=u.account_num-desc">Account #<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'u.account_num-desc'}
+						<a href="?{$filterQuery}&sort=u.account_num-asc">Account #<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=u.account_num-asc">Account #</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'o.po_num-asc'}
+						<a href="?{$filterQuery}&sort=o.po_num-desc">PO #<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'o.po_num-desc'}
+						<a href="?{$filterQuery}&sort=o.po_num-asc">PO #<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=o.po_num-asc">PO #</a>
+					{/if}
+				</th>
+				<th>
+					{if isset($smarty.get.sort) && $smarty.get.sort == 'o.status-asc'}
+						<a href="?{$filterQuery}&sort=o.status-desc">Status<img class="sort-arrow" src="/templates/img/sort-arrow-asc.png"></a>
+					{elseif isset($smarty.get.sort) && $smarty.get.sort == 'o.status-desc'}
+						<a href="?{$filterQuery}&sort=o.status-asc">Status<img class="sort-arrow" src="/templates/img/sort-arrow-desc.png"></a>
+					{else}
+						<a href="?{$filterQuery}&sort=o.status-asc">Status</a>
+					{/if}
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{if count($orders) == 0}
+			<tr>
+				<td colspan="9" style="text-align: left;">No orders have been placed.</td>
+			</tr>
+			{/if}
+			{foreach $orders as $order}
+				<tr class="show-hover order-row {if $order['hidden']}removed{/if}" data-id="{$order[ 'id' ]}">
+					<td>{"%06d"|sprintf:$order[ 'id' ]}</td>
+					<td>{$order[ 'local_order_date' ]|date_format:"%b %d, %Y %I:%M %p"}</td>
+					<td>{$order[ 'branch']['name']}</td>
+					<td>{$order[ 'user' ][ 'first_name' ]} {$order[ 'user' ][ 'last_name' ]}</td>
+					<td>{$order[ 'user' ][ 'company_name' ]}</td>
+					<td>{$order[ 'user' ][ 'account_num']}</td>
+					<td>{$order[ 'po_num']}</td>
+					<td>
+						<select class="order-status-select" data-order-id="{$order.id}" data-user-id="{$order.user.id}">
+							{foreach $orderStatuses as $status}
+								<option value="{$status.name}" {if $order.status == $status.name}selected{/if}>{$status.name}</option>
+							{/foreach}
+						</select>
+					</td>
+					<td>
+						<a href="/admin/order?id={$order.id}">View</a>
+						{if $order['hidden'] == 1}
+							<span class="restore-btn anchor">Restore</span>
+						{else}
+							<span class="remove-btn anchor">Remove</span>
+						{/if}
+					</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+
+</div>
+
+{include file="admin/edit_statuses_modal.html" statuses="null"}
+
+<input type="hidden" id="filterQuery" value="{$filterQuery}" />
+
+{literal}
+<script src="/templates/js/chosen/chosen.jquery.js" type="text/javascript"></script>
+<script src="/templates/js/util.js" type="text/javascript"></script>
+
+<script>
+function pad(str, max) {
+	return str.length < max ? pad("0" + str, max) : str;
+}
+
+$(document).ready(function() {
+	$('.order-filters-wrap select').chosen({disable_search_threshold: 20});
+	$('#displayCount').chosen({disable_search_threshold: 50});
+	
+	$('.order-status-select').chosen({
+		disable_search_threshold: 50
+	})
+	.change(function() {
+		var orderId = $(this).attr('data-order-id');
+		var newStatus = $(this).val();
+
+		var data = {
+			'action': 		'change_order_status_ajax',
+			'order_id': 	orderId,
+			'new_status': 	newStatus,
+			'user_id':		$(this).attr('data-user-id')
+		};
+		console.log(data);
+		$.post('/admin/orders', data, function(ret) {
+			console.log(ret);
+			if( ret == 'success' ) {
+				showMsg('success', "The status for order " + pad(orderId, 6) + " has been changed to " + newStatus );
+			}
+			else {
+				showMsg('danger', "Could not change order status." );
+			}
+		})
+		.fail(function(ret) {
+			showMsg('danger', "Could not change order status." );
+		});
+	});
+	
+	$('#showRemoved').click(function() {
+		var filterQuery = $('#filterQuery').val();
+		if($(this).is(':checked')) {
+			console.log("filterQuery = " + filterQuery);
+			if(filterQuery == "") {
+				window.location = window.location.search + "?removed=1";
+			}
+			else {
+				window.location = window.location.search + "&removed=1";
+			}
+		}
+		else {
+			// Always return to page 1
+			var url = document.URL.replace(/p=([^&]*)/gi, 'p=1');
+			window.location = removeParam("removed", url);
+		}
+	});
+	
+	var setRemoveEvents = function() {
+		$('.remove-btn').off('click');
+		$('.remove-btn').click(function() {
+			removeOrder($(this));
+		});
+		
+		$('.restore-btn').off('click');
+		$('.restore-btn').click(function() {
+			restoreOrder($(this));
+		});
+	};
+	setRemoveEvents();
+	
+	var removeOrder = function(btn) {
+		var tr = btn.closest('tr');
+		var id = tr.attr('data-id');
+		$.post('/admin/orders', {action: 'remove_order_ajax', id: id}, function() {
+			tr.addClass('removed');
+			tr.find('.remove-btn').remove();
+			tr.find('td:last-child').append('<span class="restore-btn anchor">Restore</span>');
+			if(!$('#showRemoved').is(':checked')) {
+				tr.hide();
+			}
+			setRemoveEvents();
+		});
+	};
+	
+	var restoreOrder = function(btn) {
+		var tr = btn.closest('tr');
+		var id = tr.attr('data-id');
+		$.post('/admin/orders', {action: 'restore_order_ajax', id: id}, function() {
+			tr.removeClass('removed');
+			tr.find('.restore-btn').remove();
+			tr.find('td:last-child').append('<span class="remove-btn anchor">Remove</span>');
+			setRemoveEvents();
+		});
+	};
+	
+	/*
+	$('.order-row').click(function() {
+		var id = $(this).attr('data-id');
+		window.location = '/admin/order?id=' + id;
+	});
+	*/
+	
+	/*
+	$('.view-btn').each(function() {
+		$(this).click(function() {
+			var orderId = $(this).attr("data-id");
+			var tr = $(".order-details-row[data-id=" + orderId + "]");
+			if( tr.is(":hidden") ) {
+				$(this).text('Hide Details');
+				tr.show();
+
+				$('html, body').animate({
+					scrollTop: tr.offset().top - 105
+				}, 250);
+			}
+			else {
+				$(this).text('Show Details');
+				tr.hide();
+			}
+			
+			$(".order-details-row").each(function() {
+				if($(this).attr('data-id') != orderId) {
+					$(this).prev().find('.view-btn').text('Show Details');
+					$(this).hide();
+				}
+			});
+		});
+	});
+	*/
+});
+</script>
+{/literal}
+
+</body>
+</html>

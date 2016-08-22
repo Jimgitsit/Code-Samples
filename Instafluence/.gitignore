@@ -1,0 +1,13 @@
+.DS_Store
+*/.DS_Store
+.project
+.settings
+.buildpath
+application/third_party/smarty/templates_c
+application/logs
+data/*
+!data/exports/
+.idea
+public/blog/wp-content/uploads
+*.csv#
+*.csv

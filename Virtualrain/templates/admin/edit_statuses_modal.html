@@ -1,0 +1,136 @@
+<!-- Edit Statuses Modal -->
+<div id="editStatusesModal" class="modal fade" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="edit-statuses-modal modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">Edit Statuses</h4>
+        <div class="pull-right" id="savingIndicator"></div>
+      </div>
+      <div class="modal-body edit-statuses-content">
+      	<form id="statusForm" action="admin/orders" method="POST">
+	        <ul id="statusList">
+	        
+	        </ul>
+	  	</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cancelBtn" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button type="button" id="saveChangesBtn" class="btn btn-default">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ul id="statusListDefault">
+	{foreach $orderStatuses as $status}
+		<li>
+			<input type="hidden" name="statuses[]" value="{$status.name}" />
+			<img class="status-arrow status-up" title="move up" src="/templates/img/sm_arrow_up.png"><img class="status-arrow status-down" title="move down" src="/templates/img/sm_arrow_down.png">{$status.name}
+		</li>
+	{/foreach}
+	<li data-static="true"><input id="newStatusName" type="text" maxlength="25" />&nbsp;<button id="addStatusBtn" class="btn btn-default btn-sm">add</button></li>
+</ul>
+
+<script type="text/javascript" src="/templates/js/jquery.activity-indicator-1.0.0.min.js"></script>
+<script>
+$(document).ready(function() {
+	$('#statusList').append($('#statusListDefault').children().clone());
+	
+	var setOrderClickHandlers = function() {
+		$('.status-up').unbind("click");
+		$('.status-up').click(function() {
+			var prev = $(this).parent().prev();
+			if (prev != null) {
+				prev.before($(this).parent());
+			}
+		});
+		
+		$('.status-down').unbind("click");
+		$('.status-down').click(function() {
+			var next = $(this).parent().next();
+			if (next != null && next.attr('data-static') != 'true') {
+				next.after($(this).parent());
+			}
+		});
+	};
+	setOrderClickHandlers();
+	
+	$('#statusForm').submit(function(e) {
+		e.preventDefault();
+	});
+	
+	$('#addStatusBtn').click(function() {
+		var status = $('#statusList #newStatusName').val();
+		// Validate?
+		if (status == '') {
+			return;
+		}
+		
+		var li = $('<li><input type="hidden" name="statuses[]" value="' + status + '" /><img class="status-arrow status-up" title="move up" src="/templates/img/sm_arrow_up.png"><img class="status-arrow status-down" title="move down" src="/templates/img/sm_arrow_down.png">' + status + '</li>');
+		$('#statusList li:last').before(li);
+		setOrderClickHandlers();
+		
+		$('#statusList #newStatusName').val('');
+	});
+	
+	$('#saveChangesBtn').click(function() {
+		var btn = $(this);
+		btn.attr('disabled', 'disabled');
+		
+		$('#savingIndicator').activity({
+			width: 2,
+			length: 5,
+			space: 2
+		});
+		
+		var statuses = $('#statusForm').serialize();
+		//console.log(statuses);
+		
+		var data = $('#statusForm').serialize();
+		if (data != '') {
+			data += "&action=add_statuses_ajax";
+			$.post('/admin/orders', data, function(response) {
+				if(response.success == true) {
+					$('.order-status-select').each(function() {
+						var select = $(this);
+						var selected = select.find(':selected').val();
+						console.log(selected);
+						select.empty();
+						
+						$('#statusList li').each(function() {
+							var value = $(this).text().trim();
+							if(value != 'add') {
+								var option = '<option value="' + value + '"';
+								if(value == selected) {
+									option += ' selected="selected"';
+								}
+								option += '>' + $(this).text() + '</option>';
+								select.append(option);
+							}
+						});
+						
+						$(this).trigger("chosen:updated");
+					});
+					
+					$('#editStatusesModal').modal('hide');
+				}
+				else {
+					alert('Something went wrong. Please try again.');
+				}
+				
+				btn.removeAttr('disabled');
+				
+				$('#savingIndicator').activity(false);
+			}, 'json');
+		}
+	});
+	
+	$('#cancelBtn').click(function() {
+		setTimeout(function() {
+			$('#statusList').empty();
+			$('#statusList').append($('#statusListDefault').children().clone());
+			setOrderClickHandlers();
+		}, 1000);
+	});
+});
+</script>

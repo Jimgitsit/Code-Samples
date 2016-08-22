@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+</head>
+<body class="orderhistorypage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="ORDER HISTORY"}
+		
+		<div class="screen">
+			
+			<div class="container with-nav">
+				
+				{if isset($orders) }
+					<div class="orders">	
+						{foreach $orders as $order}
+							<div class="order-info">
+								<span class="order-list-date">{$order['local_order_date']|date_format:"%b %e, %G %I:%M %p"}</span>
+								<p>Order #: <strong class="order-list-id-padded">{$order['id_padded']}</strong></p>
+								<p>Status: <strong class="order-list-status">{$order['status']}</strong></p>
+								<a href="/order?id={$order['id']}" class="order-list-view-link">
+									<p class="view-btn">View</p>
+								</a>
+								{if $order['status'] == 'Placed'}
+									<p class="cancel-order-btn" data-order-id="{$order['id']}">Cancel</p>
+									<img class="cancel-spinner" src="/templates/img/spinner_30x30.gif">
+								{elseif $order['status'] == 'Completed' || $order['status'] == 'Canceled'}
+									<!-- nothing to see here -->
+								{else}
+									<p class="order-list-call-msg">Please call to cancel</p>
+								{/if}
+							</div>
+						{/foreach}
+					</div>
+					<div id="loadingDiv">Loading more...</div>
+				{elseif isset( $order )}
+					<div class="order-info">
+						<p>Order #: <strong class="order-list-id-padded">{$order['id']|str_pad:6:'0':$smarty.const.STR_PAD_LEFT}</strong></p>
+						
+						<p class="order-list-date">{$order['local_order_date']|date_format:"%b %e, %G %I:%M %p"}</p>
+						<p>Status: <strong class="order-list-status">{$order['status']}</strong></p>
+						{if $showPricing}
+							<p>Total: <strong>$ {$order['total']|number_format:2}</strong></p>
+						{/if}
+						{if $order['pickup_location'] != 0}	
+							<p>Pickup Location:</p>
+							<div class="tab">
+								<p><strong>{$order['location_info']['name']}</strong></p>
+								<p>{$order['location_info']['address1']}, {$order['location_info']['city']}, {$order['location_info']['state']} {$order['location_info']['zip']}&nbsp;&nbsp;<a class="map-link" href="http://maps.google.com/?q={$order['location_info']['address1']},+{$order['location_info']['city']},+{$order['location_info']['state']}+{$order['location_info']['zip']}"><img src="templates/img/map-icon-16.png"></a></p>
+								<p>{$order['location_info']['phone']}&nbsp;&nbsp;<a href="tel:{$order['location_info']['phone']}"><img src="templates/img/phone-icon-16.png"></a></p>
+							</div>
+						{/if}
+						{if $order['shipping_location'] != 0}
+							<p>Shipping Location:</p>
+							<div class="tab">	
+								<p><strong>{$order['location_info']['name']}</strong></p>
+								<p>{$order['location_info']['address1']}, {$order['location_info']['city']}, {$order['location_info']['state']} {$order['location_info']['zip']}</p>
+								<p>{$order['location_info']['phone']}</p>
+							</div>
+						{/if}
+
+						{if $order['po_num'] != ''}
+							<p>PO #: <strong>{$order['po_num']}</strong></p>
+						{/if}
+						{if $order['order_comment'] != ''}
+							<p>Comments: {$order['order_comment']}</p>
+						{/if}
+						<a href="/reorder?id={$order['id']}">	
+							<div class="reorder-btn">Reorder</div>
+						</a>
+
+						{if $order['status'] == 'Placed'}
+							<div class="cancel-order-btn" id="cancelOrderBtn" data-order-id="{$order['id']}">Cancel</div>
+							<img class="cancel-spinner cancel-spinner-single" src="/templates/img/spinner_30x30.gif">
+						{elseif $order['status'] == 'Completed' || $order['status'] == 'Canceled'}
+							<!-- nothing to see here -->
+						{else}
+							<p class="order-list-call-msg2">Please call to cancel</p>
+						{/if}
+					</div>
+					{foreach $order['cart'] as $cartItem}
+						<div class="reorder-info">
+							{if $cartItem['product']['active'] == false}
+								<p class="inactive-text">Product no longer available</p>
+							{/if}
+							<img class="product-image" src="{$cartItem['product']['image']}"/>
+							<div class="reorder-info-text">
+								<span class="title">{$cartItem['product']['title']}</span>
+								<div class="part-wrap">
+									<div class="part-num">{if $showPNInsteadOfSKU}{$cartItem[ 'product' ][ 'part_num' ]}{else}{$cartItem[ 'product' ][ 'sku' ]}{/if}</div>
+									{if $cartItem['style']['style_num'] != '' && $cartItem['style']['style_num'] != $cartItem['product']['part_num'] && $cartItem['style']['style_num'] != $cartItem['product']['sku']}
+										<div class="style">Style: {$cartItem['style']['style_num']} {$cartItem['style']['style_description']}</div>
+									{/if}
+									<div class="manufacturer">{$cartItem['product']['manufacturer']}</div>
+								</div>
+							</div>
+
+							<div class="item-price no-qty" style="text-align: right;">
+								{if $showPricing}
+									<span><strong>{$cartItem[ 'quantity' ]}</strong></span><br>
+									<span>${$cartItem[ 'style' ][ 'price' ]|number_format:2}</span>
+									
+									
+								{/if}
+								{if $showUnits && isset($cartItem['style']['unit'])}
+									<span class="item-units">{if $showPricing}/{/if}{$cartItem['style']['unit']|upper}</span>
+								{/if}
+							</div>
+						</div>
+					{/foreach}
+				{/if}
+				{if isset($orders)}	
+					{if count($orders) == 0 }
+						<p class="order-text">You have not placed any orders</p>
+					{/if}
+				{/if}
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html" cartItems=$cartItems}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<div class="order-info order-info-template" style="display: none">
+	<span class="order-list-date"></span>
+	<p>Order #: <strong class="order-list-id-padded"></strong></p>
+	<p>Status: <strong class="order-list-status"></strong></p>
+	<a href="/order?id=" class="order-list-view-link">
+		<p class="view-btn">View</p>
+	</a>
+	<p class="cancel-order-btn" data-order-id="">Cancel</p>
+	<img class="cancel-spinner" src="/templates/img/spinner_30x30.gif">
+	<p class="order-list-call-msg">Please call to cancel</p>
+</div>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	
+	checkImages($('img.product-image'));
+
+	if (mobilecheck() == false) {
+		$(".map-link").each(function() {
+			$(this).attr("target", "_blank");
+		});
+	}
+
+	var scrollRefresh = {
+		atBottom: function(callback) {
+			var viewPortHeight = $('.screen').height();
+			var scrollTop = $('.screen').scrollTop();
+			var scrollBottom = viewPortHeight + scrollTop;
+			var listHeight = $('.orders').height();
+
+			if(scrollBottom >= listHeight - $('.order-info').height()) {
+				console.log( 'at bottom' );
+				callback();
+				this.pastBottom = true;
+			}
+			else {
+				this.pastBottom = false;
+			}
+		}
+	};
+
+	var loadMore = function(pos) {
+		if (loadingMore) return;
+		if( disable ) return;
+		loadingMore = true;
+
+		$("#loadingDiv").show();
+		$("html, body").animate({ scrollTop: $(document).height() }, 1);
+
+		offset += {$ordersPerPage};
+		var data = {
+			action : "more_orders_ajax",
+			offset : offset
+		};
+		var url = 'order';
+		$.post(url, data, function(ret) {
+			if(ret.length == 0) {
+				disable = true;
+			}
+			$.each( ret, function(index, order) {
+				if (order.hidden == false) {
+					var div = $('.order-info-template').clone();
+					div.removeClass('order-info-template');
+
+					console.log(order.local_order_date);
+					div.find('.order-list-date').html(order.local_order_date);
+					div.find('.order-list-id-padded').html(order.id_padded);
+					div.find('.order-list-status').html(order.status);
+					div.find('.order-list-view-link').attr('href', div.find('.order-list-view-link').attr('href') + order.id);
+					if (order.status == 'Placed') {
+						div.find('.cancel-order-btn').attr('data-order-id', order.id).show();
+						div.find('.order-list-call-msg').hide();
+					}
+					else if (order.status == 'Completed' || order.status == 'Canceled') {
+						div.find('.cancel-order-btn').hide();
+						div.find('.order-list-call-msg').hide();
+					}
+					else {
+						div.find('.order-list-call-msg').show();
+					}
+					div.find('.cancel-order-btn').click(cancelOrder);
+
+					$(".orders").append(div);
+					div.show();
+				}
+			});
+
+			loadingMore = false;
+			$("#loadingDiv").hide();
+		}, 'json');
+	};
+
+	var loadingMore = false;
+	var offset = 0;
+	var disable = false;
+
+	$('.screen').scroll(function() {
+		//console.log('scrolling');
+		scrollRefresh.atBottom(loadMore);
+	});
+
+	var cancelOrder = function() {
+		var btn = $(this);
+		var div = btn.closest('.order-info');
+		var orderId = btn.attr('data-order-id');
+
+		if (confirm("Are you sure you want to cancel order " + div.find('.order-list-id-padded').text())) {
+			var data = {
+				action: 'cancel_order_ajax',
+				order_id: orderId
+			};
+
+			div.find('.cancel-order-btn').hide();
+			div.find('.cancel-spinner').show();
+
+			$.post('', data, function(response) {
+				if (response.success) {
+					div.find('.order-list-status').text('Canceled');
+					div.find('.cancel-spinner').hide();
+				}
+				else {
+					div.find('.cancel-order-btn').show();
+					div.find('.cancel-spinner').hide();
+				}
+			}, 'json');
+		}
+	}
+
+	$('.cancel-order-btn').click(cancelOrder);
+});
+</script>
+
+
+
+
+
+
+
+
+
+

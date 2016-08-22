@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Data"}
+</head>
+
+<body>
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="data"}
+
+<div class="container">
+	
+	<div class="col-md-6 text-center left-container">
+		<h3>Export</h3>
+		<!-- 
+		<div class="options-block">
+			<form id="exportForm" name="exportForm" enctype="multipart/form-data">
+				<div class="list-group">
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-0">
+								<input type="checkbox" name="exportOptions[]">Include new products
+							</label>
+						</div>
+						<p class="list-group-item-text">New products in the master set will be included in the exported data.</p>
+					</div>
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-0">
+								<input type="checkbox" name="exportOptions[]">Only export new products
+							</label>
+						</div>
+						<p class="list-group-item-text">Only new products in the master set will be included in the exported data. (overrides all other options)</p>
+					</div>
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-1">
+								<input type="checkbox" name="exportOptions[]">Override updated products
+							</label>
+						</div>
+						<p class="list-group-item-text">Products that have changed in the master set will override exported products.</p>
+					</div>
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-2">
+								<input type="checkbox" name="exportOptions[]">Remove deleted products
+							</label>
+						</div>
+						<p class="list-group-item-text">Products that have been deleted from the master set will not be included in the exported data.</p>
+					</div>
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-2">
+								<input type="checkbox" name="exportOptions[]">Export master products
+							</label>
+						</div>
+						<p class="list-group-item-text">Exports the master set of products. These will not include any customizations or aditional products from your products list. (overrides all other options)</p>
+					</div>
+				</div>
+			</form>
+		</div>
+		-->
+<!-- 		<input id="exportBtn" type="button" class="btn btn-default" value="Export Now" /> -->
+		<button id="exportBtn" class="btn btn-default">Export Now</button>
+		<div id="exportStatus"></div>
+		<div id="exportErrors">
+			<div>Errors:</div>
+		</div>
+		<div id="exportWarnings">
+			<div>Warnings:</div>
+		</div>
+	</div>
+	
+	<div class="col-md-6 text-center right-container">
+		<h3>Import</h3>
+		<form id="importForm" name="importForm" enctype="multipart/form-data">
+			<input type="hidden" name="action" value="import_dist_product_data" />
+			<div class="file-select-block">
+				<div class="input-group">
+					<span class="input-group-btn">
+						<span class="btn btn-default btn-file">
+							Browse... 
+							<input id="importFile" name="import_file" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+						</span>
+					</span>
+					<input id="fileSelectText" type="text" readonly="readonly" class="form-control file-input">
+				</div>
+			</div>
+			<!-- 
+			<div class="options-block">
+				<div class="list-group">
+					<div class="list-group-item">
+						<div class="checkbox list-group-item-heading">
+							<label for="options-0">
+								<input class="import-option" type="checkbox" name="opt_remove_deleted" checked>Remove deleted products
+							</label>
+						</div>
+						<p class="list-group-item-text">Products that are not in the imported spreadsheet will be removed from the system.</p>
+					</div>
+				</div>
+			</div>
+			 -->
+		</form>
+<!-- 		<input id="importBtn" type="button" class="btn btn-default" value="Import Now" /> -->
+		<button id="importBtn" class="btn btn-default">Import Now</button>
+		<div id="cancelOrContinueBlock">
+<!-- 			<input id="cancelImportBtn" type="button" class="btn btn-default" value="Cancel" /> -->
+			<button id="cancelImportBtn" class="btn btn-default">Cancel</button>
+<!-- 			<input id="continueImportBtn" type="button" class="btn btn-default" value="Ignore Warnings and Continue Import" /> -->
+			<button id="continueImportBtn" class="btn btn-default">Ignore Warnings and Continue Import</button>
+		</div>
+		<div id="importStatus"></div>
+		<div id="importErrors">
+			<div>Errors:</div>
+		</div>
+		<div id="importWarnings">
+			<div>Warnings:</div>
+		</div>
+	</div>
+	
+</div>
+
+{literal}
+<script type="text/javascript" src="/templates/js/moment.min.js"></script>
+
+<script>
+$(document).ready(function() {
+	
+	$('#exportForm input').prop('disabled', 'true');
+	
+	var showWarningsAndErrors = function( type, response ) {
+		// Reset first
+		$('#importWarnings div.warning-msg').remove();
+		$('#importErrors div.error-msg').remove();
+		$('#' + type + 'Warnings').hide();
+		$('#' + type + 'Errors').hide();
+		
+		if( !response.success ) {
+			if( response.warnings.length > 0 ) {
+				$('#' + type + 'Warnings').show();
+				$.each(response.warnings, function(index, value) {
+					$('#' + type + 'Warnings').append('<div class="warning-msg">' + value + '</div>');
+				});
+			}
+			
+			if( response.errors.length > 0 ) {
+				$('#' + type + 'Errors').show();
+				$.each(response.errors, function(index, value) {
+					$('#' + type + 'Errors').append('<div class="error-msg">' + value + '</div>');
+				});
+			}
+		}
+		else {
+			if( response.msg.length > 0 ) {
+				$('#' + type + 'Status').text(response.msg);
+			}
+			else {
+				$('#' + type + 'Status').text('Import failed. Please try again. If the problem persists please contact support.');
+			}
+		}
+	};
+	
+	var postImportForm = function(ignoreWarnings, completeHandler, errorHandler) {
+		console.log('Posting import form');
+		var formData = new FormData(document.forms.namedItem("importForm"));
+		formData.append('ignore_warnings',ignoreWarnings);
+		$.ajax({
+			url: 'data',  //Server script to process data
+			type: 'POST',
+			xhr: function() {  // Custom XMLHttpRequest
+				var myXhr = $.ajaxSettings.xhr();
+				if(myXhr.upload){ // Check if upload property exists
+					//myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+				}
+				return myXhr;
+			},
+			success: completeHandler,
+			error: errorHandler,
+			data: formData,
+			cache: false,
+			contentType: false,
+			processData: false
+		});
+	}
+
+	$(document).on('change', '.btn-file :file',	function() {
+		$('#importStatus').html('');
+		var input = $(this)
+		var numFiles = input
+				.get(0).files ? input
+				.get(0).files.length : 1, label = input
+				.val().replace(/\\/g, '/')
+				.replace(/.*\//, '');
+		input.trigger('fileselect', [label]);
+	});
+	
+	$('.btn-file :file').on('fileselect', function(event, label) {
+		console.log(label);
+		$('#fileSelectText').val(label);
+	});
+	
+	$('#importBtn').click(function(e) {
+		$('#importStatus').html('');
+		if( $('#importFile').val() == '' ) {
+			$('#importStatus').html('Please select a file to import.');
+			return;
+		}
+		
+		$('#importBtn').prop('disabled', 'true');
+		$('#importStatus').text("Importing, this may take a few minutes...");
+		$('#importErrors').hide();
+		$('#importWarnings').hide();
+		
+		var start = moment();
+		console.log('Import started at ' + start.format('h:mm:ss'));
+		
+		var completeHandler = function(response) {
+			response = $.parseJSON(response);
+			console.log(response);
+			$('#importBtn').removeAttr('disabled');
+			showWarningsAndErrors('import', response);
+			if( response.success ) {
+				$('#importStatus').html('Import finished.');
+				
+				$('#importFile').removeAttr('disabled');
+				$('.import-option').removeAttr('disabled');
+			}
+			else {
+				$('#importStatus').html('');
+				
+				if( response.errors.length == 0 ) {
+					// Show the other buttons
+					$('#importBtn').hide();
+					$('#cancelImportBtn').removeAttr('disabled');
+					$('#continueImportBtn').removeAttr('disabled');
+					$('#cancelOrContinueBlock').show();
+				}
+				else {
+					$('#importStatus').html('Errors occured and the import was aborted.<br/>Please correct them and try again.');
+					
+					$('#importFile').removeAttr('disabled');
+					$('.import-option').removeAttr('disabled');
+				}
+			}
+			
+			var end = moment();
+			var span = moment.duration({seconds: end.diff(start, 'seconds')});
+			console.log('Import finished at ' + end.format('h:mm:ss'));
+			console.log('Import took ' + span.humanize());
+		}
+		
+		var errorHandler = function() {
+			$('#importBtn').removeAttr('disabled');
+			$('#importStatus').html('An error occurred communicating with the server. Plese check your internet connection and try again. If the problem persists please contact support.');
+		}
+		
+		postImportForm('no', completeHandler, errorHandler);
+		
+		$('#importFile').prop('disabled', 'true');
+		$('.import-option').prop('disabled', 'true');
+	});
+	
+	$('#continueImportBtn').click(function() {
+		$('#cancelImportBtn').prop('disabled', 'true');
+		$('#continueImportBtn').prop('disabled', 'true');
+		$('#importStatus').text("Importing, this may take a few minutes...");
+		
+		var completeHandler = function(response) {
+			response = $.parseJSON(response);
+			console.log(response);
+			
+			$('#importBtn').show();
+			$('#cancelOrContinueBlock').hide();
+			
+			$('#importFile').removeAttr('disabled');
+			$('.import-option').removeAttr('disabled');
+			
+			showWarningsAndErrors('import', response);
+			
+			if( response.success ) {
+				$('#importStatus').html('Import finished.');
+			}
+			else {
+				$('#importStatus').html('');
+				
+				if( response.errors.length == 0 ) {
+					$('#importStatus').html('Import finished.');
+				}
+				else {
+					$('#importStatus').html('Errors occured and the import was aborted.');
+				}
+			}
+		}
+		
+		var errorHandler = function() {
+			$('#cancelImportBtn').removeAttr('disabled');
+			$('#continueImportBtn').removeAttr('disabled');
+			$('#importStatus').html('An error occurred communicating with the server. Plese check your internet connection and try again. If the problem persists please contact support.');
+		}
+		
+		$('#importFile').removeAttr('disabled');
+		$('.import-option').removeAttr('disabled');
+		
+		postImportForm('yes', completeHandler, errorHandler);
+		
+		$('#importFile').prop('disabled', 'true');
+		$('.import-option').prop('disabled', 'true');
+	});
+	
+	$('#cancelImportBtn').click(function() {
+		$('#cancelOrContinueBlock').hide();
+		$('#importBtn').show();
+		$('#importStatus').text('');
+		$('#importErrors').hide();
+		$('#importWarnings').hide();
+		
+		$('#importWarnings div.warning-msg').remove();
+		$('#importErrors div.error-msg').remove();
+		
+		$('#importFile').removeAttr('disabled');
+		$('.import-option').removeAttr('disabled');
+	});
+	
+	$('#exportBtn').click(function() {
+		$('#exportBtn').prop('disabled', 'true');
+		$('#exportStatus').text("Exporting, this may take a few minutes...");
+		
+		var data = {
+			'action': 'export_dist_product_data'
+		};
+		$.post('data', data, function(response) {
+			console.log(response);
+			$('#exportBtn').removeAttr('disabled');
+			if( response.success ) {
+				$('#exportStatus').html('Finished export. <a href="/data/' + response.file_name + '" target="_blank">Click here to download</a>');
+			}
+			else {
+				$('#exportStatus').text('Export failed. Please try again. If the problem persists please contact support.');
+			}
+		}, 'json');
+	});
+});
+</script>
+{/literal}
+
+</body>
+</html>

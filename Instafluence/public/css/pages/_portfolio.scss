@@ -1,0 +1,71 @@
+// ************
+//  Portfolio Page
+// ************
+
+#portfolio-page {
+    &.screen {
+
+    }
+    #title-text {
+        text-align:center;
+        padding:90px 0;
+        background:#E4E4E4;
+        h2 {
+            color:#000000;
+            font-family:"arvo";
+            line-height:1em;
+            margin:0 0 .5em;
+        }
+        p { color:#6C6E72; }
+        .container {
+            max-width:375px;
+        }
+    }
+    #brands {
+        padding:90px 0;
+        .grid {
+            margin:0;
+            padding:0;
+            list-style:none;
+            .block {
+                display:table;
+                width:33.3333%;
+                float:left;
+                height:160px;
+	            margin: 0 auto;
+                .vcenter {
+                    display:table-cell;
+                    vertical-align:middle;
+                }
+                img {
+                    display:block;
+                    margin:0 auto;
+                }
+            }
+        }
+    }
+}
+
+.privacy-policy {
+    font-family: arial, sans-serif;
+
+    h2, h3 {
+        font-family: arial, sans-serif;
+    }
+
+    p {
+        margin: 10px 20px;
+    }
+
+    ul {
+        list-style: disc;
+
+        li {
+            margin: 10px 0 10px 30px;
+        }
+    }
+
+    p.underline {
+        text-decoration: underline;
+    }
+}

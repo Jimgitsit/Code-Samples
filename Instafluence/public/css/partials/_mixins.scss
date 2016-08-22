@@ -1,0 +1,133 @@
+//***********************************************
+//  				MIXINS
+//***********************************************
+
+@mixin box-shadow($top, $left, $blur, $color, $inset: false) {
+  @if $inset {
+    -webkit-box-shadow:inset $top $left $blur $color;
+    -moz-box-shadow:inset $top $left $blur $color;
+    box-shadow:inset $top $left $blur $color;
+  } @else {
+    -webkit-box-shadow: $top $left $blur $color;
+    -moz-box-shadow: $top $left $blur $color;
+    box-shadow: $top $left $blur $color;
+  }
+}
+
+@mixin border-radius ($rad) {
+	border-radius: $rad;
+	-moz-border-radius: $rad;
+	-webkit-border-radius: $rad;
+	-o-border-radius: $rad;
+}
+
+@mixin border-radius-all ($rad1, $rad2, $rad3, $rad4) {
+	border-radius: $rad1 $rad2 $rad3 $rad4;
+	-moz-border-radius: $rad1 $rad2 $rad3 $rad4;
+	-webkit-border-radius: $rad1 $rad2 $rad3 $rad4;
+	-o-border-radius: $rad1 $rad2 $rad3 $rad4;
+}
+
+@mixin opacity ($value) {
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$value*100})";
+	filter: alpha(opacity=$value*100);
+	-moz-opacity: $value;
+	-khtml-opacity: $value;
+	opacity: $value;
+}
+
+@mixin transition-duration ($seconds) {
+	transition-duration: $seconds;
+	-moz-transition-duration: $seconds;
+	-webkit-transition-duration: $seconds;
+	-o-transition-duration: $seconds;
+}
+
+@mixin transition($transition-property, $transition-time, $method) {
+    -webkit-transition: $transition-property $transition-time $method;
+    -moz-transition: $transition-property $transition-time $method;
+    -ms-transition: $transition-property $transition-time $method;
+    -o-transition: $transition-property $transition-time $method;
+    transition: $transition-property $transition-time $method;
+}
+
+@mixin transform($transforms) {
+	   -moz-transform: $transforms;
+	     -o-transform: $transforms;
+	    -ms-transform: $transforms;
+	-webkit-transform: $transforms;
+          transform: $transforms;
+}
+// rotate
+@mixin rotate ($deg) {
+  @include transform(rotate(#{$deg}deg));
+}
+
+// scale
+@mixin scale($scale) {
+	 @include transform(scale($scale));
+}
+// translate
+@mixin translate ($x, $y) {
+   @include transform(translate($x, $y));
+}
+// skew
+@mixin skew ($x, $y) {
+   @include transform(skew(#{$x}deg, #{$y}deg));
+}
+//transform origin
+@mixin transform-origin ($origin) {
+    -moz-transform-origin: $origin;
+	     -o-transform-origin: $origin;
+	    -ms-transform-origin: $origin;
+	-webkit-transform-origin: $origin;
+          transform-origin: $origin;
+}
+
+@mixin box-shadow ($x, $y, $blur, $color) {
+	box-shadow: $x $y $blur $color;
+	-moz-box-shadow: $x $y $blur $color;
+	-webkit-box-shadow: $x $y $blur $color;
+	-o-box-shadow: $x $y $blur $color;
+}
+
+@mixin placeholder() {
+	&::-webkit-input-placeholder { @content }
+	&:-moz-placeholder { @content }
+	&::-moz-placeholder { @content }
+	&:-ms-input-placeholder { @content }
+}
+
+@mixin typeface($font-name, $filename, $weight: normal, $style: normal) {
+	@font-face {
+		font-family: '#{$font-name}';
+		src:url('fonts/#{$filename}.eot'); /* IE9 Compat Modes */
+		src:url('fonts/#{$filename}.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+			url('fonts/#{$filename}.woff') format('woff'), /* Modern Browsers */
+			url('fonts/#{$filename}.ttf')  format('truetype'), /* Safari, Android, iOS */
+			url('fonts/#{$filename}.svg#svgFontName') format('svg'); /* Legacy iOS */
+		font-weight:$weight;
+		font-style:$style;
+	}
+}
+
+@mixin text-truncate ($type) {
+	white-space: nowrap; text-overflow: $type; overflow: hidden;
+}
+
+// Vertical align
+@mixin vertical-align {
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+// input placeholder
+@mixin placeholder {
+  &::-webkit-input-placeholder {@content}
+  &:-moz-placeholder           {@content}
+  &::-moz-placeholder          {@content}
+  &:-ms-input-placeholder      {@content}
+}

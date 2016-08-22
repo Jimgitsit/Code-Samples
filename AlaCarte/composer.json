@@ -1,0 +1,25 @@
+{
+  "name": "bluetree/alacarte-api",
+  "description": "AlaCarte API",
+  "minimum-stability": "dev",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Jim McGowen",
+      "email": "jim@getbluetree.com"
+    }
+  ],
+  "require": {
+    "jimgitsit/php-gozer": "dev-master",
+    "doctrine/mongodb-odm": "1.0.0-BETA11",
+    "jimgitsit/documen": "dev-master",
+    "symfony/yaml": "2.7.*@dev"
+  },
+  "autoload": {
+    "classmap": [
+      "app/controllers",
+      "app/models",
+      "app/models/MongoDocs"
+    ]
+  }
+}

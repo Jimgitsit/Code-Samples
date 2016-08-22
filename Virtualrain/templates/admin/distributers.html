@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Distributers"}
+</head>
+
+<body>
+
+{include file="admin/navigation.html" currentPage="distributers"}
+
+<div class="container">
+
+{include file="admin/alerts.html"}
+
+	<h4>Distributers</h4>
+	<table id="distributersTable" class="table table-condensed table-hover table-bordered">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>Company Name</th>
+				<th>Contact Name</th>
+				<th>Email</th>
+				<th>Phone</th>
+				<th>Status</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			{foreach $distributers as $dist}
+			<tr data-distid="{$dist[ 'id' ]}">
+				<td>{$dist[ 'id' ]}</td>
+				<td>{$dist[ 'company_name' ]}</td>
+				<td>{$dist[ 'contact_name' ]}</td>
+				<td>{$dist[ 'email' ]}</td>
+				<td>{$dist[ 'phone' ]}</td>
+				<td>{if $dist[ 'status' ] == 0}disabled{else}active{/if}</td>
+				<td><a href="distributers/edit?id={$dist[ 'id' ]}">Edit</a> | <!-- <div class="action-link delete-dist-action" data-id="{$dist[ 'id' ]}" data-distname="{$dist[ 'company_name' ]}">delete</div> | --><div class="action-link loginAsDist" data-id="{$dist['id']}" data-name="{$dist['company_name']}">Login</div></td>
+			</tr>
+			{/foreach}
+		</tbody>
+	</table>
+
+	<a class="btn btn-default" href="distributers/edit?id=new" name="action" value="add_distributer">Add Distributer</a>
+
+</div>
+<div class="modal fade" id="loginAsDistributor">
+     <div class="modal-dialog">
+          <div class="modal-content">
+               <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Confirm Login</h3>
+               </div>
+               <div class="modal-body">
+                    <p>Are you sure you want to login as <strong><span id="loginDistName"></span></strong>?</p>
+                    <p>This will log you out as <strong>{$admin['email']}</strong>?</p>
+               </div>
+               <div class="modal-footer">
+                    <a class="btn" data-dismiss="modal">Cancel</a>
+                    <a id="confirmLoginAsDistributor" class="btn btn-default">Login</a>
+               </div>
+          </div>
+     </div>
+</div>
+<div class="modal fade" id="deleteConfirmModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<a class="close" data-dismiss="modal">&times;</a>
+				<h3>Confirm Delete</h3>
+			</div>
+			<div class="modal-body">
+				<p>
+					Are you sure you want to permanently delete the distributor<br/><strong><span id="deleteDistName"></span></strong>?
+					<br/><br/>
+					WARNING: All information regarding this distributer will also be destroyed including any user accounts associated with this distributer.
+					<br/><br/>
+					THIS CAN NOT BE UNDONE.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<a class="btn" data-dismiss="modal">Cancel</a>
+				<a id="deleteDistModalDeleteBtn" class="btn btn-default">Delete</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+	     $(".loginAsDist").click(function(){
+	          var id = $(this).attr('data-id');
+	          var name = $(this).attr('data-name');
+	          $("#loginDistName").text(name);
+	          $('#confirmLoginAsDistributor').click(function(){
+                    $('#loginAsDistributor').modal('hide');
+                    showMsg('info','Logging in as '+name);
+	               $.ajax({
+	                    type: "POST",
+	                    url: 'distributers',
+	                    data: {
+	                         'action': 'login_as',
+	                         'id': id
+	                    }
+	               }).done(function(res){
+	                    res = $.parseJSON(res);
+	                    if(res.success){
+	                        window.location = "/admin/orders";
+	                    }else{
+	                         showMsg('danger','There was an error login in as '+name);
+	                    }
+	               });
+	          });
+
+	          $('#loginAsDistributor').modal();
+	     });
+		$(".delete-dist-action").each(function() {
+			$(this).click(function() {
+				var id = $(this).attr('data-id');
+				var name = $(this).attr('data-distname');
+				$("#deleteConfirmModal #deleteDistName").text(name);
+				$("#deleteDistModalDeleteBtn").attr("data-distid", id);
+
+				$("#deleteDistModalDeleteBtn").click(function() {
+					var id = $("#deleteDistModalDeleteBtn").attr("data-distid");
+					var el = $('.delete-dist-action[data-id=' + id + ']').parent().text("deleting...");
+					$("#deleteConfirmModal").modal("hide");
+					var data = { 'action': 'deelte_distributer', 'id': id };
+					$.ajax({
+						type: "POST",
+						url: 'distributers',
+						data: { 'action': 'delete_distributer', 'id': id }
+					})
+					.done(function(response){
+						var resp = $.parseJSON(response);
+						if( resp.success == true ) {
+							$("#distributersTable tr[data-distid=" + id + "]" ).remove();
+						}
+						else {
+							alert( "Error deleting distributer. Please contact support." );
+						}
+					});
+				});
+
+				$("#deleteConfirmModal").modal("show");
+			});
+		});
+	});
+</script>
+
+</body>
+</html>

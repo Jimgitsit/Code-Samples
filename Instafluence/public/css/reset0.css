@@ -1,0 +1,84 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+a, a:hover, a:focus {  
+	color:inherit;
+	text-decoration: none;
+}
+* { -moz-box-sizing:border-box; -webkit-box-sizing:border-box; box-sizing:border-box; outline:none !important; }
+
+
+/* Bootstrap Overwrites */
+.modal-backdrop { background:rgba(0,0,0,.25); }
+body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom { margin-right: 0px; }
+.modal-content { background:black; color:white; border-radius: 0px; border:none; padding:40px 90px; position: relative; }
+.modal-body { position: inherit; }
+.close { color:white; text-shadow: none; font-size: 25px; opacity: 1; position: absolute; top:30px; right: 30px; }
+.close:hover { color:white; }
+.modal-content label { width:100%; padding:6px 0 5px; }
+.modal-content input, .modal-content textarea, .modal-content select { width:100%; border:none; border-radius: 3px; background: white; padding:6px; margin:4px 0 10px; resize: none; color: black; }
+.modal-content h2 { text-align: center; }
+.modal-content p { text-align: center; font-size: 14px; opacity: .6; padding:8px 0 0; }
+.modal-content ul { width:340px; margin:20px auto; }
+.modal-content li { float: left; padding:10px 15px; opacity: .7; }
+.modal-content li.active { opacity: 1; border-bottom: 1px solid #ff5d5f; }
+.modal-content input[type=submit] { background: #ff5d5f; color:white; height: 60px; }
+.modal-content span.red-text { color:#df5052; }
+.link-button {
+	background: #ff5d5f;
+	color: white;
+	height: 60px;
+	width: 100%;
+	border: none;
+	border-radius: 3px;
+	padding: 20px;
+	margin: 20px 0 10px;
+	/* resize: none; */
+	display: block;
+	text-align: center;
+}

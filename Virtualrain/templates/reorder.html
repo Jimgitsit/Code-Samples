@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Item"}
+</head>
+<body class="orderhistorypage">
+	<div class="screen-overflow">	
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton pageTitle="REORDER"}
+		
+		<div class="screen">
+			<div class="container with-nav">
+			
+				<form id="reorderForm" action="" method="POST">
+					{foreach $reorder['cart'] as $cartItem}
+						<div class="reorder-info">
+							{if $cartItem['product']['active'] == false}
+								<p class="inactive-text">Product no longer available</p>
+							{/if}
+							<img class="product-image" src="{$cartItem['product']['image']}"/>
+							<div class="reorder-info-text">
+								<span class="title">{$cartItem['product']['title']}</span>
+								<div class="part-wrap">
+									<div class="part-num">{if $showPNInsteadOfSKU}{$cartItem[ 'product' ][ 'part_num' ]}{else}{$cartItem[ 'product' ][ 'sku' ]}{/if}</div>
+									{if $cartItem['style']['style_num'] != '' && $cartItem['style']['style_num'] != $cartItem['product']['part_num'] && $cartItem['style']['style_num'] != $cartItem['product']['sku']}
+										<div class="style">Style: {$cartItem['style']['style_num']} {$cartItem['style']['style_description']}</div>
+									{/if}
+									<div class="manufacturer">{$cartItem['product']['manufacturer']}</div>
+								</div>
+							</div>
+							
+							<div class="item-price">
+								{if $showPricing}
+									<span>${$cartItem[ 'style' ][ 'price' ]|number_format:2}</span>
+								{/if}
+								{if $showUnits && isset($cartItem['style']['unit'])}
+									<span class="item-units">{if $showPricing}/{/if}{$cartItem['style']['unit']|upper}</span>
+								{/if}
+							</div>
+							<p class="qty">QTY:&nbsp;<input class="quantity number-input" type="tel" min="1" max="99999" maxlength="5" name="quantity[]" value=""/></p>
+							<input type="hidden" name="sku[]" value="{$cartItem['product']['sku']}" />
+							<input type="hidden" name="style_num[]" value="{$cartItem['style']['style_num']}" />
+						</div>
+					{/foreach}
+					<button type="SUBMIT" name="action" value="reorder" class="finalize-btn">Finalize</button>
+				</form>
+				
+				<div class="footer-padding"></div>
+			</div>
+		</div>
+		
+		{include file="account.html"}
+		{include file="cart.html"}
+		{include file="footer.html" viewTypeActive="no"}
+	</div>
+</body>
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+<script src="/templates/js/imagesloaded.pkgd.min.js"></script>
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+	checkImages($('img.product-image'));
+});
+</script>
+
+
+
+
+
+
+
+
+

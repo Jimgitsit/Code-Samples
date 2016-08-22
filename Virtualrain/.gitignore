@@ -1,0 +1,12 @@
+.DS_Store
+.buildpath
+.project
+.settings/
+libs/smarty/templates_c
+config/config_site.php
+services/data/*
+dist/*/orders
+dist/*/img_uploads
+orders/
+.idea
+atlassian-ide-plugin.xml

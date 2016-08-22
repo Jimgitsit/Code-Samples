@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Data"}
+</head>
+
+<body>
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="data_admin"}
+
+<div class="container">
+	<!-- <p>Master product data was last imported on 01/01/2013</p> -->
+	<input id="exportBtn" type="button" class="btn btn-default" value="Export Master Product Data" />&nbsp&nbsp<span id="exportStatus"></span>
+	<div id="warnings">
+		<div>Warnings:</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	$('#exportBtn').click(function() {
+		$('#exportBtn').prop('disabled', 'true');
+		$('#exportStatus').text("Exporting, this will take a few minutes...");
+		
+		var data = {
+			'action': 'export_master_product_data'
+		};
+		$.post('dataadmin', data, function(response) {
+			console.log(response);
+			$('#exportBtn').removeAttr('disabled');
+			if( response.success ) {
+				$('#exportStatus').html('Finished. <a href="/data/' + response.file_name + '" target="_blank">Click here to download</a>');
+				if( response.warnings.length > 0 ) {
+					$('#warnings').show();
+					$.each(response.warnings, function(index, value) {
+						$('#warnings').append('<div class="export-warning-msg">' + value + '</div>');
+					});
+				}
+			}
+			else {
+				$('#exportStatus').text('Export failed. Please try again. If the problem persists please contact support.');
+			}
+		}, 'json');
+	});
+});
+</script>
+
+</body>
+</html>

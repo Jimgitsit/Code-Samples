@@ -1,0 +1,26 @@
+{include file='templates/header.tpl' pageTitle='Influencer'}
+
+<div class="container profile-container">
+
+	{include file='profile/pages.tpl'}
+	
+	<section id="profile">
+
+		<form id="profileForm" action="/profile/saveProfile/" method="POST" class="form">
+			
+			{include file='profile/step1.html'}
+			{include file='profile/step2.html'}
+			{include file='profile/step3.html'}
+			{include file='profile/step4.html'}
+		
+		</form>
+	
+	</section>
+</div>
+
+<script type="text/javascript" src="/lib/select2/select2.min.js"></script>
+<script type="text/javascript" src="/js/util.js"></script>
+<script type="text/javascript" src="/js/messaging.js"></script>
+<script type="text/javascript" src="/js/profile.js"></script>
+		
+{include file='templates/footer.tpl'}

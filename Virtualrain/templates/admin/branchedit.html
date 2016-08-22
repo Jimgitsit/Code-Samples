@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Branch"}
+</head>
+
+<body>
+
+{include file="admin/alerts.html"}
+
+{include file="admin/navigation.html" currentPage="branches"}
+
+<div class="container branch-edit-container">
+	<div class="col-md-6">
+		<h4>{if isset($branchEdit)}Edit{else}Add{/if} Branch</h4>
+	
+		<form role="form" id="branchEditForm" method="POST" action="">
+			<div class="form-group">
+				<label for="branchName">Branch Name</label>
+				<input type="text" class="form-control" id="branchName" name="name" value="{if isset($branchEdit)}{$branchEdit.name}{/if}" maxlength="44" required />
+			</div>
+			<div class="form-group">
+				<label for="managerName">Manager's Name</label>
+				<input type="text" class="form-control" id="managerName" name="manager_name" value="{if isset($branchEdit)}{$branchEdit.manager_name}{/if}" maxlength="44" required />
+			</div>
+			<div class="form-group">
+				<label for="managerEmail">Manager's Email (login)</label>
+				<input type="email" class="form-control" id="managerEmail" name="manager_email" value="{if isset($branchEdit)}{$branchEdit.manager_email}{/if}" maxlength="44" required />
+			</div>
+			<div class="form-group">
+				<label for="managerPw">Manager's Password (at least 6 characters)</label>
+				<input type="password" class="form-control" id="managerPw" name="manager_pw" value="{if isset($branchEdit)}{$branchEdit.manager_pw}{/if}" minlength="6"maxlength="44"  required />
+			</div>
+			<div class="form-group">
+				<label for="managerPw2">Repeat Manager's Password</label>
+				<input type="text" class="form-control" id="managerPw2" name="manager_pw2" value="{if isset($branchEdit)}{$branchEdit.manager_pw}{/if}" minlength="6"maxlength="44"  required />
+			</div>
+			
+			<input type="hidden" name="id" value="{if isset($branchEdit)}{$branchEdit.id}{/if}" />
+			<input type="hidden" name="mode" value="{if isset($branchEdit)}edit{else}new{/if}" />
+			
+			<a class="btn btn-default" href="/admin/branches" >Cancel</a>
+			<button type="submit" class="btn btn-default" name='action' value="save_branch">Save</button>
+		</form>
+	</div>
+	<div class="col-md-6 branch-locations-col">
+		{if isset($locations)}
+			<h4>Locations Assigned</h4>
+			{foreach $locations as $loc}
+				<div class="location">{$loc.formatted}</div>
+			{/foreach}
+		{/if}
+	</div>
+</div>
+
+{literal}
+<script type="text/javascript" src="/templates/js/jquery-validation/dist/jquery.validate.min.js"></script>
+
+<script>
+
+$(document).ready(function() {
+	$('#branchEditForm').validate({
+		debug: true,
+		rules: {
+			manager_pw2: {
+				equalTo: "#managerPw"
+			}
+		},
+		submitHandler: function(form) {
+			form.submit();
+		}
+	});
+});
+
+</script>
+{/literal}
+
+</body>
+</html>

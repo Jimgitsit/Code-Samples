@@ -1,0 +1,115 @@
+<!DOCTYPE html><html><head lang="en"><meta charset="UTF-8"><title>Documen</title><style>body {
+	font-family: arial, sans-serif;
+}
+
+.name {
+	font-size: 21px;
+	font-weight: 600;
+}
+
+.outside-class-name {
+	font-weight: 600;
+	font-size: 21px;
+}
+
+.class-name {
+	display: inline;
+}
+
+.method-name {
+	display: inline;
+}
+
+.short-desc {
+	margin-left: 20px;
+	margin-top: 5px;
+}
+
+.long-desc {
+	margin-left: 30px;
+}
+
+.custom-label {
+	font-size: 21px;
+	font-weight: 600;
+}</style></head><body><h2 class="project-title">AlaCarte API</h2><div class="custom-label">/api/authorize</div><div class="short-desc">Use this to obtain an access token for use in subsequent calls.</div><div class="long-desc"><p>All other function of this API need to have the access token in
+the query string when calling:
+<code>http://alacarte.bluetree.ws/api/get/content?access_token=[token]</code></p>
+<p>Example request:</p>
+<pre><code>curl -i -X POST -H "Content-Type:application/x-www-form-urlencoded" -d 'grant_type=client_credentials&amp;client_id=[client id]&amp;client_secret=[client secret]' 'http://alacarte.bluetree.ws/api/authorize'</code></pre>
+<p>Parameters:</p>
+<ul>
+<li>grant_type: Always use <code>client_credentials</code></li>
+<li>client_id: Client id</li>
+<li>client_secret: Password</li>
+</ul>
+<p>Example response:</p>
+<pre><code>{
+  "access_token":"b76697b07b1ad0214ce06833cdf17e9ed4436053",
+  "expires_in":3600,
+  "token_type":"Bearer",
+  "scope":null
+}</code></pre>
+<p>If the access token has expired call this method again to get a new one.</p></div></br><div class="custom-label">/api/nodes/get/content</div><div class="short-desc">Respond with an array of nodes with current content that match the input.</div><div class="long-desc"><p>By default this will only consider active content. To change this pass &quot;status&quot;:&quot;[live|staged|disabled]&quot;.</p>
+<p>GET | POST</p>
+<p>Parameters;</p>
+<ul>
+<li><em>group_name</em>: The client group name.</li>
+<li><em>path</em>: The complete URL path after the domain.</li>
+<li><em>triggers</em>: (Optional) An array of triggers with 'type' and 'value'.</li>
+<li><em>content_type</em>: (Optional) The content type or an array of content types such as 'link'.</li>
+<li><em>status</em>: (Optional) The content status or an array of status to return.
+Statuses are 'live', 'staged', and 'disabled'. If not set only 'live' content is returned.</li>
+</ul>
+<p>Example request:</p>
+<p><code>curl -i -X POST -H "Content-Type:application/json" -d '{"group_name":"allied","path":"/travel","triggers":[{"type":"sub_domain","value":"test.ohiovalley"}]}' 'http://dev.alacarte.bluetree.ws/api/nodes/get/content'</code></p>
+<p>or</p>
+<p><code>curl -i -X GET -H "Content-Type:application/json" 'http://local.alacarte.com/api/nodes/get/content?data=\{"group_name":"allied","path":"/travel","triggers":\[\{"type":"sub_domain","value":"test.ohiovalley"\}\]\}'</code></p>
+<p>data:</p>
+<pre><code>{
+  "group_name":"allied",
+  "path":"/travel",
+  "triggers":
+  [
+    {"type":"sub_domain","value":"test.ohiovalley"}
+  ],
+  "content_type": [
+    "link", "block", "text"
+  ]
+}</code></pre>
+<p>Responds with a json array of nodes with the following properties:</p>
+<ul>
+<li><em>alacarte_id</em>: [the id set by the client site],</li>
+<li><em>content_type</em>: &lt;&quot;text&quot;|&quot;link&quot;|&quot;block&quot;&gt;</li>
+<li><em>active_content</em>: [the currently active content]</li>
+</ul>
+<p>Example response:</p>
+<pre><code>   [
+     {
+       "alacarte_id": "94e5e436e7c68ae76ca7e657",
+       "content_type": "text",
+       "content": {
+         "hidden": false,
+         "text": "This is a text content."
+       }
+     },
+     {
+       "alacarte_id": "4a3c1b4141a41b4c1a4c1a1b",
+       "content_type": "link",
+       "content": {
+         "hidden": false,
+         "link": {
+           "url": "http:\/\/ohio.com",
+           "text": "This is Ohio State!"
+         }
+       }
+     },
+     {
+       "alacarte_id": "6abe777ba6e7aea57abe23e",
+       "content_type": "block",
+       "content": {
+         "hidden": true
+       }
+     }
+   ]</code></pre></div></br><div class="custom-label">/api/node/[*:alacarteId]/content/add</div><div class="short-desc">Adds a new Content document to the Node. If no node with the
+given alacateId exists, it will be created.</div><div class="long-desc"></div></br><div class="custom-label">/api/node/content/[*:contentId]/save</div><div class="short-desc">Replaces the existing Content document. A new content id is returned.</div><div class="long-desc"></div></br><div class="custom-label">/api/node/content/[*:contentId]/delete</div><div class="short-desc">Delete content from a node.</div><div class="long-desc"></div></br><div class="custom-label">/api/node/[*:alacarteId]/get</div><div class="short-desc">Returns a single node with the given alacarte-id</div><div class="long-desc"></div></br><div class="custom-label">/api/banners/save</div><div class="short-desc">Saves an array of banners to the database.</div><div class="long-desc"></div></br><div class="custom-label">/api/banners/get</div><div class="short-desc">Returns banners for a given group and path.</div><div class="long-desc"></div></br><div class="custom-label">/api/banner/[*:alacarteId]/delete</div><div class="short-desc">Deletes a banner.</div><div class="long-desc"></div></br><div class="custom-label">/api/banner/upload</div><div class="short-desc">Uploads a banner file.</div><div class="long-desc"></div></br><div class="custom-label">/api/getffaddon</div><div class="short-desc">Returns the highest version of the Firefox add-on available.</div><div class="long-desc"></div></br></body></html>

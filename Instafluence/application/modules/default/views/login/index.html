@@ -1,0 +1,39 @@
+{include file='templates/header.tpl' pageTitle='Login'}
+
+<article id="login" class="signin">
+	<div class="container">
+		<h1>Login</h1>
+
+		<form class="login-form" action="/login/" method="POST" name="login">
+			<p class="auth-error">{if isset($authError)}{$authError}{/if}</p>
+
+			<input type="email" id="email"  name="email" placeholder="Email">
+			<input type="password" id="password" name="password" placeholder="Password">
+
+			<div id="forgotPw" class="blue-txt">Forgot Password</div>
+			<p id="forgotPwMsg"></p>
+
+			<button type="submit" class="btn-blue">Login</button>
+
+			<p>Don't have an account? <a href="/signup/">Sign Up</a></p>
+		</form>
+
+	</div>
+</article>
+
+{include file='templates/contact_modal.tpl'}
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.validate.min.js"></script>
+<script src="/js/static.js"></script>
+
+{literal}<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+chromium.org/developers/how-tos/chrome-frame-getting-started -->
+<!--[if lt IE 7 ]>
+<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+<![endif]-->{/literal}
+
+</body>
+</html>

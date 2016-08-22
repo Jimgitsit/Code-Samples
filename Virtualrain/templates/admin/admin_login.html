@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Home"}
+</head>
+
+<body>
+
+<div class="container">
+	<div class="logo-wrap">
+		<img src="../templates/img/vr_logo_clear_transparent.jpg" alt="Virtualrain" />
+	</div>
+	<div class="login-wrap">
+		<form class="form-horizontal" action='login' method="POST">
+			<input type="hidden" id="clientTimezone" name="client_timezone" value=""/>
+			<fieldset>
+				{if $signup}
+				<input type="hidden" name="id" value="{$dist.id}" />
+					<div id="legend">
+						<legend class="">Signup</legend>
+					</div>
+					<div class="login-msg">
+						<span>{$msg}</span>
+					</div>
+					<div class="control-group">
+						<!-- Username -->
+						<label class="control-label" for="email">Email address</label>
+						<div>{$dist.email}</div>
+					</div>
+
+					<div class="control-group">
+						<!-- Password-->
+						<label class="control-label" for="pass">Enter a new password</label>
+						<div class="controls">
+							<input type="password" id="pass1" name="pass1" placeholder="" class="input-xlarge form-control" autofocus>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<!-- Password-->
+						<label class="control-label" for="pass">Retype the password</label>
+						<div class="controls">
+							<input type="password" id="pass2" name="pass2" placeholder="" class="input-xlarge form-control">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<!-- Button -->
+						<div class="controls">
+							<button class="btn btn-success" name="action" value="signup">Signup</button>
+						</div>
+					</div>
+				{else}
+					<div class="login-msg">
+						<span>{$msg}</span>
+					</div>
+					<div class="control-group">
+						<!-- Username -->
+						<label class="control-label" for="email">Email address</label>
+						<div class="controls">
+							<input type="text" id="email" name="email" placeholder="" class="input-xlarge form-control" autofocus>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<!-- Password-->
+						<label class="control-label" for="pass">Password</label>
+						<div class="controls">
+							<input type="password" id="pass" name="pass" placeholder="" class="input-xlarge form-control">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<!-- Button -->
+						<div class="controls">
+							<button class="btn btn-success" name="action" value="admin_login">Login</button>
+						</div>
+					</div>
+				{/if}
+			</fieldset>
+		</form>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+		$('#clientTimezone').val(get_timezone_id());
+	});
+</script>
+
+</body>
+</html>

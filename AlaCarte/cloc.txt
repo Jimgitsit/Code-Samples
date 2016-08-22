@@ -1,0 +1,9 @@
+app/controllers
+app/models
+app/views
+app/config
+public/js
+/Users/jim/Documents/Local Projects/AlaCarte/ff-ext-sdk/data/content
+/Users/jim/Documents/Local Projects/AlaCarte/ff-ext-sdk/data/lib/jquery.dom-outline-1.0.js
+/Users/jim/Documents/Local Projects/AlaCarte/ff-ext-sdk/data/sidebar
+/Users/jim/Documents/Local Projects/AlaCarte/ff-ext-sdk/lib/main.js

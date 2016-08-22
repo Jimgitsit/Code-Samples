@@ -1,0 +1,10 @@
+{% if alerts %}
+	{% for alert in alerts %}
+		<div class="alert alert-{{ alert.type }}" role="alert">
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			{{ alert.text }}
+		</div>
+	{% endfor %}
+{% endif %}

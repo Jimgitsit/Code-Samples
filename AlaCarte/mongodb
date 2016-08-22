@@ -1,0 +1,3 @@
+#!/usr/bin/env php
+<?php
+require_once 'vendor/doctrine/mongodb-odm/tools/sandbox/mongodb.php';

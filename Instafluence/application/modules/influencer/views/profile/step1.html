@@ -1,0 +1,270 @@
+<div class="container" id="profile_page1">
+
+	{include file='templates/vine_modal.tpl'}
+	{include file='templates/facebook_modal.tpl'}
+	{include file='templates/pinterest_modal.tpl'}
+	{include file='templates/snapchat_modal.tpl'}
+	{include file='templates/add_account_modal.tpl'}
+
+	<div class="row">
+		<div class="col-md-12 title text-center">
+			<h3>The Social Stuff</h3>
+			<p>Connect your Social Networks</p>
+		</div>
+	</div>
+
+	<!--
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="form-group">
+				<div class="row">
+					<div class="col-md-12 text-center">
+						<span class="group-label">Your estimated total followers across all social media</span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3">
+						<input class="form-control input-sm text-center" type="text" name="initial_total_followers" id="initial_total_followers" value="{if isset($profile.initial_total_followers) && $profile.initial_total_followers > 0}{$profile.initial_total_followers|number_format:0:".":","}{/if}" />
+						<span class="help-block text-center">Please enter a numerical value</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
+
+	{if $totalReach > 0}
+		<div class="row">
+			<div class="col-md-offset-4 col-md-4">
+				<div id="total_reach">Your Reach: {$totalReach|number_format:0:".":","}</div>
+			</div>
+		</div>
+	{/if}
+
+	<!--
+	<div class="row stats-row">
+		<div class="col-md-4 col-md-offset-4 text-center">
+			<div class="stat-wrapper">
+				<div class="number-bg">
+					{if isset($profile.cpp) && is_numeric($profile.cpp) && $profile.cpp > 0}<span class="symbol">$</span><span>{$profile.cpp|number_format:0:".":","}</span>{else}<span>?</span>{/if}
+				</div>
+				<div class="title">
+					<span>Price per Post</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
+
+	{if $connectedCount > 0}
+		<div class="row">
+			<table class="table table-responsive social-table">
+				<tr>
+					<th></th>
+					<th>Followers</th>
+					<!--<th>Potential Earnings</th>-->
+					<th></th>
+				</tr>
+				{foreach $social as $name => $accounts}
+					{foreach $accounts as $index => $s}
+						{if is_array($s) && isset($s.connected) && $s.connected}
+
+							<tr>
+								{if $name == 'facebook' && isset($s.accounts) && count($s.accounts) > 0}
+									<td>
+										<img src="/img/social_icons_32x32/{$name}.png" data-toggle="tooltip" title="{$name|capitalize} - {$s.username}" data-placement="left">
+										{if isset($s.include) && $s.include == true}
+											<img class="account-pic" src="{$s.profile.picture.url}" data-toggle="tooltip" title="{$s.profile.name|capitalize}" data-placement="bottom">
+										{/if}
+
+										{foreach $s.accounts as $account}
+											{if isset($account.connected) && $account.connected == true}
+												<img class="account-pic" src="{$account.picture}" data-toggle="tooltip" title="{$account.name|capitalize}" data-placement="bottom">
+											{/if}
+										{/foreach}
+									</td>
+									<td>{$s.total_reach|number_format:0:".":","}</td>
+								{else}
+									<td>
+										<img src="/img/social_icons_32x32/{$name}.png" data-toggle="tooltip" title="{$name|capitalize} - {$s.username}" data-placement="left">
+									</td>
+									<td>{$s.total_reach|number_format:0:".":","}</td>
+								{/if}
+								<td>
+									<a href="/deauth/{$name}/{$index}" data-toggle="tooltip" title="disconnect" data-placement="right"><img src="/img/x-mark-16.png"></a>
+								</td>
+							</tr>
+
+						{/if}
+					{/foreach}
+				{/foreach}
+			</table>
+		</div>
+	{/if}
+
+	<!--
+	<div class="row">
+		<div class="col-md-12 text-center asterisk-desc">
+			* potential earnings per post
+		</div>
+	</div>
+	-->
+
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3 text-center">
+			<div class="form-group">
+				<p class="group-label">See your total reach and earnings potential by connecting<br/>your accounts using the buttons below</p>
+				<span>We never share or post anything in your behalf so don't worry</span>
+			</div>
+		</div>
+	</div>
+
+	<!--
+	<div class="row">
+		<div class="col-md-12 signup-error">
+			{validation_errors()}
+		</div>
+	</div>
+	-->
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'instagram'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-instagram" href="/auth/instagram/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">Instagram</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<div class="col-md-4 social-btn-wrapper">
+			{$connected = 'vine'|in_array:$connectedNetworks}
+			<div id="vineBtn" class="btn btn-default social-btn social-btn-vine" data-toggle="modal" data-target="#vineModal">
+				<div class="title {if $connected}connected{/if}">Vine</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'facebook'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-facebook" href="/auth/facebook/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">Facebook</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<div class="col-md-4 social-btn-wrapper">
+			{$connected = 'twitter'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-twitter " href="/auth/twitter/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">Twitter</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'googleplus'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-googleplus" href="/auth/googleplus/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">Google+</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<div class="col-md-4 social-btn-wrapper">
+			{$connected = 'youtube'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-youtube" href="/auth/youtube/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">YouTube</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'linkedin'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-linkedin" href="/auth/linkedin/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if} unavailable">LinkedIn</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<div class="col-md-4 social-btn-wrapper">
+			{$connected = 'tumblr'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-tumblr" href="/auth/tumblr/" data-connected="{if $connected}true{else}false{/if}">
+				<div class="title {if $connected}connected{/if}">Tumblr</div>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'wordpress'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-wordpress" href="/auth/wordpress/" data-connected="{if $connected}true{else}false{/if}">
+				<span class="title {if $connected}connected{/if}">WordPress</span>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<div class="col-md-4 social-btn-wrapper">
+			{$connected = 'foursquare'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-foursquare" href="/auth/foursquare/" data-connected="{if $connected}true{else}false{/if}">
+				<span class="title {if $connected}connected{/if}">Foursquare</span>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-offset-2 col-md-4 social-btn-wrapper">
+			{$connected = 'pinterest'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-pinterest" href="/auth/pinterest/" data-connected="{if $connected}true{else}false{/if}">
+				<span class="title {if $connected}connected{/if}">Pinterest</span>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div>
+
+		<!-- <div class="col-md-4 social-btn-wrapper">
+			{$connected = 'snapchat'|in_array:$connectedNetworks}
+			<a class="btn btn-default social-btn social-btn-snapchat" href="/auth/snapchat/" data-connected="{if $connected}true{else}false{/if}">
+				<span class="title {if $connected}connected{/if}">Snapchat</span>
+				{if $connected}
+					<div class="action">Add another account</div>
+				{/if}
+			</a>
+		</div> -->
+	</div>
+
+	<div class="row button-row">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="form-group text-center">
+				<button type="button" class="btn btn-default cyan-outline-btn continue-btn">Next</button>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{include file="head.html" title="Categories"}
+</head>
+<body class="categories">
+	<div class="screen-overflow">
+		
+		{include file="top-nav.html" hideBackButton=$hideBackButton}
+		
+		<div class="screen">
+		
+			<div class="container with-nav">
+				{foreach $categories as $cat}
+					
+					<a href="/categories?parent_id={$cat[ 'id' ]}">
+						<div class="category" style="background-image:url('{$imgBaseURL}CATEGORIES{$cat['image']}')">
+							<div class="cat-title"><h4>{$cat[ 'name' ]}</h4></div>
+							<div class="product-count">{$cat.product_count}</div>
+						</div>
+					</a>
+					
+				{/foreach}
+			</div>
+			
+		</div>
+		
+		{include file="account.html"}
+		{include file="footer.html" viewTypeActive="no"}
+		{include file="cart.html" cartItems=$cartItems}
+		
+	</div>
+</body>
+
+
+<script src="/templates/js/hammer.min.js"></script>
+<script src="/templates/js/menu.js"></script>
+<script src="/templates/js/util.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+	setScreenHeight();
+});
+</script>
+
+
+
+
+

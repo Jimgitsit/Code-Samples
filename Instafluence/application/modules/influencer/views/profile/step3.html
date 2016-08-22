@@ -1,0 +1,115 @@
+<div class="container" id="profile_page3" style="display: none">
+	
+	<div class="row">
+		<div class="col-md-12 title">
+			<h3>Clothing Sizes and Info</h3>
+			<p>We plan to send lots of products your way so we need to know a few things!</p>
+		</div>
+	</div>
+
+	<div class="form-wrapper">
+		<div class="col-md-4 col-md-offset-4">
+			<div class="form-group">
+				<label for="height" class="group-label">Height</label>
+				<select id="height" name="height" class="form-control input-sm">
+					<option></option>
+					{foreach $heightOptions as $value => $display}
+						<option value="{$value}" {if isset($profile) && ($profile.height == $value || $profile.height == $display)}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="shoe_size" class="group-label">Shoe Size</label>
+				<select id="shoe_size" name="shoe_size" class="form-control input-sm">
+					<option></option>
+					{for $i=4 to 14 step=0.5}
+						<option value="{$i}" {if isset($profile) && $profile.shoe_size == "{$i}"}selected{/if}>{$i}</option>
+					{/for}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="shirt_size" class="group-label">Shirt Size</label>
+				<select id="shirt_size" name="shirt_size" class="form-control input-sm">
+					<option></option>
+					{foreach $shirtSizes as $value => $display}
+						<option value="{$value}" {if isset($profile) && $profile.shirt_size == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="pant_waist" class="group-label">Pant Waist</label>
+				<select id="pant_waist" name="pant_waist" class="form-control input-sm">
+					<option></option>
+					{for $i=27 to 44}
+						<option value="{$i}" {if isset($profile) && $profile.pant_waist == "{$i}"}selected{/if}>{$i}</option>
+					{/for}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="pant_length" class="group-label">Pant Length</label>
+				<select id="pant_length" name="pant_length" class="form-control input-sm">
+					<option></option>
+					{for $i=27 to 40}
+						<option value="{$i}" {if isset($profile) && $profile.pant_length == "{$i}"}selected{/if}>{$i}</option>
+					{/for}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="ethnicity" class="group-label">Ethnicity</label>
+				<select id="ethnicity" name="ethnicity" class="form-control input-sm">
+					<option></option>
+					{foreach $enthicityTypes as $value => $display}
+						<option value="{$value}" {if isset($profile) && $profile.ethnicity == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="eye_color" class="group-label">Eye Color</label>
+				<select id="eye_color" name="eye_color" class="form-control input-sm">
+					<option></option>
+					{foreach $eyeColors as $value => $display}
+						<option value="{$value}" {if isset($profile) && $profile.eye_color == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<label for="hair_color" class="group-label">Hair Color</label>
+				<select id="hair_color" name="hair_color" class="form-control input-sm">
+					<option></option>
+					{foreach $hairColors as $value => $display}
+						<option value="{$value}" {if isset($profile) && $profile.hair_color == $value}selected{/if}>{$display}</option>
+					{/foreach}
+				</select>
+			</div>
+	
+			<div class="form-group">
+				<span class="group-label">Do you wear glasses?</span>
+	
+				<div class="radio">
+					<label>
+						<input type="radio" name="glasses" id="glasses-yes" value="true" {if isset($profile.glasses) && $profile.glasses == true}checked{/if} />Yes
+					</label>
+				</div>
+	
+				<div class="radio">
+					<label>
+						<input type="radio" name="glasses" id="glasses-no" value="false" {if isset($profile.glasses) && $profile.glasses == false}checked{/if} />No
+					</label>
+				</div>
+			</div>
+
+			<div class="form-group text-center">
+				<button type="button" class="btn btn-default cyan-outline-btn save-profile-btn">Save</button>
+			</div>
+		</div>
+		
+	</div>
+	
+</div>

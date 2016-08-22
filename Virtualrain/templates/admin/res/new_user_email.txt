@@ -1,0 +1,11 @@
+A new user has registered and is waiting to be activated.
+
+Name: {userName}
+Company: {companyName}
+Email: {userEmail}
+Phone: {phoneNumber}
+Account #: {accountNumber}
+
+Click the following link to activate the user:
+
+{link}

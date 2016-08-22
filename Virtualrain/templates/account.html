@@ -1,0 +1,61 @@
+<div class="side-bar">
+	<ul>
+		<a href="/favorites">	
+			<li class="favorites-tab tab">
+				<div class="favorites-img image"></div>
+				<h4>FAVORITES</h4>
+				<br class="clear"/>
+			</li>
+		</a>
+		<a href="/notifications">	
+			<li class="notifications-tab tab">
+				<!-- <img src="/templates/img/notifications.png"/> -->
+				<div class="notification-img image"></div>
+				<h4>MESSAGES</h4>
+				{if $notifications > 0}<div class="amount"><p>{$notifications}</p></div>{/if}
+				<br class="clear"/>
+			</li>
+		</a>
+		<a href="/order">	
+			<li class="history-tab tab">
+				<!-- <img src="/templates/img/history.png"/> -->
+				<div class="history-img image"></div>
+				<h4>ORDER HISTORY</h4>
+				<br class="clear"/>
+			</li>
+		</a>
+		<a href="/shipping">		
+			<li class="entry-tab tab">
+				<!-- <img src="/templates/img/shipping.png"/> -->
+				<div class="shipping-img image"></div>
+				<h4>SHIPPING LOCATIONS</h4>
+				<br class="clear"/>
+			</li>
+		</a>
+		<a href="/locations">	
+			<li class="location-tab tab">
+				<!-- <img src="/templates/img/location.png"/> -->
+				<div class="location-img image"></div>
+				<h4>PICKUP LOCATIONS</h4>
+				<br class="clear"/>
+			</li>
+		</a>
+		<a href="/account">	
+			<li class="contact-tab tab">
+				<!-- <img src="/templates/img/info.png"/> -->
+				<div class="info-img image"></div>
+				<h4>ACCOUNT INFO</h4>
+				<br class="clear"/>
+			</li>
+		</a>
+		<li class="logout-tab tab">
+			<a href="/logout">
+			<!-- <img src="/templates/img/logout.png"/> -->
+			<div class="logout-img image"></div>
+			<h4>LOGOUT</h4>
+			<br class="clear"/>
+			</a>
+		</li>
+	</ul>
+	
+</div>

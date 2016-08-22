@@ -1,0 +1,35 @@
+body {
+	font-family: arial, sans-serif;
+}
+
+.name {
+	font-size: 21px;
+	font-weight: 600;
+}
+
+.outside-class-name {
+	font-weight: 600;
+	font-size: 21px;
+}
+
+.class-name {
+	display: inline;
+}
+
+.method-name {
+	display: inline;
+}
+
+.short-desc {
+	margin-left: 20px;
+	margin-top: 5px;
+}
+
+.long-desc {
+	margin-left: 30px;
+}
+
+.custom-label {
+	font-size: 21px;
+	font-weight: 600;
+}

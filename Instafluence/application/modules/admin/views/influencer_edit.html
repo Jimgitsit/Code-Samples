@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+{assign var="fullName" value="`$user.first_name` `$user.last_name`"}
+{include file='templates/head.tpl' pageTitle=$fullName}
+<body>
+
+{include file="templates/messaging.tpl"}
+
+{include file="templates/add_network_modal.tpl"}
+{include file="templates/remove_network_modal.tpl"}
+{include file="templates/delete_influencer_modal.tpl"}
+
+{include file='templates/header.tpl'}
+
+<div class="fixed-container">
+{include file='templates/invite_message_modal.tpl'}
+
+{include file='templates/user_header.tpl'}
+
+{include file='templates/user_detail_tabs.tpl'}
+</div>
+
+<script type="text/javascript" src="/lib/select2/select2.min.js"></script>
+<script type="text/javascript" src="/lib/bootstrap-rating-input.min.js"></script>
+<script type="text/javascript" src="/lib/jquery.jeditable.mini.js"></script>
+<script type="text/javascript" src="/js/messaging.js"></script>
+
+<script type="text/javascript" src="/js/influencer_edit.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,15 @@
+// Using silent/placeholder class % to aid @extend
+// This produces cleaner and more maintainable code compare to using @mixin
+
+%proxima {
+    font-family: 'proxima', helvetica, sans-serif;
+}
+
+
+%clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}

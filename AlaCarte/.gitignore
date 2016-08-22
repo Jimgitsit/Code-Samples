@@ -1,0 +1,15 @@
+### IDE files
+*.iml
+.idea/
+
+### Composer
+vendor/
+
+### App
+app/config/site_config.php
+cache/mongo/hydrators
+cache/mongo/proxies
+cache/twig
+db
+public/banners
+

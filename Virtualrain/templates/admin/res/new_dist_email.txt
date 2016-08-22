@@ -1,0 +1,5 @@
+You have been invited to Virtualrain's mobile app administration site.
+
+Click the following link to set your password and sign in.
+
+{link}

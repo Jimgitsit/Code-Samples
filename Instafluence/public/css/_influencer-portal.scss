@@ -1,0 +1,163 @@
+//**************
+//  Global styles
+//**************
+
+// body {
+// 	font-family:'proxima', helvetica, sans-serif;
+// 	font-weight:400;
+// 	font-size: 14px;
+// 	color: $blacklight;
+// 	// background-color: $whitegray;
+// }
+//
+// h1, h2, h3, h4, h5, h6 {
+// 	font-family:'proxima', helvetica, sans-serif;
+// 	font-weight:400;
+// }
+
+%proxima {
+	font-family: 'proxima', helvetica, sans-serif;
+	h1, h2, h3, h4, h5, h6 {
+		font-family: 'proxima', helvetica, sans-serif;
+	}
+}
+
+// silent @extend
+%clearfix {
+	&:after {
+		content: "";
+		display: table;
+		clear: both;
+	}
+}
+
+.container {
+	padding-left: 0;
+	padding-right: 0;
+	min-height: 100%;
+}
+
+.float-right {
+	float: right;
+	@extend %clearfix;
+}
+
+// buttons
+.btn-blue {
+	background: $blue;
+	color: $white;
+	border-radius: 0;
+	border: 1px solid $blue;
+	outline: none;
+
+	&:hover {
+		background: none;
+		color: $blue;
+		border: 1px solid $blue;
+	}
+}
+.btn-green {
+	background: $green;
+	color: $white;
+	border-radius: 0;
+	border: 1px solid $green;
+	outline: none;
+
+    &:hover {
+		background: none;
+		color: $green;
+		border: 1px solid $green;
+	}
+}
+
+// font colors and styles
+.txt-blue {color: $blue;}
+.txt-graylight {color: $graylight;}
+
+.txt-semibold { font-weight: 600;}
+
+//**************************
+//  Common form styles
+//**************************
+
+.signin {
+	min-height: 100vh;
+	background-color: $whitegray;
+	color: $gray;
+	margin: 0 auto;
+	padding-top: 20px;
+	width: 100%;
+	max-width: 100%; // overwrite old codes
+
+	.container {
+		max-width: 420px;
+	}
+}
+
+.form-group {
+	margin-bottom: 0;
+	position: relative;
+
+	.glyphicon-remove {
+		color: $red;
+	}
+	.glyphicon-ok {
+		color: $green;
+	}
+}
+.form-control-feedback {
+	position: absolute;
+	top: 18px;
+	right: 20px;
+}
+
+input {
+	@include placeholder {
+		font-family: 'proxima', Helvetica, sans-serif;
+		font-weight: bold;
+	}
+}
+
+//******************************
+//  Navbar for logged in users
+//******************************
+
+.navbar-loggedin {
+	background-color: #434851;
+	@extend %proxima;
+
+	.navbar-header {
+		min-height: 75px;
+	}
+
+	.navbar-brand {
+		position: absolute;
+		left: 4px;
+		top: 0;
+	}
+
+	.navbar-toggle {
+		border: none !important;
+		margin-right: 0;
+		margin-top: 0 !important;
+		position: absolute;
+		top: 16px;
+		right: 10px;
+	}
+
+	.nav-page-title {
+		text-align: center;
+		color: $white;
+		margin-top: 28px;
+		@extend .txt-semibold;
+	}
+
+	.icon-logo {
+		color: $white;
+		font-size: 38px;
+	}
+
+	.icon-bar {
+		margin: 5px auto;
+	}
+}

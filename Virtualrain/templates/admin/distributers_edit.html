@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+{include file="admin/head.html" pageTitle="Admin - Edit Distributer"}
+<script type="text/javascript" src="/templates/js/niceinput.min.js"></script>
+</head>
+
+<body>
+
+{include file="admin/navigation.html" currentPage="distributers"}
+
+<div class="container">
+
+{include file="admin/alerts.html"}
+
+	<form class="form-horizontal admin-form" method="POST" action="/admin/distributers/edit?id={if isset( $dist.id )}{$dist.id}{else}new{/if}" enctype="multipart/form-data">
+		<input type="hidden" name="id" value="{if isset( $dist.id )}{$dist.id}{else}new{/if}" />
+
+		<span class="required-note">(All fields are required)</span>
+
+		<h3>Company Info</h3>
+
+		<label class="control-label">Company Name</label> (this is what will be shown to users)
+		<input class="form-control" type="text" name="company_name" autofocus value="{if isset( $dist )}{$dist.company_name}{/if}" />
+
+		<label class="control-label">Email</label> (also used for login)
+		<input class="form-control" type="text" name="email" value="{if isset( $dist )}{$dist.email}{/if}" />
+
+		<br />
+		<h3>Contact Info</h3>
+
+		<label class="control-label">Name</label> (name of the primary contact)
+		<input class="form-control" type="text" name="contact_name" value="{if isset( $dist )}{$dist.contact_name}{/if}" />
+
+		<label class="control-label">Phone</label>
+		<input class="form-control" type="text" name="phone" value="{if isset( $dist )}{$dist.phone}{/if}" />
+
+		<label class="control-label">Address</label>
+		<input class="form-control" type="text" name="address" value="{if isset( $dist )}{$dist.address}{/if}" />
+
+		<label class="control-label">City</label>
+		<input class="form-control" type="text" name="city" value="{if isset( $dist )}{$dist.city}{/if}" />
+
+		<label class="control-label">State</label>
+		<input class="form-control" type="text" name="state" value="{if isset( $dist )}{$dist.state}{/if}" />
+
+		<label class="control-label">Zip Code</label>
+		<input class="form-control" type="text" name="zip" value="{if isset( $dist )}{$dist.zip}{/if}" />
+
+		<div class="checkbox">
+			<label>
+				<input type="hidden" name="status" value="off" />
+				<input type="checkbox" name="status" {if !isset( $dist ) || ( isset( $dist ) && $dist.status == 1)}checked{/if}> Active
+			</label>
+		</div>
+
+		<br />
+		<h3>Logo</h3>
+		{if isset($dist['dir']) && isset($dist['logo']) && $dist['logo'] != ""}
+		   <img src="/dist/{$dist['dir']}/{$dist['logo']}" />
+		{else}
+		   <p>No Logo</p>
+		{/if}
+          <br />
+          <h5>Pick a new one:</h5>
+          <input type="file" name="logo" id="company_logo" />
+          <br />
+          <br />
+		<a type="submit" class="btn btn-default" href="../distributers">Cancel</a>
+		<button type="submit" class="btn btn-default" name="action" value="save">Save</button>
+		{if isset( $dist.id )}
+		<button type="submit" class="btn btn-default" name="action" value="reset_pw">Reset Password</button>
+		{/if}
+	</form>
+</div>
+
+<br />
+<script type="text/javascript">
+     $(function(){
+          $('input[type=file]').nicefileinput();
+          $('.NFI-button').addClass('btn btn-default');
+          $('.NFI-filename').addClass('form-control').css({
+               "width":"auto",
+               "margin-left":"10px"
+          });
+     });
+</script>
+</body>
+</html>
