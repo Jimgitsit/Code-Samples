@@ -1,0 +1,8 @@
+app/controllers
+app/lib
+app/models
+app/public/css/default.css
+app/public/js/misc.js
+app/public/index.php
+app/service
+app/views

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+	<link rel="stylesheet" href="/css/documen.css">
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+	
+	<div class="row">
+		<div class="col-md-12">
+			<form class="form-inline" method="GET" id="employeeControlForm">
+				<div class="col-xs-12">
+					<input type="button" value="Add Employee" class="btn btn-default btn-sm" id="addEmployeeBtn"/>
+					<div id="maxResultsWrap">
+						<span>Max rows:</span>&nbsp;<span class="max-results" id="mrall">all</span>&nbsp;<span class="max-results" id="mr10">10</span>&nbsp;<span class="max-results" id="mr50">50</span>&nbsp;<span class="max-results" id="mr100">100</span>
+					</div>
+					<div class="form-group pull-right">
+						<span id="sortMsg">results are sorted by search relevance</span>
+						<div class="input-group">
+							<input type="text" class="form-control span2 input-sm" id="searchEmployees" name="search" value="{{ urlParams.search }}">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-default btn-sm" id="searchEmployeesBtn" value="search" data-toggle="tooltip" data-placement="top" title="Search">
+									<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+								</button>
+								<button class="btn btn-default btn-sm" id="searchClearBtn" data-toggle="tooltip" data-placement="top" title="Clear">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</form>
+			
+			<table class="table table-condensed table-hover" id="employeesTable">
+				<thead>
+					<tr>
+						<th data-tsort-name="employeeID">ID</th>
+						<th data-tsort-name="lastName">Name</th>
+						<th data-tsort-name="email">Email</th>
+						<th data-tsort-name="userName">User Name</th>
+						<th data-tsort-name="title">Title</th>
+						<th data-tsort-name="jobClass">Job Class</th>
+						<th data-tsort-name="costCenter">Cost Center</th>
+						<th style="text-align: center;" data-tsort-name="source">Source</th>
+						<th style="text-align: center;" data-tsort-name="isActive">Active</th>
+						<th data-tsort-name="created">Created</th>
+						<th data-tsort-name="lastUpdated">Updated</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for e in employees %}
+					<tr class="employee-tr" data-employeeID="{{ e.employeeID }}" data-source="{{ e.source }}">
+						<td>{{ e.employeeID }}</td>
+						<td>{{ e.firstName }} {{ e.lastName }}</td>
+						<td>{{ e.email }}</td>
+						<td>{{ e.userName }}</td>
+						<td>{{ e.title }}</td>
+						<td>{{ e.jobClass }}</td>
+						<td>{{ e.costCenter }}</td>
+						<td style="text-align: center;">{{ e.source }}</td>
+						<td style="text-align: center;">
+							{% if e.isActive == true %}
+								<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+							{% endif %}
+						</td>
+						<td>{% if e.created != null %}{{ e.created|date("m/d/y") }}{% endif %}</td>
+						<td>{% if e.lastUpdated != null %}{{ e.lastUpdated|date("m/d/y") }}{% endif %}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+{%  include 'js.twig' %}
+{% include 'employee_edit_modal.twig' %}
+
+<script type="application/javascript" src="/js/jquery.table-sort.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('[data-toggle="tooltip"]').tooltip();
+		
+		$('#searchClearBtn').click(function() {
+			$('#searchEmployees').val('');
+		});
+		
+		$(".nav-tab").removeClass("active");
+		$("#navEmployees").addClass("active");
+		
+		if (typeof urlParams.search == 'undefined') {
+			$('#employeesTable').tableSort({defaultSortCol: "lastName"});
+			$('#sortMsg').hide();
+		}
+		else {
+			$('#maxResultsWrap').hide();
+			$('#sortMsg').show();
+		}
+		
+		$('#addEmployeeBtn').click(function() {
+			initEmployeeEditDialog('new');
+			
+			$("#employeeEditModal").modal("show");
+		});
+
+		$(".employee-tr").click(function() {
+			/*
+			if (popupVisible) {
+				popupVisible = false;
+				return;
+			}
+			*/
+
+			var employeeID = $(this).attr("data-employeeID");
+
+			$.ajax({
+				url: "/api/get-employee-by-id/" + employeeID,
+				method: "GET"
+			}).done(function(response) {
+				//console.log(response);
+				initEmployeeEditDialog('edit', employeeID, response);
+				$("#employeeEditModal").modal("show");
+
+			}).fail(function(response) {
+				console.log(response.responseText);
+				//bsAlert("An error occurred!\n\n" + response.responseJSON.error_msg, 'error');
+			});
+		});
+		
+		if (typeof urlParams.max == 'undefined') {
+			$('#mr100').addClass('text-underline');
+		}
+		else {
+			$('#mr' + urlParams.max).addClass('text-underline');
+		}
+		
+		$('.max-results').click(function() {
+			urlParams.max = $(this).text();
+			window.location = getURI();
+		});
+		
+		$('#employeeControlForm').submit(function(el) {
+			el.preventDefault();
+
+			var searchInput = $('#searchEmployees');
+			searchInput.val($.trim(searchInput.val()));
+			
+			if (searchInput.val() != '') {
+				this.submit();
+			}
+			else {
+				if (typeof urlParams.search != 'undefined') {
+					delete urlParams.search;
+				}
+				window.location = getURI();
+			}
+		});
+	});
+</script>
+</body>
+</html>

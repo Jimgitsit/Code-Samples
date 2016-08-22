@@ -1,0 +1,226 @@
+.nav {
+	margin-bottom: 12px;
+}
+
+.env-label {
+	color: #dc3838;
+}
+
+.container, .container-fluid {
+	width: 100% !important;
+}
+
+.select2-results__message {
+	display: none;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+	border-color: #555 transparent transparent transparent !important;
+}
+
+.popover {
+	max-width: 500px;
+	overflow: hidden;
+}
+
+.bs-alert-wrap {
+	width: 100%;
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	z-index: 9999;
+}
+
+.bs-alert {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.md-popover, 
+.kw-popover{
+	color: #337ab7;
+	cursor: pointer;
+}
+
+#headerWrap {
+	height: 72px;
+}
+
+#businessSearchWrap h3,
+#businessSearchWrap form {
+	display: inline;
+}
+
+#metaDataSearchWrap {
+	height: 56px;
+}
+
+#keywordSearchWrap h3,
+#keywordSearchWrap form {
+	display: inline;
+}
+
+#keywordSearchWrap form input {
+	width: 250px;
+}
+
+#businessLeftSide {
+	border-right: 1px solid rgba(128, 128, 128, 0.19);
+}
+
+.departments-table {
+	width: 97%;
+	margin: auto;
+}
+
+.departments-table tbody tr,
+#departmentListTable tbody tr,
+.td-pointer {
+	cursor: pointer;
+}
+
+#newDepartmentsTable th:last-child,
+#newDepartmentsTable td:last-child, 
+#inactiveDepartmentsTable th:last-child,
+#inactiveDepartmentsTable td:last-child{
+	text-align: right;
+}
+
+#importsTable tbody tr {
+	cursor: pointer;
+}
+
+#importsTable th:nth-child(2),
+#importsTable td:nth-child(2),
+#importsTable th:nth-child(3),
+#importsTable td:nth-child(3){
+	text-align: center;
+}
+
+#importsTable th:last-child,
+#importsTable td:last-child{
+	
+}
+
+#logContent {
+	margin-top: 10px;
+}
+
+.scroll-area {
+	overflow: auto;
+}
+
+#departmentListTable tr.parent {
+	background-color: hsla(208, 48%, 65%, 0.14) !important;
+}
+
+#departmentListTable tr.new {
+	background-color: hsla(48, 97%, 54%, 0.21) !important;
+}
+
+#departmentListTable tr.inactive {
+	background-color: #EAEAEA !important;
+	color: rgb(128, 128, 128);
+}
+
+#metaDataFiltersWrap {
+	display: none;
+	height: 56px;
+}
+
+#metaDataFiltersWrap .form-group {
+	padding-right: 20px;
+}
+
+.meta-data-value,
+.meta-data-type {
+	display: inline;
+}
+
+#metaDataTable tbody tr,
+#searchPhraseTable tbody tr, 
+#employeesTable tbody tr {
+	cursor: pointer;
+}
+
+#searchPhraseTable thead tr th {
+	white-space: nowrap;
+}
+
+tr.meta-data-entity-row {
+	background-color: hsla(208, 48%, 65%, 0.14) !important;
+	cursor: default !important;
+}
+
+span.not-found-warning {
+	color: #F12B2B;
+}
+
+#mdTableWrap {
+	margin-top: 15px;
+}
+
+#resultsMsg {
+	width: 100%;
+	height: 10px;
+	color: #607D8B;
+	font-size: 13px;
+}
+
+select.md-filter {
+	didplay: none !important;
+	
+}
+
+#typeSelect {
+	width: 180px;
+}
+
+#addSearchPhraseBtn {
+	margin-left: 10px;
+}
+
+button.multiselect.btn {
+	padding-left: 2px;
+}
+
+textarea#value {
+	height: 330px;
+	max-width: 420px;
+}
+
+#businessListControlRow, 
+#keywordControlRow {
+	margin-top: 10px;
+}
+
+.keyword-hit {
+	color: green;
+}
+
+#maxResultsWrap {
+	display: inline;
+	margin-left: 20px;
+}
+
+#sortMsg {
+	display: inline;
+	margin-right: 10px;
+	color: #717171;
+	font-style: italic;
+}
+
+.max-results {
+	cursor: pointer;
+	color: #337AB7;
+}
+
+.text-underline {
+	text-decoration: underline;
+}
+
+#userNameWarning {
+	color: #c10000;
+	font-weight: bold;
+	margin-left: 10px;
+}

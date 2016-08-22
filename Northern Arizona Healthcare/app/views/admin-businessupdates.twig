@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+	
+	<div class="row">
+		<div class="col-md-6" id="businessLeftSide">
+			<div class="scroll-area" data-offset="125">
+				<h3>New Departments</h3>
+				<table id="newDepartmentsTable" class="table table-condensed table-hover departments-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Cost Center</th>
+							<th>Display Name</th>
+							<th>Created</th>
+						</tr>
+					</thead>
+					<tbody>
+						{%  for  dept in newDepts %}
+						<tr data-businessID="{{ dept.businessID }}">
+							<td>{{ dept.businessID }}</td>
+							<td>{{ dept.costCenter }}</td>
+							<td>{{ dept.displayName }}</td>
+							<td>{{ dept.created|date("m/d/y") }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+	
+				<h3>Inactive Departments</h3>
+				<table id="inactiveDepartmentsTable" class="table table-condensed table-hover departments-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Cost Center</th>
+							<th>Display Name</th>
+							<th>Updated</th>
+						</tr>
+					</thead>
+					<tbody>
+						{%  for  dept in inactiveDepts %}
+						<tr data-businessID="{{ dept.businessID }}">
+							<td>{{ dept.businessID }}</td>
+							<td>{{ dept.costCenter }}</td>
+							<td>{{ dept.displayName }}</td>
+							<td>{{ dept.lastUpdated|date("m/d/y") }}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div id="businessSearchWrap">
+
+				<form class="form-inline" method="POST" action="/admin/businessupdates" id="searchForm">
+					<div class="form-group">
+						<label for="searchPhrase"><h4>Search:</h4></label>
+						<div class="input-group">
+							<input type="text" class="form-control input-sm" name="business_search_phrase" id="searchPhrase" value="{{ postVars.business_search_phrase }}">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-sm btn-default" aria-label="Left Align" name="action" value="search-businesses" data-toggle="tooltip" data-placement="top" title="Search">
+									<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+								</button>
+								<button class="btn btn-default btn-sm" id="searchClearBtn" data-toggle="tooltip" data-placement="top" title="Clear">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="scroll-area" data-offset="170">
+				<table id="businessSearchResultsTable" class="table table-condensed table-hover departments-table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Cost Center</th>
+							<th>Display Name</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% if searchResults is defined %}
+							{%  for  dept in searchResults %}
+								<tr data-businessID="{{ dept.businessID }}">
+									<td>{{ dept.businessID }}</td>
+									<td>{{ dept.costCenter }}</td>
+									<td>{{ dept.displayName }}</td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+{%  include 'js.twig' %}
+{% include 'business_edit_modal.twig' %}
+
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navBusinessUpdates").addClass("active");
+
+		$('[data-toggle="tooltip"]').tooltip();
+		
+		$('#searchClearBtn').click(function() {
+			$('#searchPhrase').val('');
+		});
+
+		var setScrollArea = function(sa, offset) {
+			//console.log(offset);
+			var window_height = $(window).height();
+			var content_height = window_height - offset;
+			sa.height(content_height);
+		};
+
+		$('.scroll-area').each(function() {
+			var sa = $(this);
+			var offset = sa.attr("data-offset");
+
+			setScrollArea(sa, offset);
+			$( window ).resize(function() {
+				setScrollArea(sa, offset);
+			});
+			sa.privateScroll();
+		});
+		
+		$(".departments-table tbody tr").click(function() {
+			var businessId = $(this).attr("data-businessID");
+			
+			$.ajax({
+				url: "/api/get-business-by-id/" + businessId,
+				method: "GET"
+			}).done(function(response) {
+				initBusinessEditDialog('edit', businessId, response);
+				
+				$("#businessEditModal").modal("show");
+				
+			}).fail(function(response) {
+				console.log(response.responseJSON);
+				if (response.responseJSON != undefined) {
+					bsAlert("An error occurred!<br/><br/>" + response.responseJSON.error_msg, 'error');
+				}
+				else {
+					bsAlert("An error occurred!<br/><br/>" + response.responseText, 'error');
+				}
+			});
+		});
+
+		$('#searchForm').submit(function(el) {
+			el.preventDefault();
+
+			var searchInput = $('#searchPhrase');
+			searchInput.val($.trim(searchInput.val()));
+
+			if (searchInput.val() != '') {
+				this.submit();
+			}
+			else {
+				console.log('here');
+				if (typeof urlParams.search != 'undefined') {
+					delete urlParams.search;
+				}
+				window.location = getURI();
+			}
+		});
+		
+	});
+</script>
+</body>
+</html>

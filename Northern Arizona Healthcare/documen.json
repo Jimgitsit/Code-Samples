@@ -1,0 +1,9 @@
+{
+  "output-dir": "/app/views/docs",
+  "html-wrap": false,
+  "project-title": "Northern Arizona Healthcare<br/>Directory Service API",
+  "project-description": "This is a REST API for Northern Arizona Healthcare providing directory information.<br/><br/>The base URL for development is:<p style=\"margin-left: 40px\"><code>http://Fmportaldir01/api/[endpoint]</code> or <code>http://10.219.0.102/api/[endpoint]</code></p>and for production:<p style=\"margin-left: 40px\"><code>http://Fmportaldir02/api/[endpoint]</code> or <code>http://10.219.0.131/api/[endpoint]</code></p>All data, request and response, is in JSON format.",
+  "css-file": "/app/public/css/documen.css",
+  "classes": ["NAHDirectoryService"],
+  "sort-methods": true
+}

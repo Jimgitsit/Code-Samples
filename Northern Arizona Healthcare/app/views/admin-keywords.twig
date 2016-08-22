@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+
+	<div class="row">
+		<div class="col-md-8">
+
+			<form class="form-inline" method="GET" id="typeSelectForm">
+				<div class="col-xs-12">
+					<label for="typeSelect"><h4>Type:</h4></label>
+					<select class="form-control input-sm" name="type" id="typeSelect">
+						{% for e in types %}
+							{% if urlParams.type is defined and e.type in urlParams.type %}
+								<option selected value="{{ e.type }}">{{ e.type|ucfirst }}</option>
+							{% else %}
+								<option value="{{ e.type }}">{{ e.type|ucfirst }}</option>
+							{% endif %}
+						{% endfor %}
+					</select>
+					<input type="button" value="Add Phrase" class="btn btn-default btn-sm" id="addSearchPhraseBtn"/>
+				</div>
+			</form>
+			
+			<table id="searchPhraseTable" class="table table-condensed">
+				<thead>
+				<tr>
+					<th data-tsort-name="s.phrase">Keyword or Phrase</th>
+					<th>Type</th>
+					<th data-tsort-name="typeId">Type ID</th>
+					<th data-tsort-name="name">Name</th>
+					<th data-tsort-name="created">Created</th>
+					<th data-tsort-name="lastUpdated">Updated</th>
+					<th></th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for keyword in keywords %}
+					<tr class="search-phrase-tr" data-search-phrase-id="{{ keyword.id }}">
+						<td class="phrase">{{ keyword.phrase }}</td>
+						<td class="type">{{ keyword.type }}</td>
+						<td class="type-id">{{ keyword.typeId }}</td>
+						<td>
+							{% if keyword.type == 'business' %}
+								<div class="kw-popover search-results-title meta-data-type" data-type="business" data-type-id="{{ keyword.businessID }}"><strong>{% if keyword.businessID == null %}<span class="not-found-warning">Entity not found. Bad ID</span>{% else %}{{ keyword.displayName }}{% endif %}</strong></div>
+							{% elseif keyword.type == 'employee' %}
+								<div class="kw-popover search-results-title meta-data-type" data-type="employee" data-type-id="{{ keyword.employeeID }}"><strong>{% if keyword.employeeID == null %}<span class="not-found-warning">Entity not found. Bad ID</span>{% else %}{{ keyword.firstName }} {{ keyword.lastName }}{% endif %}</strong></div>
+							{% elseif keyword.type == 'provider' %}
+								<div class="kw-popover search-results-title meta-data-type" data-type="provider" data-type-id="{{ keyword.providerNPI }}"><strong>{% if keyword.providerNPI == null %}<span class="not-found-warning">Entity not found. Bad ID</span>{% else %}{{ keyword.firstName }} {{ keyword.lastName }}{% endif %}</strong></div>
+							{% endif %}
+						</td>
+						<td class="text-nowrap">{% if keyword.created != null %}{{ keyword.created|date("m/d/y") }}{% endif %}</td>
+						<td class="text-nowrap">{% if keyword.lastUpdated != null %}{{ keyword.lastUpdated|date("m/d/y") }}{% endif %}</td>
+						<td>
+							<div class="search-keyword-btn" data-phrase="{{ keyword.phrase }}">
+								<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	
+		<div class="col-md-4">
+			<div id="keywordSearchWrap">
+				<form class="form-inline" id="searchForm">
+					<div class="form-group">
+						<label for="searchPhrase"><h4>Search:</h4></label>
+						<div class="input-group">
+							<input type="text" class="form-control input-sm" id="searchPhrase" value="{{ urlParams.search }}">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-sm btn-default" aria-label="Left Align" data-toggle="tooltip" data-placement="top" title="Search">
+									<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+								</button>
+								<button class="btn btn-default btn-sm" id="searchClearBtn" data-toggle="tooltip" data-placement="top" title="Clear">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+	
+			{% if searchResults is defined %}
+				{% if searchResults.businesses is defined and searchResults.businesses|length > 0 %}
+					<div id="searchResultsBusinesses">
+						<h4>Businesses</h4>
+						<ul>
+							{% for bus in searchResults.businesses %}
+								<li>
+									{{ bus.weight }}&nbsp;<div class="kw-popover search-results-title meta-data-type{% if bus.weight >= 10000 %} keyword-hit{% endif %}" data-type="business" data-type-id="{{ bus.businessID }}">{{ bus.displayName }} ({{ bus.businessID }})</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+	
+				{% if searchResults.providers is defined and searchResults.providers|length > 0 %}
+					<div id="searchResultsBusinesses">
+						<h4>Providers</h4>
+						<ul>
+							{% for pro in searchResults.providers %}
+								<li>
+									{{ pro.weight }}&nbsp;<div class="kw-popover search-results-title meta-data-type{% if pro.weight >= 10000 %} keyword-hit{% endif %}" data-type="provider" data-type-id="{{ pro.providerNPI }}">{{ pro.firstName }} {{ pro.lastName }} ({{ pro.providerNPI }})</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+	
+				{% if searchResults.employees is defined and searchResults.employees|length > 0 %}
+					<div id="searchResultsBusinesses">
+						<h4>Employees</h4>
+						<ul>
+							{% for e in searchResults.employees %}
+								<li>
+									{{ e.weight }}&nbsp;<div class="kw-popover search-results-title meta-data-type{% if e.weight >= 10000 %} keyword-hit{% endif %}" data-type="employee" data-type-id="{{ e.employeeID }}">{{ e.firstName }} {{ e.lastName }} ({{ e.employeeID }})</div>
+								</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			{% endif %}
+			
+		</div>
+	</div>
+
+</div>
+
+{%  include 'js.twig' %}
+
+{% include 'searchphrase_edit_modal.twig' %}
+
+<script type="application/javascript" src="/js/jquery.table-sort.js"></script>
+
+<script type="text/javascript">
+	var getEntity = function(el) {
+		el = $(el);
+		var entity = null;
+		var formatted = '';
+
+		$.ajax({
+			async: false,
+			method: 'POST',
+			dataType: 'json',
+			url: '/admin/keywords',
+			data: {
+				action: 'get-entity',
+				type: el.attr("data-type"),
+				typeID: el.attr("data-type-id")
+			}
+		}).done(function(response) {
+			//console.log('here');
+			//console.log(response);
+			entity = response;
+			if (entity == null) {
+				formatted = "Entity not found. Bad ID.";
+			}
+			else {
+				$(entity).each(function (index, values) {
+					//console.log(values);
+					$.each(values, function (name, value) {
+						//console.log(value);
+						formatted += '<strong>' + name + '</strong>: <i>' + value + '</i>' + '<br/>';
+					});
+				});
+			}
+		});
+
+		return formatted;
+	};
+	
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navKeywords").addClass("active");
+
+		$('[data-toggle="tooltip"]').tooltip();
+
+		$('#searchClearBtn').click(function() {
+			$('#searchPhrase').val('');
+		});
+
+		$('#searchPhraseTable').tableSort({defaultSortCol: "s.phrase"});
+
+		$('#searchForm').submit(function(event) {
+			event.preventDefault();
+
+			var phrase = $('#searchPhrase').val().trim();
+
+			if (phrase == '') {
+				delete urlParams['search'];
+			}
+			else {
+				urlParams['search'] = encodeURIComponent($('#searchPhrase').val());
+			}
+
+			var uri = '/admin/keywords';
+			//console.log(urlParams);
+			//console.log(Object.keys(urlParams).length);
+			if (Object.keys(urlParams).length > 0) {
+				uri += '?';
+
+				$.each(urlParams, function(name, value) {
+					uri += name + '=' + value + '&';
+				});
+
+				uri = uri.slice(0, -1);
+			}
+
+			window.location = uri;
+		});
+		
+		var popupVisible = false;
+
+		$(".meta-data-type").on('click', function(e){
+			e.stopPropagation();
+		}).popover({
+			content: function() {
+				popupVisible = true; 
+				return getEntity(this); 
+			},
+			html: true,
+			trigger: 'click',
+			placement: 'right'
+		});
+
+		$('html').on('mouseup', function(e) {
+			if(!$(e.target).closest('.popover').length) {
+				$('.popover').each(function() {
+					$(this.previousSibling).popover('hide');
+				});
+			}
+		});
+
+		$(".search-phrase-tr").click(function() {
+			if (popupVisible) {
+				popupVisible = false;
+				return;
+			}
+			
+			var tr = $(this);
+			var id = tr.attr('data-search-phrase-id');
+			var values = {
+				phrase: tr.find('.phrase').text(),
+				type: tr.find('.type').text(),
+				typeId: tr.find('.type-id').text()
+			};
+			//console.log(values);
+			
+			//console.log(response);
+			initSearchPhraseEditDialog('edit', id, values);
+
+			$("#searchPhraseEditModal").modal("show");
+		});
+		
+		$('#addSearchPhraseBtn').click(function() {
+			initSearchPhraseEditDialog('new');
+			$("#searchPhraseEditModal").modal("show");
+		});
+		
+		$('#typeSelect').change(function() {
+			$('#typeSelectForm').submit();
+		});
+		
+		$('.search-keyword-btn').click(function(event) {
+			event.stopPropagation();
+			$('#searchPhrase').val($(this).attr('data-phrase'));
+			$('#searchForm').submit();
+		});
+	});
+</script>
+</body>
+</html>

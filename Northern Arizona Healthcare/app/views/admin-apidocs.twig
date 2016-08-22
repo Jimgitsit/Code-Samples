@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+	<link rel="stylesheet" href="/css/documen.css">
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+	{%  include 'docs/index.html' %}
+
+</div>
+
+{%  include 'js.twig' %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navAPIDocs").addClass("active");
+	});
+</script>
+</body>
+</html>

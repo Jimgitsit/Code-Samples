@@ -1,0 +1,9 @@
+.idea
+vendor
+app/backups/*.sql
+app/logs/*.log
+app/logs/*.txt
+app/logs/*.csv
+import_data/
+!import_data/.gitkeep
+/app/config/site_config.php

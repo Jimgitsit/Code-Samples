@@ -1,0 +1,9 @@
+.tsort {
+	cursor: pointer;
+}
+
+.tsort-icon {
+	font-size: 0.75em;
+	vertical-align: middle;
+	padding-left: 5px;
+}

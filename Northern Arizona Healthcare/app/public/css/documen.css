@@ -1,0 +1,53 @@
+body {
+	font-family: arial, sans-serif;
+}
+
+.container {
+	width: 70%;
+	margin: auto;
+}
+
+.project-title {
+	text-align: center;
+	font-size: 33px;
+	padding-bottom: 18px;
+	border-bottom: 3px solid #9E9E9E;
+}
+
+.method-wrap {
+	border-top: 2px solid rgba(128, 128, 128, 0.19);
+	padding-top: 10px;
+}
+
+.name {
+	font-size: 21px;
+	font-weight: 600;
+}
+
+.outside-class-name {
+	font-weight: 600;
+	font-size: 21px;
+}
+
+.class-name {
+	display: inline;
+}
+
+.method-name {
+	display: inline;
+}
+
+.short-desc {
+	margin: 10px 0 10px 20px !important;
+	font-style: italic;
+	font-size: 17px;
+}
+
+.long-desc {
+	margin-left: 30px;
+}
+
+.custom-label {
+	font-size: 18px;
+	font-weight: 600;
+}

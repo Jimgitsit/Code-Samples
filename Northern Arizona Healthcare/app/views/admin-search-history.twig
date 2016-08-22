@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+
+	<div class="row">
+		<div class="col-md-4">
+			<h4>Top today</h4>
+
+			<ul>
+				{% for e in topToday %}
+					<li>{{ e.phrase }} ({{ e.count }})</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<div class="col-md-4">
+			<h4>Top last 7 days</h4>
+
+			<ul>
+				{% for e in topWeek %}
+					<li>{{ e.phrase }} ({{ e.count }})</li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		<div class="col-md-4">
+			<h4>Top all time</h4>
+
+			<ul>
+			{% for e in topAllTime %}
+				<li>{{ e.phrase }} ({{ e.count }})</li>
+			{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<h4>Recent searches</h4>
+			
+			<table id="searchPhraseTable" class="table table-condensed">
+				<thead>
+				<tr>
+					<th>Date</th>
+					<th>Query</th>
+					<th>Scope</th>
+					<th>Result Count</th>
+				</tr>
+				</thead>
+				<tbody>
+				{% for query in queries %}
+					<tr class="search-query-tr" data-search-query-id="{{ query.id }}">
+						<td>{{ query.date|date("m/d/Y H:i:s") }}</td>
+						<td>{{ query.phrase }}</td>
+						<td>{{ query.scope }}</td>
+						<td>{{ query.resultCountTotal }}</td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+			
+		</div>
+	</div>
+
+</div>
+
+{%  include 'js.twig' %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navSearchHistory").addClass("active");
+	});
+</script>
+</body>
+</html>

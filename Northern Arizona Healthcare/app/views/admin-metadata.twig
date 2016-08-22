@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+
+	<div class="row">
+		<div class="col-md-2">
+			<div id="metaDataSearchWrap">
+				<h4>Search:</h4>
+				<form class="form-inline" id="searchForm">
+					<div class="form-group">
+						<div class="input-group">
+							<input type="text" class="form-control input-sm" id="searchPhrase" value="{{ urlParams.search }}">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-default btn-sm" aria-label="Left Align" data-toggle="tooltip" data-placement="top" title="Search">
+									<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+								</button>
+								<button class="btn btn-default btn-sm" id="searchClearBtn" data-toggle="tooltip" data-placement="top" title="Clear">
+									<span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="col-md-10">
+			<div id="metaDataFiltersWrap">
+				<h4>Filters:</h4>
+				<form class="form-inline">
+					<div class="form-group">
+						<label for="mdFilterType">Type:</label>
+						<select multiple="multiple" class="multiselect form-control md-filter" data-name="type" id="mdFilterType">
+							{% for e in types %}
+								{% if urlParams.type is defined and e.type in urlParams.type %}
+									<option selected value="{{ e.type }}">{{ e.type|ucfirst }}</option>
+								{% else %}
+									<option value="{{ e.type }}">{{ e.type|ucfirst }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="mdFilterValueType">Value Type:</label>
+						<select multiple="multiple" class="multiselect form-control md-filter" data-name="valueType" id="mdFilterValueType">
+							{% for e in valueTypes %}
+								{% if urlParams.valueType is defined and e.valueType in urlParams.valueType %}
+									<option selected value="{{ e.valueType }}">{{ e.valueType|ucfirst }}</option>
+								{% else %}
+									<option value="{{ e.valueType }}">{{ e.valueType|ucfirst }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="mdFilterValueSubType">Value Sub Type:</label>
+						<select multiple="multiple" class="multiselect form-control md-filter" data-name="valueSubType" id="mdFilterValueSubType">
+							{% for e in valueSubTypes %}
+								{% if urlParams.valueSubType is defined and e.valueSubType in urlParams.valueSubType %}
+									<option selected value="{{ e.valueSubType }}">{{ e.valueSubType|ucfirst }}</option>
+								{% else %}
+									<option value="{{ e.valueSubType }}">{{ e.valueSubType|ucfirst }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="mdFilterAudience">Audience:</label>
+						<select multiple="multiple" class="multiselect form-control md-filter" data-name="audience" id="mdFilterAudience">
+							{% for e in audiences %}
+								{% if urlParams.audience is defined and e.audience in urlParams.audience %}
+									<option selected value="{{ e.audience }}">{{ e.audience|ucfirst }}</option>
+								{% else %}
+									<option value="{{ e.audience }}">{{ e.audience|ucfirst }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="mdFilterSource">Source:</label>
+						<select multiple="multiple" class="multiselect form-control md-filter" data-name="source" id="mdFilterSource">
+							{% for e in sources %}
+								{% if urlParams.source is defined and e.source in urlParams.source %}
+									<option selected value="{{ e.source }}">{{ e.source|ucfirst }}</option>
+								{% else %}
+									<option value="{{ e.source }}">{{ e.source|ucfirst }}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group">
+						<div class="checkbox">
+							<label>
+								<input {% if urlParams.isActive is defined and "1" in urlParams.isActive %}checked {% endif %}class="md-filter" type="checkbox" value="1" data-name="isActive" id="mdFilterIsActive">
+								Only Active
+							</label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+			<div id="mdTableWrap">
+				{% if metaData|length == 1000 %}
+					<p id="resultsMsg">first 1000 results</p>
+				{% else %}
+					<p id="resultsMsg">{{ metaData|length }} result{% if metaData|length > 1 %}s{% endif %}</p>
+				{% endif %}
+				<table id="metaDataTable" class="table table-condensed table-hover">
+					<thead>
+						<tr>
+							<th></th>
+							<th>Value Type</th>
+							<th>Value Sub Type</th>
+							<th>Order</th>
+							<th>Label</th>
+							<th>Value</th>
+							<th>Source</th>
+							<th>Audience</th>
+							<th style="text-align: center;">Active</th>
+							<th>Created</th>
+							<th>Updated</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for md in metaData %}
+							{% if (md.businessID != null and md.businessID != curTypeID) or (md.employeeID != null and md.employeeID != curTypeID) %}
+								<tr class="meta-data-entity-row">
+									<td colspan="11">
+										{% if md.businessID != null %}
+										<div class="md-popover meta-data-type" data-type="business" data-type-id="{{ md.businessID }}">
+											Business: <strong>{% if md.businessID == null %}<span class="not-found-warning">({{ md.businessID }}) Entity not found. Bad ID</span>{% else %}({{ md.businessID }}) {{ md.displayName }}{% endif %}</strong>
+										{% elseif md.employeeID != null %}
+										<div class="md-popover meta-data-type" data-type="employee" data-type-id="{{ md.employeeID }}">
+											Employee: <strong>{% if md.employeeID == null %}<span class="not-found-warning">({{ md.employeeID }}) Entity not found. Bad ID</span>{% else %}({{ md.employeeID }}) {{ md.firstName }} {{ md.lastName }}{% endif %}</strong>
+										{% endif %}
+										</div>
+										{% if md.businessID != null %}
+											<button class="btn btn-sm btn-info add-meta-data-btn" data-type="business" data-type-id="{{ md.businessID }}">Add</button>
+										{% elseif md.employeeID != null %}
+											<button class="btn btn-sm btn-info add-meta-data-btn" data-type="employee" data-type-id="{{ md.employeeID }}">Add</button>
+										{% endif %}
+									</td>
+								</tr>
+							{% endif %}
+							
+							{% if md[0]|length > 0 %}
+							<tr data-md-id="{{ md[0].id }}" class="meta-data-tr" data-source="{{ md[0].source }}">
+								<td></td>
+								<td>{{ md[0].valueType }}</td>
+								<td>{{ md[0].valueSubType }}</td>
+								<td>{{ md[0].valueOrder }}</td>
+								<td>{{ md[0].label|truncate(30) }}</td>
+								<td class="td-pointer">
+									<div class="md-popover meta-data-value" data-value="{{ md[0].value|json_encode() }}">
+										{{ md[0].value|joinMetaDataValues|truncate(30) }}
+									</div>
+								</td>
+								<td>{{ md[0].source }}</td>
+								<td>{{ md[0].audience }}</td>
+								<td style="text-align: center;">
+									{% if md[0].isActive == true %}
+										<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+									{% endif %}
+								</td>
+								<td>{{ md[0].created|date("m/d/y") }}</td>
+								<td>{{ md[0].lastUpdated|date("m/d/y") }}</td>
+							</tr>
+							{% set curTypeID = md[0].typeID %}
+							{% endif %}
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{%  include 'js.twig' %}
+
+{% include 'metadata_edit_modal.twig' %}
+
+<script type="text/javascript">
+
+	var getEntity = function(el) {
+		el = $(el);
+		var entity = null;
+		var formatted = '';
+
+		$.ajax({
+			async: false,
+			method: 'POST',
+			dataType: 'json',
+			url: '/admin/metadata',
+			data: {
+				action: 'get-entity',
+				type: el.attr("data-type"),
+				typeID: el.attr("data-type-id")
+			}
+		}).done(function(response) {
+			//console.log('here');
+			//console.log(response);
+			entity = response;
+			if (entity == null) {
+				formatted = "Entity not found. Bad ID.";
+			}
+			else {
+				$(entity).each(function (index, values) {
+					//console.log(values);
+					$.each(values, function (name, value) {
+						//console.log(value);
+						formatted += '<strong>' + name + '</strong>: <i>' + value + '</i>' + '<br/>';
+					});
+				});
+			}
+		});
+
+		return formatted;
+	};
+
+	var onFilterChange = function(el) {
+		//console.log('changed');
+		var name = el.attr('data-name');
+		var value = el.val();
+		//console.log(value);
+
+		if (el.is('input[type=checkbox]')) {
+			if (el.prop("checked") == false) {
+				delete urlParams[name];
+			}
+			else {
+				urlParams[name] = value;
+			}
+		}
+		else if(el.is('select')) {
+			if (value == null) {
+				delete urlParams[name];
+			}
+			else {
+				urlParams[name] = value;
+			}
+		}
+
+		var uri = '/admin/metadata';
+		//console.log(urlParams);
+		//console.log(Object.keys(urlParams).length);
+		if (Object.keys(urlParams).length > 0) {
+			uri += '?';
+
+			$.each(urlParams, function(name, value) {
+				//console.log(value);
+				uri += name + '=' + value + '&';
+			});
+
+			uri = uri.slice(0, -1);
+		}
+		
+		window.location = uri;
+	};
+	
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navMetadata").addClass("active");
+
+		$('[data-toggle="tooltip"]').tooltip();
+		
+		$('#searchClearBtn').click(function() {
+			$('#searchPhrase').val('');
+		});
+		
+		var temp;
+		var filterSelects = $(".multiselect");
+		filterSelects.multiselect({
+			buttonClass: 'btn btn-link',
+			nonSelectedText: "All",
+			onDropdownShow: function() {
+				temp = this.$select.find(":selected").map(function(){ return this.value }).get().join(",");
+			},
+			onDropdownHide: function() {
+				var selection = this.$select.find(":selected").map(function(){ return this.value }).get().join(",");
+				if (selection != temp) {
+					onFilterChange(this.$select);
+				}
+			},
+			onInitialized: function() {
+				//console.log('here');
+				$('#metaDataFiltersWrap').show();
+			}
+		});
+		
+		$('#mdFilterIsActive').change(function() {
+			onFilterChange($(this));
+		});
+		
+		$('#searchForm').submit(function(event) {
+			event.preventDefault();
+			
+			var phrase = $('#searchPhrase').val().trim();
+
+			if (phrase == '') {
+				delete urlParams['search'];
+			}
+			else {
+				urlParams['search'] = encodeURIComponent($('#searchPhrase').val());
+			}
+
+			var uri = '/admin/metadata';
+			//console.log(urlParams);
+			//console.log(Object.keys(urlParams).length);
+			if (Object.keys(urlParams).length > 0) {
+				uri += '?';
+
+				$.each(urlParams, function(name, value) {
+					uri += name + '=' + value + '&';
+				});
+
+				uri = uri.slice(0, -1);
+			}
+
+			window.location = uri;
+		});
+
+		$(".meta-data-value").on('click', function(e){
+			e.stopPropagation();
+		}).popover({
+			content: function() {
+				popupVisible = true;
+				//$(".md-popover").popover('hide');
+				var value = JSON.parse($(this).attr('data-value'));
+				var content = '';
+				if (value !== null && typeof value === 'object') {
+					$.each(value, function(prop, val) {
+						content += '<strong>' + prop + '</strong>: <i>' + val + '</i>' + '<br/>';
+					});
+				}
+				else {
+					content = value;
+				}
+				
+				return content;
+			},
+			maxWidth: '500px',
+			html: true,
+			trigger: 'click',
+			placement: 'bottom'
+		});
+
+		var popupVisible = false;
+		
+		$(".meta-data-type").popover({
+			content: function() {
+				popupVisible = true;
+				return getEntity(this); 
+			},
+			html: true,
+			trigger: 'click',
+			placement: 'right'
+		});
+
+		$('html').on('mouseup', function(e) {
+			if(!$(e.target).closest('.popover').length) {
+				$('.popover').each(function() {
+					$(this.previousSibling).popover('hide');
+				});
+			}
+		});
+		
+		$('.add-meta-data-btn').click(function() {
+			var btn = $(this);
+			initMetaDataNewDialog(btn.attr('data-type'), btn.attr('data-type-id'));
+			$("#metaDataEditModal").modal("show");
+		});
+
+		$(".meta-data-tr").click(function() {
+			if (popupVisible) {
+				popupVisible = false;
+				return;
+			}
+			
+			var source = $(this).attr('data-source');
+			if (source != 'User' && source != 'Admin') {
+				bsAlert("Only User and Admin sourced meta data can be edited.", 'warning', 5000);
+				return;
+			}
+			
+			var metaDataID = $(this).attr("data-md-id");
+
+			$.ajax({
+				url: "/api/get-metadata-by-id/" + metaDataID,
+				method: "GET"
+			}).done(function(response) {
+				//console.log(response);
+				initMetaDataEditDialog('edit', metaDataID, response);
+				$("#metaDataEditModal").modal("show");
+
+			}).fail(function(response) {
+				console.log(response.responseText);
+				bsAlert("An error occurred!\n\n" + response.responseJSON.error_msg, 'error');
+			});
+		});
+	});
+</script>
+</body>
+</html>

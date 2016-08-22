@@ -1,0 +1,346 @@
+<div class="container"><h2 class="project-title">Northern Arizona Healthcare<br/>Directory Service API</h2><p class="project-description">This is a REST API for Northern Arizona Healthcare providing directory information.<br/><br/>The base URL for development is:<p style="margin-left: 40px"><code>http://Fmportaldir01/api/[endpoint]</code> or <code>http://10.219.0.102/api/[endpoint]</code></p>and for production:<p style="margin-left: 40px"><code>http://Fmportaldir02/api/[endpoint]</code> or <code>http://10.219.0.131/api/[endpoint]</code></p>All data, request and response, is in JSON format.</p><div class="method-wrap"><div class="custom-label">authorize</div><div class="short-desc">Request an OAuth2 token.</div><div class="long-desc"><p>Responds with an access token that must be used in the URL for subsequent requests. For example:</p>
+<p><code>/api/get-all-providers?access_token=18c685e1f56aa811f20b27a81285decce2fbc463</code></p>
+<p>The token will expire after a set amount of time, therefore you must check the response of every request
+for the error &quot;token expired&quot; at which time you must request a new token.</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/authorize</code></p>
+<p>POST data:</p>
+<pre><code>{
+     "grant_type": "client_credentials",
+     "client_id": your-client-id,
+     "client_secret": your-client-secret
+}</code></pre>
+<p>Sample response:</p>
+<pre><code>{
+     "access_token":"666cfc5743df77624a27e6766f5ae9bd334df461",
+     "expires_in":3600,
+     "token_type":"Bearer",
+     "scope":null
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">getAllBusinesses</div><div class="short-desc">Returns basic info for all businesses (businessID, costCenter, name).</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-all-businesses</code></p></div></div><div class="method-wrap"><div class="custom-label">getAllEmployees</div><div class="short-desc">Returns basic info for all employees (employeeID and userName/LawsonID).</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-all-employees</code></p></div></div><div class="method-wrap"><div class="custom-label">getAllProviders</div><div class="short-desc">Returns basic info for all providers (providerNPI).</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-all-providers</code></p></div></div><div class="method-wrap"><div class="custom-label">getBusinessByCostCenter</div><div class="short-desc">Returns the business with the given cost center including meta data and the children or parent business.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-business-by-id/[ID]</code></p></div></div><div class="method-wrap"><div class="custom-label">getBusinessById</div><div class="short-desc">Returns the business with the given ID including meta data and the children or parent business.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-business-by-id/[ID]</code></p></div></div><div class="method-wrap"><div class="custom-label">getEmployeeById</div><div class="short-desc">Returns the employee with the given ID.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-employee-by-id/[ID]</code></p></div></div><div class="method-wrap"><div class="custom-label">getEmployeeByUserName</div><div class="short-desc">Returns the employee with the given userName.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-employee-by-username/[userName]</code></p></div></div><div class="method-wrap"><div class="custom-label">getEmployeesByCostCenter</div><div class="short-desc">Returns and array of employees belonging to the given cost center.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-employees-by-cost-center/[cost center]</code></p></div></div><div class="method-wrap"><div class="custom-label">getMetaDataById</div><div class="short-desc">Returns a single meta data record given its ID.</div><div class="long-desc"><p>Method: GET</p>
+<p>Request format:
+<code>/api/get-metadata-by-id/[ID]</code></p></div></div><div class="method-wrap"><div class="custom-label">getProviderByNPI</div><div class="short-desc">Returns the provider with the given NPI.</div><div class="long-desc"><p>Only basic info is returned by the GET version. For additional info use the POST
+version with the additional info parameter.</p>
+<p>Method: GET|POST</p>
+<p>Request format:
+<code>/api/get-provider-by-npi/[NPI]</code></p>
+<p>POST data (optional):</p>
+<pre><code>{
+     "additional_info": ["offices","licenses","education","appointments"]
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">removeBusiness</div><div class="short-desc">Removes a business permanently.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/remove-business</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "businessID": 123456 (required)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">removeEmployee</div><div class="short-desc">Removes an employee permanently.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/remove-employee</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "employeeID": 123456 (required)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">removeMetaData</div><div class="short-desc">Removes meta data permanently.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/remove-meta-data</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "id": 123456 (required)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">removeSearchPhrase</div><div class="short-desc">Removes a search phrase.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/remove-search-phrase</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "id": 123456 (required)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">saveBusiness</div><div class="short-desc">Updates the business record given by businessID. If businessID is not found then a new business is created.</div><div class="long-desc"><p>Responds with the full business object.</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/save-business</code></p>
+<p>POST data:</p>
+<pre><code>{
+     "businessID": "12345", (required. set to 'auto' to automatically generate.)
+     "costCenter": "14850",
+     "directions": "",
+     "directorID": "5223",
+     "employeePortal": false,
+     "hours": "",
+     "intranetURL": "",
+     "isActive": true,
+     "isBlind": false,
+     "isNew": true,
+     "midasID": "",
+     "name": "Education Department",
+     "parentBusinessID": "0",
+     "processLevel": "100",
+     "promoLine": "",
+     "property": "NAH",
+     "propertyLocation": "NAH",
+     "propertyReportsTo": "NAH",
+     "publicWebsite": true,
+     "type": "Department",
+     "vpID": "35850",
+     "webURL": "http://www.nahealth.com/education",
+     "source": ""
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">saveEmployee</div><div class="short-desc">Updates the employee record given by employeeID. If employeeID is not found then a new employee is created.</div><div class="long-desc"><p>Responds with the full employee object.</p>
+<p>Either employeeID or userName is required. If only userName is supplied and no employeeID, the employeeID will
+extrapolated from the userName if possible.</p>
+<p>Phone numbers will automatically be populated from AD. Also, if any of the following fields are not provided they
+will automatically be obtained from AD if available:
+firstName
+lastName
+title
+email</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/save-employee</code></p>
+<p>POST data:</p>
+<pre><code>{
+     employeeID
+     lastName: '',
+     firstName: '',
+     email: '',
+     userName: '',
+     positionCode: '',
+     title: '',
+     propertyID: '',
+     property: '',
+     costCenter: '',
+     hireDate: '', (any value understood by the php DateTime constructor)
+     terminationDate: '', (any value understood by the php DateTime constructor)
+     birthDate: '', (format: mm/dd)
+     supervisorEmployeeID: '',
+     directorEmployeeID: '',
+     vpEmployeeId: '',
+     source: '',
+     email_notify: [true,false]
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">saveMetaData</div><div class="short-desc">Saves a meta data record. If 'id' is not supplied in the post then a new
+meta data record is created. Responds with the full meta data record.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/save-metadata</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "id": 123456 (optional)
+    "source": "User" (required)
+    "type": "employee" or "business" (required)
+    "typeID": 654321 (required)
+    "valueType": "Phone", (required)
+    "valueSubtype": "Work", (optional)
+    "label": "Line 1", (optional)
+    "valueOrder": 5, (optional)
+    "audience": "Private", "Internal", or "Public", (required)
+    "isActive": true (optional)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">saveSearchPhrase</div><div class="short-desc">Save a search phrase. If 'id' is not supplied in the post then a new
+search phrase is created. Responds with the full search phrase record.</div><div class="long-desc"><p>Method: POST</p>
+<p>Request format:
+<code>/api/save-search-phrase</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "id": 123456 (optional)
+    "type": "employee" or "business" (required)
+    "typeID": 654321 (required)
+    "phrase": "some text" (required)
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">search</div><div class="short-desc">Global search function.</div><div class="long-desc"><p>Returns an array of results based on a search phrase and organized by scope.</p>
+<p>For each of the values of &quot;scope&quot; you may optionally provide the fields you want
+in the response, otherwise all fields are returned.</p>
+<p>Happy coding!</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/search</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "scope": ["all"] or one or more of ["providers", "employees", "businesses"],
+    "search-phrase": "b Barker"
+    "max-results": 20 (optional, default is 20)
+    "response-fields": { (optional)
+        "providers": [an array of fields to respond with],
+        "employees": [an array of fields to respond with],
+        "businesses": [an array of fields to respond with]
+    },
+    "include-inactive": false (optional, default is false),
+    "only-inactive": false (optional, default is false, overrides include-inactive)
+}</code></pre>
+<p>Example response with all fields:</p>
+<pre><code>{
+    "providers": [
+        {
+            "providerNPI": "1467503920",
+            "lastName": "Kim",
+            "firstName": "Jin",
+            "middleName": "Koo",
+            "suffix": "",
+            "specialty1": "Nephrology",
+            "specialty2": "",
+            "specialty3": "",
+            "cellPhoneNumber": "(928) 499-2157",
+            "primaryEmail": "jkim@akdhc.com; credentialing@akdhc.com",
+            "sex": "F"
+        },
+        ...
+    ],
+    "employees": [
+        {
+            "employeeID": "35243",
+            "lastName": "KIM",
+            "firstName": "HEE WON",
+            "email": "kim@nahhealth.com",
+            "userName": "HK35243",
+            "positionCode": "PHYS829635E",
+            "title": "PHYSICIAN",
+            "propertyID": "80",
+            "property": "FLAGSTAFF",
+            "costCenter": "29635",
+            "hireDate": "2015-04-13",
+            "terminationDate": null,
+            "birthDate": "4\/10",
+            "supervisorEmployeeID": "17926",
+            "directorEmployeeID": "27345",
+            "vpEmployeeId": "29176"
+        },
+        ...
+    ],
+    "businesses": [
+        {
+            "businessID": "784",
+            "parentBusinessID": "779",
+            "costCenter": "",
+            "processLevel": "",
+            "propertyReportsTo": "",
+            "propertyLocation": "FMC",
+            "type": "Building",
+            "name": "FVSC - Education",
+            "directorID": "",
+            "vpID": "",
+            "property": "FLAGSTAFF",
+            "directions": "",
+            "intranetURL": "",
+            "webURL": "",
+            "hours": "",
+            "promoLine": "",
+            "created": "2014-03-31 15:14:15.0",
+            "lastUpdated": "2014-03-31 15:14:15.0",
+            "isBlind": "0",
+            "isActive": "1",
+            "publicWebsite": "No",
+            "employeePortal": "No",
+            "midasID": "",
+            "source": ""
+        },
+        ...
+    ]
+}</code></pre></div></div><div class="method-wrap"><div class="custom-label">searchBusinesses</div><div class="short-desc">Returns businesses based on a search phrase.</div><div class="long-desc"><p>The following fields are searched: 'businessID', 'displayName', 'name', 'costCenter', 'midasID'.</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/search-businesses</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "search-phrase": "b Barker"
+    "max-results": 20 (optional. default is 20)
+    "response-fields": [an array of fields to respond with] (optional),
+    "include-inactive": false (optional, default is false),
+    "only-inactive": false (optional, default is false, overrides include-inactive),
+    "only-parents": false (optional, default it false, set to true to only return parent businesses)
+}</code></pre>
+<p>Example response with all fields:</p>
+<pre><code>[
+    {
+        "businessID": "784",
+        "parentBusinessID": "779",
+        "costCenter": "",
+        "processLevel": "",
+        "propertyReportsTo": "",
+        "propertyLocation": "FMC",
+        "type": "Building",
+        "name": "FVSC - Education",
+        "directorID": "",
+        "vpID": "",
+        "property": "FLAGSTAFF",
+        "directions": "",
+        "intranetURL": "",
+        "webURL": "",
+        "hours": "",
+        "promoLine": "",
+        "created": "2014-03-31 15:14:15.0",
+        "lastUpdated": "2014-03-31 15:14:15.0",
+        "isBlind": "0",
+        "isActive": "1",
+        "publicWebsite": "No",
+        "employeePortal": "No",
+        "midasID": "",
+        "source": ""
+    },
+    ...
+]</code></pre></div></div><div class="method-wrap"><div class="custom-label">searchEmployees</div><div class="short-desc">Returns employees based on a search phrase.</div><div class="long-desc"><p>The following fields are searched: 'employeeID', 'userName', 'lastName', 'firstName', 'title'.</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/search-businesses</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "search-phrase": "b Barker"
+    "max-results": 20 (optional. default is 20)
+    "response-fields": [an array of fields to respond with] (optional),
+    "include-inactive": false (optional, default is false),
+    "only-inactive": false (optional, default is false, overrides include-inactive)
+}</code></pre>
+<p>Example response with all fields:</p>
+<pre><code>[
+    {
+        "employeeID": "35243",
+        "lastName": "KIM",
+        "firstName": "HEE WON",
+        "email": "kim@nahhealth.com",
+        "userName": "HK35243",
+        "positionCode": "PHYS829635E",
+        "title": "PHYSICIAN",
+        "propertyID": "80",
+        "property": "FLAGSTAFF",
+        "costCenter": "29635",
+        "hireDate": "2015-04-13",
+        "terminationDate": null,
+        "birthDate": "4\/10",
+        "supervisorEmployeeID": "17926",
+        "directorEmployeeID": "27345",
+        "vpEmployeeId": "29176"
+    },
+    ...
+]</code></pre></div></div><div class="method-wrap"><div class="custom-label">searchProviders</div><div class="short-desc">Returns providers based on a search phrase.</div><div class="long-desc"><p>The following fields are searched: 'providerNPI', 'employeeID', 'lastName', 'firstName', 'specialty1', 'specialty2', 'specialty3'.</p>
+<p>Method: POST</p>
+<p>Request format:
+<code>/api/search-providers</code></p>
+<p>POST data (required):</p>
+<pre><code>{
+    "search-phrase": "b Barker"
+    "max-results": 20 (optional. default is 20)
+    "response-fields": [an array of fields to respond with] (optional)
+}</code></pre>
+<p>Example response with all fields:</p>
+<pre><code>[
+    {
+        "providerNPI": "1467503920",
+        "lastName": "Kim",
+        "firstName": "Jin",
+        "middleName": "Koo",
+        "suffix": "",
+        "specialty1": "Nephrology",
+        "specialty2": "",
+        "specialty3": "",
+        "cellPhoneNumber": "(928) 499-2157",
+        "primaryEmail": "jkim@akdhc.com; credentialing@akdhc.com",
+        "sex": "F"
+    },
+    ...
+]</code></pre></div></div></div>

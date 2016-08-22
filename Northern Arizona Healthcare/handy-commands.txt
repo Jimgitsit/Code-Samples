@@ -1,0 +1,43 @@
+- Generate getter and setters for entity classes in application/models.
+php vendor/bin/doctrine orm:generate-entities --update-entities --generate-annotations=true  app/models/
+
+- Update the db schema with the entity classes in application/models.
+php vendor/bin/doctrine orm:schema-tool:update --force
+
+- Run the automatic daily import script:
+./app/service/nahds_auto_import.sh 
+
+- Regenerate autoload for composer.
+php composer.phar dump-autoload
+
+- SSH tunnel WWW port 80 via http://127.0.0.1:8088/
+ test
+ssh -f -N -t -x -L 8089:10.219.0.102:8088 jim@10.219.0.102
+http://localhost:8089/admin
+
+ prod
+ssh -f -N -t -x -L 8088:10.219.0.131:8088 jim@10.219.0.102
+http://localhost:8088/admin
+
+- SSH tunnel for SMTP port 25, connect with localhost:2525
+ssh -f -N -t -x -L 2525:fmsmtp01.nah1.com:25 jim@10.219.0.102
+
+- SSH tunnel for SFTP port22 to file server, connect with localhost:2222
+ssh -f -N -t -x -L 2222:10.219.0.64:22 jim@10.219.0.102
+
+- SSH tunnel for LDAP port 389
+ssh -f -N -t -x -L 3890:ldap.nah1.com:389 jim@10.219.0.102
+ssh -f -N -t -x -L 3890:ldap.nah1.com:389 jim@10.219.0.131
+
+- Generate API docs
+php vendor/jimgitsit/documen/documen.php generate-docs ../../../app/views/docs
+
+- Dump the database
+mysqldump -u root -p --add-drop-database --databases nahds > app/backups/dump_2016-03-01.sql
+
+- Logs on dir server
+sudo tailf /var/log/httpd/access_log
+sudo tailf /var/log/httpd/error_log
+
+- Clear twig cache
+sudo rm -rf system/cache/twig/*/

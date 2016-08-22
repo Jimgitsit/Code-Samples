@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+	
+	<div class="row" id="businessListControlRow">
+		<div class="col-md-1">
+			<form method="POST" id="downloadDeptListForm">
+				<input type="submit" class="btn btn-default btn-sm" value="Download List" name="download"/>
+			</form>
+		</div>
+		<div class="col-md-1">
+			<input type="button" class="btn btn-default btn-sm" value="Add Department" id="addBusinessBtn"/>
+		</div>
+		<div class="col-md-2 pull-right">
+			<label class="pull-right">
+				<input type="checkbox" id="showInactiveCheck"/> Show inactive departments
+			</label>
+		</div>
+	</div>
+	
+	<table id="departmentListTable" class="table table-condensed">
+		<thead>
+			<tr>
+				<th data-tsort-name="businessID">ID</th>
+				<th data-tsort-name="type">Type</th>
+				<th data-tsort-name="costCenter">Cost Center</th>
+				<th data-tsort-name="propertyLocation">Location</th>
+				<th data-tsort-name="displayName">Display Name</th>
+				<th data-tsort-name="director">Director</th>
+				<th data-tsort-name="vp">VP</th>
+				<th data-tsort-name="employeeCount">Employees</th>
+				<th data-tsort-name="source">Source</th>
+				<th data-tsort-name="isBlind">Blind</th>
+				<th data-tsort-name="created">Created</th>
+				<th data-tsort-name="lastUpdated"">Updated</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for b in businesses %}
+			<tr class="parent{% if b.isNew %} new{% endif %}{% if b.isActive == false %} inactive{% endif %}" data-businessID="{{ b.businessID }}">
+				<td>{{ b.businessID }}</td>
+				<td>{{ b.type }}</td>
+				{% if b.costCenter != 0 %}
+					<td>{{ b.costCenter }}</td>
+				{% else %}
+					<td></td>
+				{% endif %}
+				<td>{{ b.propertyLocation }}</td>
+				<!--<td{% if b.name != b.displayName %} style="color: rgb(185, 51, 51);"{% endif %}>{{ b.displayName }}</td>-->
+				<td>{{ b.displayName }}</td>
+				{% if b.director|length > 0 %}
+					<td>{{ b.director }} ({{ b.directorID }})</td>
+				{% else %}
+					<td></td>
+				{% endif %}
+				{% if b.vp|length > 0 %}
+					<td>{{ b.vp }} ({{ b.vpID }})</td>
+				{% else %}
+					<td></td>
+				{% endif %}
+				<td>{{ b.employeeCount }} ({{ b.totalEmployeeCount }})</td>
+				<td>{{ b.source }}</td>
+				<td style="text-align: center;">
+					{% if b.isBlind == 1 %}
+						<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+					{% endif %}
+				</td>
+				<td class="text-nowrap">{{ b.created|date("m/d/y") }}</td>
+				<td class="text-nowrap">{{ b.lastUpdated|date("m/d/y") }}</td>
+			</tr>
+			{% for c in b.children %}
+				<tr class="child{% if c.isNew %} new{% endif %}{% if c.isActive == false %} inactive{% endif %}" data-businessID="{{ c.businessID }}">
+					<td>{{ c.businessID }}</td>
+					<td>{{ c.type }}</td>
+					{% if c.costCenter != 0 %}
+						<td>{{ c.costCenter }}</td>
+					{% else %}
+						<td></td>
+					{% endif %}
+					<td>{{ c.propertyLocation }}</td>
+					<!--<td{% if c.name != c.displayName %} style="color: rgb(185, 51, 51);"{% endif %}>&nbsp;&nbsp;&nbsp;&nbsp;{{ c.displayName }}</td>-->
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;{{ c.displayName }}</td>
+					{% if c.director|length > 0 %}
+						<td>{{ c.director }} ({{ c.directorID }})</td>
+					{% else %}
+						<td></td>
+					{% endif %}
+					{% if c.vp|length > 0 %}
+						<td>{{ c.vp }} ({{ c.vpID }})</td>
+					{% else %}
+						<td></td>
+					{% endif %}
+					<td>{{ c.employeeCount }}</td>
+					<td>{{ c.source }}</td>
+					<td style="text-align: center;">
+						{% if c.isBlind == 1 %}
+							<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+						{% endif %}
+					</td>
+					<td class="text-nowrap">{{ c.created|date("m/d/y") }}</td>
+					<td class="text-nowrap">{{ c.lastUpdated|date("m/d/y") }}</td>
+				</tr>
+			{% endfor %}
+		{% endfor %}
+		</tbody>
+	</table>
+
+</div>
+
+{% include 'js.twig' %}
+{% include 'business_edit_modal.twig' %}
+
+<script type="application/javascript" src="/js/jquery.table-sort.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navBusinessList").addClass("active");
+		
+		$('#departmentListTable').tableSort({defaultSortCol: "displayName"});
+
+		$("#departmentListTable tbody tr").click(function() {
+			var businessId = $(this).attr("data-businessID");
+
+			$.ajax({
+				url: "/api/get-business-by-id/" + businessId,
+				method: "GET"
+			}).done(function(response) {
+				//console.log(response);
+				initBusinessEditDialog('edit', businessId, response);
+
+				$("#businessEditModal").modal("show");
+
+			}).fail(function(response) {
+				console.log(response.responseText);
+				bsAlert("An error occurred!\n\n" + response.responseJSON.error_msg, 'error');
+			});
+		});
+		
+		$('#addBusinessBtn').click(function() {
+			initBusinessEditDialog('new');
+
+			$("#businessEditModal").modal("show");
+		});
+
+		//console.log(urlParams);
+		if (typeof urlParams.showInactive != 'undefined' && urlParams.showInactive[0] == "true") {
+			$('#showInactiveCheck').prop('checked', true);
+		}
+		$('#showInactiveCheck').change(function() {
+			var showInactive = $(this).prop('checked');
+			if (showInactive == true) {
+				urlParams.showInactive = showInactive;
+			}
+			else {
+				delete urlParams.showInactive;
+			}
+			window.location = getURI();
+		});
+	});
+</script>
+</body>
+</html>

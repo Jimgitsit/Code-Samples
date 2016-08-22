@@ -1,0 +1,205 @@
+#### API Endpoints ####
+default:
+    method: "GET|POST"
+    route: "/api"
+    controller: "NAHDirectoryService"
+    action: "defaultAction"
+
+authorize:
+    method: "GET|POST"
+    route: "/api/authorize"
+    controller: "NAHDirectoryService"
+    action: "authorize"
+
+get-all-providers:
+    method: "GET"
+    route: "/api/get-all-providers"
+    controller: "NAHDirectoryService"
+    action: "getAllProviders"
+
+get-all-employees:
+    method: "GET"
+    route: "/api/get-all-employees"
+    controller: "NAHDirectoryService"
+    action: "getAllEmployees"
+
+get-provider-by-npi:
+    method: "GET|POST"
+    route: "/api/get-provider-by-npi/[a:npi]"
+    controller: "NAHDirectoryService"
+    action: "getProviderByNPI"
+    
+get-employee-by-id:
+    method: "GET"
+    route: "/api/get-employee-by-id/[i:id]"
+    controller: "NAHDirectoryService"
+    action: "getEmployeeById"
+   
+get-employee-by-username:
+    method: "GET"
+    route: "/api/get-employee-by-username/[a:userName]"
+    controller: "NAHDirectoryService"
+    action: "getEmployeeByUserName"
+    
+save-employee:
+    method: "POST"
+    route: "/api/save-employee"
+    controller: "NAHDirectoryService"
+    action: "saveEmployee"
+
+get-employees-by-cost-center:
+    method: "GET"
+    route: "/api/get-employees-by-cost-center/[i:costCenter]"
+    controller: "NAHDirectoryService"
+    action: "getEmployeesByCostCenter"
+
+get-all-businesses:
+    method: "GET"
+    route: "/api/get-all-businesses"
+    controller: "NAHDirectoryService"
+    action: "getAllBusinesses"
+
+get-business-by-id:
+    method: "GET"
+    route: "/api/get-business-by-id/[i:id]"
+    controller: "NAHDirectoryService"
+    action: "getBusinessById"
+
+get-business-by-cost-center:
+    method: "GET"
+    route: "/api/get-business-by-cost-center/[i:costCenter]"
+    controller: "NAHDirectoryService"
+    action: "getBusinessByCostCenter"
+
+save-business:
+    method: "POST"
+    route: "/api/save-business"
+    controller: "NAHDirectoryService"
+    action: "saveBusiness"
+
+serach:
+    method: "POST"
+    route: "/api/search"
+    controller: "NAHDirectoryService"
+    action: "search"
+
+serach-providers:
+    method: "POST"
+    route: "/api/search-providers"
+    controller: "NAHDirectoryService"
+    action: "searchProviders"
+
+serach-businesses:
+    method: "POST"
+    route: "/api/search-businesses"
+    controller: "NAHDirectoryService"
+    action: "searchBusinesses"
+
+serach-employees:
+    method: "POST"
+    route: "/api/search-employees"
+    controller: "NAHDirectoryService"
+    action: "searchEmployees"
+    
+get-metadata-by-id:
+    method: "GET"
+    route: "/api/get-metadata-by-id/[i:id]"
+    controller: "NAHDirectoryService"
+    action: "getMetaDataById"
+    
+save-metadata:
+    method: "POST"
+    route: "/api/save-metadata"
+    controller: "NAHDirectoryService"
+    action: "saveMetaData"
+
+save-search-phrase:
+    method: "POST"
+    route: "/api/save-search-phrase"
+    controller: "NAHDirectoryService"
+    action: "saveSearchPhrase"
+
+remove-search-phrase:
+    method: "POST"
+    route: "/api/remove-search-phrase"
+    controller: "NAHDirectoryService"
+    action: "removeSearchPhrase"
+
+remove-meta-data:
+    method: "POST"
+    route: "/api/remove-meta-data"
+    controller: "NAHDirectoryService"
+    action: "removeMetaData"
+
+remove-business:
+    method: "POST"
+    route: "/api/remove-business"
+    controller: "NAHDirectoryService"
+    action: "removeBusiness"
+
+remove-employee:
+    method: "POST"
+    route: "/api/remove-employee"
+    controller: "NAHDirectoryService"
+    action: "removeEmployee"
+
+### Pages ###
+import-admin:
+    method: "GET"
+    route: "/importadmin"
+    controller: "ImportAdminPage"
+    action: "defaultAction"
+
+admin:
+    method: "GET"
+    route: "/admin"
+    controller: "AdminBusinessUpdatesPage"
+    action: "defaultAction"
+
+admin-business-updates:
+    method: "GET|POST"
+    route: "/admin/businessupdates"
+    controller: "AdminBusinessUpdatesPage"
+    action: "defaultAction"
+
+admin-business-list:
+    method: "GET|POST"
+    route: "/admin/businesslist"
+    controller: "AdminBusinessListPage"
+    action: "defaultAction"
+
+admin-metadata:
+    method: "GET|POST"
+    route: "/admin/metadata"
+    controller: "AdminMetaDataPage"
+    action: "defaultAction"
+
+admin-keywords:
+    method: "GET|POST"
+    route: "/admin/keywords"
+    controller: "AdminKeywordsPage"
+    action: "defaultAction"
+
+admin-search-history:
+    method: "GET|POST"
+    route: "/admin/searchhistory"
+    controller: "AdminSearchHistoryPage"
+    action: "defaultAction"
+
+admin-imports:
+    method: "GET|POST"
+    route: "/admin/imports"
+    controller: "AdminImportsPage"
+    action: "defaultAction"
+
+admin-apidocs:
+    method: "GET"
+    route: "/admin/apidocs"
+    controller: "AdminAPIDocsPage"
+    action: "defaultAction"
+
+admin-employees:
+    method: "GET|POST"
+    route: "/admin/employees"
+    controller: "AdminEmployeesPage"
+    action: "defaultAction"

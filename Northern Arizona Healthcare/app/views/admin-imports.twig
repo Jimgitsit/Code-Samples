@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>NAH Directory Service</title>
+
+	{%  include 'css.twig' %}
+
+</head>
+<body>
+
+<div class="container-fluid">
+
+	{%  include 'admin_nav.twig' %}
+	
+	<div class="row">
+		<div class="col-md-3">
+			<table id="importsTable" class="table table-condensed table-hover">
+				<thead>
+					<tr>
+						<th>Date Run</th>
+						<th>Errors</th>
+						<th>Warnings</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for import in imports %}
+						<tr data-log="log_{{ import.dateRun|date("Y-m-d") }}.txt">
+							<td>{{ import.dateRun|date("m/d/Y") }}</td>
+							<td>{% if import.errorsOccured %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+							<td>{% if import.warningsOccurred %}<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>{% endif %}</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="col-md-9">
+			<pre id="logContent"></pre>
+		</div>
+	</div>
+
+</div>
+
+{%  include 'js.twig' %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".nav-tab").removeClass("active");
+		$("#navImports").addClass("active");
+		
+		$('#importsTable').find('td').click(function() {
+			var tr = $(this).parent();
+			var logFileName = tr.attr("data-log");
+			$.ajax({
+				url: "/admin/imports",
+				method: "POST",
+				data: {
+					action: "get-log",
+					logFile: logFileName
+				}
+			})
+			.done(function(response) {
+				$("#logContent").html(response);
+			});
+		});
+	});
+</script>
+</body>
+</html>

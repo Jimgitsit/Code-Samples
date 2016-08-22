@@ -1,0 +1,316 @@
+<div id="metaDataEditModal" class="modal" role="dialog" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Edit Meta Data</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<form>
+						<div class="col-md-3">
+							<div class="form-group" id="typeWrap">
+								<label for="type">Type</label>
+								<input type="text" class="form-control md-value" id="type" disabled>
+							</div>
+							<div class="form-group">
+								<label id="typeIdLabel" for="typeID">Type ID</label>
+								<select class="select2-ajax entity-type-select md-value" id="typeID"></select>
+							</div>
+							<div class="form-group">
+								<label for="valueType">Value Type</label>
+								<select class="form-control md-value" id="valueType">
+									{% for e in valueTypes %}
+										<option value="{{ e.valueType }}">{{ e.valueType|ucfirst }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="valueSubType">Value Sub Type</label>
+								<select class="form-control md-value select" id="valueSubType">
+									<option value="">None</option>
+									{% for e in valueSubTypes %}
+										<option value="{{ e.valueSubType }}">{{ e.valueSubType|ucfirst }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="label">Label</label>
+								<input type="text" class="form-control md-value" id="label">
+							</div>
+							<div class="form-group">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" class="md-value" id="isActive"> Active
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+							<div class="form-group">
+								<label for="valueOrder">Value Order</label>
+								<input type="text" class="form-control md-value" id="valueOrder">
+							</div>
+							<div class="form-group">
+								<label for="audience">Audience</label>
+								<select class="form-control md-value" id="audience">
+									{% for e in audiences %}
+										<option value="{{ e.audience }}">{{ e.audience|ucfirst }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label for="created">Created</label>
+								<input type="text" class="form-control" id="created" disabled>
+							</div>
+							<div class="form-group">
+								<label for="lastUpdated">Updated</label>
+								<input type="text" class="form-control" id="lastUpdated" disabled>
+							</div>
+							<div class="form-group">
+								<label for="source">Source</label>
+								<input type="text" class="form-control md-value" id="source" disabled>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="value">Value (JSON)</label>
+								<!--<input type="text" class="form-control md-value" id="value">-->
+								<textarea class="form-control md-value" id="value"></textarea>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-danger pull-left" id="deleteMetaDataBtn" data-md-id="">Delete</button>
+				<button type="button" class="btn btn-default" data-dismiss="modal" id="cancelMetaDataBtn">Cancel</button>
+				<button type="button" class="btn btn-primary" id="saveMetaDataBtn" data-md-id="">Save</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+	$(document).ready(function() {
+		
+		$("#saveMetaDataBtn").click(function() {
+			var data = {
+				id: $(this).attr("data-md-id"),
+				//source: 'Admin'
+			};
+
+			var valid = true;
+			$(".md-value").each(function(i, el) {
+				el = $(el);
+				var field = el.attr("id");
+
+				if (el.is("input[type='text']") || el.is("select")) {
+					data[field] = el.val();
+				}
+				else if (el.is("input[type='checkbox']")) {
+					data[field] = el.prop("checked");
+				}
+				else if (el.is("textarea")) {
+					var value = el.val().trim();
+					if (value.substr(0, 1) == '"') {
+						// String value
+						data[field] = value.trim('"');
+					}
+					else {
+						try {
+							// JSON value
+							data[field] = JSON.parse(el.val());
+						}
+						catch (e) {
+							//console.log('here');
+							//bsAlert("An error occurred!\n\n" + response.responseJSON.error_msg, 'error');
+							bsAlert('Invalid JSON. The value field must contain valid JSON data. Check here: <a href="http://jsonlint.com/" target="_blank">http://jsonlint.com/</a>', 'error');
+							valid = false;
+						}
+					}
+				}
+			});
+
+			//console.log(data);
+			
+			if (data.typeID == null || typeof data.typeID == 'undefined') {
+				bsAlert("Type could not be determined. Can't save.", 'error');
+				return;
+			}
+
+			if (valid) {
+				$.ajax({
+					url: "/api/save-metadata",
+					method: "POST",
+					data: data
+				}).done(function (response) {
+					//console.log(response);
+					$("#metaDataEditModal").modal("hide");
+					location.reload();
+				}).fail(function (response) {
+					console.log(response);
+					bsAlert(response.responseJSON.error_msg, 'error');
+				});
+			}
+		});
+		
+		$('#deleteMetaDataBtn').click(function() {
+			var btn = $(this);
+
+			bootbox.dialog({
+				message: "Are you sure you want to delete this meta data? This action can not be undone.",
+				title: "Delete Meta Data",
+				buttons: {
+					success: {
+						label: "Delete",
+						className: "btn-danger",
+						callback: function() {
+							var data = {
+								id: btn.attr('data-md-id')
+							};
+							
+							//console.log(data);
+
+							$.ajax({
+								url: "/api/remove-meta-data",
+								method: "POST",
+								data: data,
+								dataType: 'json'
+							}).done(function (response) {
+								//console.log(response);
+								$("#metaDataEditModal").modal("hide");
+								location.reload();
+							}).fail(function (response) {
+								console.log(response);
+								if (typeof response.responseJSON.error_msg != 'undefined') {
+									bsAlert("Error: " + response.responseJSON.error_msg, 'error');
+								}
+								else {
+									bsAlert("Error: " + response.responseText, 'error');
+								}
+							});
+						}
+					},
+					main: {
+						label: "Cancel",
+						className: "btn-primary"
+					}
+				}
+			});
+		});
+		
+		$("#valueType").change(function() {
+			setValueSubtypes(null);
+		});
+	});
+
+	var setValueSubtypes = function(curValue) {
+		$.ajax({
+			url: '/admin/metadata',
+			method: 'POST',
+			dataType: 'json',
+			data: {
+				action: 'filter-change',
+				filter: 'valueSubType',
+				value: $('#valueType').val()
+			}
+		}).done(function(response) {
+			//console.log(response);
+			var sel = $('#valueSubType');
+			sel.empty().append('<option value="">None</option>');
+			$.each(response.values, function(i, value) {
+				var opt = $('<option value="' + value.valueSubType + '">' + value.valueSubType + '</option>');
+				sel.append(opt);
+			});
+			//console.log(curValue);
+			sel.val(curValue);
+
+			setSelectOptionColor(sel);
+		});
+	};
+
+	var initMetaDataEditDialog = function(mode, metaDataID, values) {
+		console.log(values);
+		
+		$('#typeWrap').hide();
+		
+		var typeIdLabel = $('#typeIdLabel');
+		switch (values.type) {
+			case 'business':
+				typeIdLabel.text('Business/Department');
+				break;
+			case 'employee':
+				typeIdLabel.text('Employee');
+				break;
+			case 'provider':
+				typeIdLabel.text('Provider');
+				break;
+		}
+		
+		$.each(values, function (name, value) {
+			//console.log(name + ' = ' + value);
+			var el = $("#" + name);
+			if (el.length) {
+				if (el.is("select")) {
+					if (el.hasClass('select2-ajax')) {
+						initSelect2Ajax(el, values.type, {id: value, text: name});
+					}
+					else {
+						el.val(value);
+						setSelectOptionColor(el);
+					}
+
+					if (el.attr('id') == 'valueSubType') {
+						setValueSubtypes(value);
+					}
+				}
+				else if (el.is("input[type='text']")) {
+					el.val(value);
+				}
+				else if (el.is("input[type='checkbox']")) {
+					if (value == true || value == "Yes") {
+						el.prop('checked', true);
+					}
+					else {
+						el.prop('checked', false);
+					}
+				}
+				else if (el.is("textarea")) {
+					//console.log(value);
+					el.val(JSON.stringify(value, null, 2));
+				}
+			}
+		});
+
+		$("#saveMetaDataBtn").attr("data-md-id", metaDataID);
+		$("#deleteMetaDataBtn").attr("data-md-id", metaDataID);
+		
+		$('#typeID').prop("disabled", true);
+	};
+	
+	var initMetaDataNewDialog = function(type, typeID) {
+		$('.md-value').val('');
+		
+		$('#type').val(type);
+		$('#typeWrap').hide();
+
+		initSelect2Ajax($('#typeID'), type, {id: typeID});
+		$('#typeID').prop("disabled", true);
+		
+		var now = new Date();
+		var nowFormatted = now.getMonth() + '/' + now.getDate() + '/' + now.getFullYear();
+		//console.log(nowFormatted);
+		
+		$('#created').val(nowFormatted);
+		$('#lastUpdated').val(nowFormatted);
+		
+		$('#isActive').prop('checked', true);
+
+		$("#saveMetaDataBtn").attr("data-md-id", '');
+		$("#deleteMetaDataBtn").attr("data-md-id", '');
+		$("#source").val('User');
+	}
+	
+	
+</script>

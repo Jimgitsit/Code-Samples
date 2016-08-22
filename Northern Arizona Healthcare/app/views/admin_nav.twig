@@ -1,0 +1,30 @@
+<div class="bs-alert-wrap">
+	<div class="bs-alert"></div>
+</div>
+
+<div class="row" id="headerWrap">
+	<div class="col-md-4">
+		<div>
+			<h1>NAH Directory Service</h1>
+		</div>
+	</div>
+	<div class="col-md-4 text-center">
+		{% if env != 'prod' %}
+			<h3 class="env-label">{{ env|ucfirst }}</h3>
+		{% endif %}
+	</div>
+	<div class="col-md-4">
+		<h3 class="pull-right">Admin Portal</h3>
+	</div>
+</div>
+
+<ul class="nav nav-tabs">
+	<li role="presentation" class="nav-tab" id="navBusinessUpdates"><a href="/admin/businessupdates">Department Updates</a></li>
+	<li role="presentation" class="nav-tab" id="navBusinessList"><a href="/admin/businesslist">Departments</a></li>
+	<li role="presentation" class="nav-tab" id="navEmployees"><a href="/admin/employees">Employees</a></li>
+	<li role="presentation" class="nav-tab" id="navMetadata"><a href="/admin/metadata">Meta Data</a></li>
+	<li role="presentation" class="nav-tab" id="navKeywords"><a href="/admin/keywords">Search Keywords</a></li>
+	<li role="presentation" class="nav-tab" id="navSearchHistory"><a href="/admin/searchhistory">Search History</a></li>
+	<li role="presentation" class="nav-tab" id="navImports"><a href="/admin/imports">Imports</a></li>
+	<li role="presentation" class="nav-tab" id="navAPIDocs"><a href="/admin/apidocs">API Docs</a></li>
+</ul>
