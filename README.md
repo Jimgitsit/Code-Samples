@@ -1,2 +1,2 @@
 # Code-Samples
-Sample code from various projects
+Sample code from recent projects.
